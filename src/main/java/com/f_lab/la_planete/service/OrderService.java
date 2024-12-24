@@ -52,12 +52,7 @@ public class OrderService {
   }
 
   private Food findFoodWithLock(Long foodId) {
-    try {
-     return  foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
-    } catch(PessimisticLockException | PessimisticLockingFailureException e) {
-      log.warn("Pessimistic lock failure on food ID: {}", foodId, e);
-      throw new IllegalStateException("오류 다시 시도해 주시길 바랍니다.");
-    }
+     return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
   }
 }
 
