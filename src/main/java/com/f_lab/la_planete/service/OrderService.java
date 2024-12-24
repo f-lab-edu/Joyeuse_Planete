@@ -29,7 +29,7 @@ public class OrderService {
   private final FoodRepository foodRepository;
   private final PaymentRepository paymentRepository;
 
-  @Transactional(rollbackFor = IllegalStateException.class)
+  @Transactional
   public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
 
     // 음식을 조회 후 요청한 수 만큼 빼기
@@ -53,16 +53,10 @@ public class OrderService {
 
   private Food findFoodWithLock(Long foodId) {
     try {
-      Food food = foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
-      Thread.sleep(5000);
-      return food;
+     return  foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
     } catch(PessimisticLockException | PessimisticLockingFailureException e) {
       log.warn("Pessimistic lock failure on food ID: {}", foodId, e);
-
-      // Decide whether to retry, fallback, or fail
-      throw new IllegalStateException("The food item is currently locked. Please try again later.");
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      throw new IllegalStateException("오류 다시 시도해 주시길 바랍니다.");
     }
   }
 }
