@@ -47,7 +47,7 @@ public class Food extends BaseEntity {
   }
 
   public BigDecimal calculateCost(int quantity) {
-    return BigDecimal.valueOf((long) price.intValue() * quantity);
+    return price.multiply(BigDecimal.valueOf(quantity));
   }
 
   public void minusQuantity(int deductions) {
