@@ -40,7 +40,7 @@ public class OrderService {
     // 주문 생성 후 총 금액 계산
     Order order = request.toEntity(food);
     BigDecimal totalCost = order.calculateTotalCost();
-    order.updateTotalCost(totalCost);
+    order.setTotalCost(order.calculateTotalCost());
 
     // 결제 생성
     Payment payment = Payment.of(totalCost, order);

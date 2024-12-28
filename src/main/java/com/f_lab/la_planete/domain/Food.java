@@ -21,9 +21,8 @@ import static lombok.AccessLevel.PRIVATE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter
-@Setter(PRIVATE)
-@NoArgsConstructor(access = PROTECTED)
+@Getter @Setter
+@NoArgsConstructor
 @Table(name = "foods")
 public class Food extends BaseEntity {
 
@@ -38,13 +37,6 @@ public class Food extends BaseEntity {
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "store_id")
   private Store store;
-
-  public static Food of(BigDecimal price, int totalQuantity) {
-    Food food = new Food();
-    food.setPrice(price);
-    food.setTotalQuantity(totalQuantity);
-    return food;
-  }
 
   public BigDecimal calculateCost(int quantity) {
     return price.multiply(BigDecimal.valueOf(quantity));
