@@ -9,9 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
-public interface FoodRepository extends JpaRepository<Food, Long> {
+import static com.f_lab.la_planete.util.time.TimeConstantsString.FIVE_SECONDS;
 
-  String FIVE_SECONDS = "5000";
+
+public interface FoodRepository extends JpaRepository<Food, Long> {
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT f FROM Food f WHERE f.id = :id")
