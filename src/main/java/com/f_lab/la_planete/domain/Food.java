@@ -17,8 +17,7 @@ import java.math.BigDecimal;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PRIVATE;
-import static lombok.AccessLevel.PROTECTED;
+
 
 @Entity
 @Getter @Setter
