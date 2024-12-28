@@ -12,22 +12,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter
 @Builder
+@Getter @Setter
 @AllArgsConstructor
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 @Table(name = "orders")
 public class Order extends BaseEntity {
 
@@ -52,11 +48,13 @@ public class Order extends BaseEntity {
   @JoinColumn(name = "payment_id")
   private Payment payment;
 
-  public void updateTotalCost(BigDecimal totalCost) {
-    this.totalCost = totalCost;
-  }
+  @ManyToOne
+  @JoinColumn(name = "voucher_id")
+  private Voucher voucher;
 
   public BigDecimal calculateTotalCost() {
-    return food.calculateCost(quantity);
+    return (voucher != null)
+        ? voucher.apply(food.calculateCost(quantity))
+        : food.calculateCost(quantity);
   }
 }
