@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +22,10 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 
 @Entity
+@Builder
 @Getter @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "foods")
 public class Food extends BaseEntity {
 
@@ -36,6 +40,10 @@ public class Food extends BaseEntity {
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "store_id")
   private Store store;
+
+  @ManyToOne(fetch = LAZY)
+  @JoinColumn(name = "currency_id")
+  private Currency currency;
 
   public BigDecimal calculateCost(int quantity) {
     return price.multiply(BigDecimal.valueOf(quantity));

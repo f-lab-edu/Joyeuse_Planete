@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,12 +18,12 @@ import java.math.BigDecimal;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PRIVATE;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter @Setter(PRIVATE)
-@NoArgsConstructor(access = PROTECTED)
+@Builder
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "payments")
 public class Payment extends BaseEntity {
 
@@ -35,12 +37,4 @@ public class Payment extends BaseEntity {
 
   @OneToOne(mappedBy = "payment", fetch = LAZY)
   private Order order;
-
-  public static Payment of(BigDecimal totalCost, Order order) {
-    Payment payment = new Payment();
-    payment.setTotalCost(totalCost);
-    payment.setOrder(order);
-    payment.setStatus(PaymentStatus.READY);
-    return payment;
-  }
 }
