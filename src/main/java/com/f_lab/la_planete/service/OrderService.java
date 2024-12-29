@@ -8,16 +8,13 @@ import com.f_lab.la_planete.dto.response.OrderCreateResponseDTO;
 import com.f_lab.la_planete.repository.FoodRepository;
 import com.f_lab.la_planete.repository.OrderRepository;
 import com.f_lab.la_planete.repository.PaymentRepository;
-import jakarta.persistence.LockTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.PessimisticLockException;
-import org.springframework.dao.PessimisticLockingFailureException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -42,8 +39,12 @@ public class OrderService {
     BigDecimal totalCost = order.calculateTotalCost();
     order.setTotalCost(order.calculateTotalCost());
 
+    // TODO 추후에 따로 결제 진행 클래스를 만들어서 로직을 변경
     // 결제 생성
-    Payment payment = Payment.of(totalCost, order);
+    Payment payment = Payment.builder()
+        .totalCost(totalCost)
+        .order(order)
+        .build();
 
     orderRepository.save(order);
     paymentRepository.save(payment);

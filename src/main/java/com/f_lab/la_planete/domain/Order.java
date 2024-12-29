@@ -25,8 +25,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "orders")
@@ -44,8 +43,6 @@ public class Order extends BaseEntity {
 
   private int quantity;
 
-  // 화폐 추가
-
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
@@ -53,13 +50,13 @@ public class Order extends BaseEntity {
   @JoinColumn(name = "payment_id")
   private Payment payment;
 
-  @ManyToOne
+  @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "voucher_id")
   private Voucher voucher;
 
   public BigDecimal calculateTotalCost() {
     return (voucher != null)
-        ? voucher.apply(food.calculateCost(quantity))
+        ? voucher.apply(food.calculateCost(quantity), food.getCurrency())
         : food.calculateCost(quantity);
   }
 }
