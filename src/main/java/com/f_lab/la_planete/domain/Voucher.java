@@ -36,7 +36,7 @@ public class Voucher extends BaseTimeEntity {
     if (ObjectUtils.isEmpty(currency))
       throw new IllegalStateException("화페 값이 비어있습니다. 적절히 변경 후 다시 시도해주시길 바랍니다.");
 
-    BigDecimal afterDiscounts = BigDecimal.ONE.subtract(discountRate);
-    return totalCost.multiply(afterDiscounts).setScale(currency.getRoundingScale(), currency.getRoundingMode());
+    BigDecimal multiplier = BigDecimal.ONE.subtract(discountRate);
+    return totalCost.multiply(multiplier).setScale(currency.getRoundingScale(), currency.getRoundingMode());
   }
 }
