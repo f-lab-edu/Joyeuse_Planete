@@ -49,10 +49,10 @@ public class Food extends BaseEntity {
     return price.multiply(BigDecimal.valueOf(quantity));
   }
 
-  public void minusQuantity(int deductions) {
-    if (totalQuantity - deductions < 0)
+  public void minusQuantity(int quantity) {
+    if (totalQuantity - quantity < 0)
       throw new IllegalStateException("수량이 부족합니다. 따라서 구매가 진행될 수 없습니다.");
 
-    totalQuantity -= deductions;
+    totalQuantity -= quantity;
   }
 }
