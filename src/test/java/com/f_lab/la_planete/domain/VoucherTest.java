@@ -28,8 +28,8 @@ class VoucherTest {
   @DisplayName("0 ~ 100 사이의 값이 들어올 때 정상적으로 할인이 적용된 값을 return")
   void test_voucher_discount_success() {
     // given
-    Voucher voucher = new Voucher();
-    voucher.setDiscountRate(BigDecimal.valueOf(0.25));
+    BigDecimal discountRate = BigDecimal.valueOf(0.25);
+    Voucher voucher = createVoucher(discountRate);
 
     // when
     BigDecimal afterDiscountsGBP1 = voucher.apply(BigDecimal.valueOf(100), GBP);
@@ -46,13 +46,18 @@ class VoucherTest {
   @DisplayName("currency 값에 null 값이 들어갔을 경우에 예외를 던진다.")
   void test_voucher_discount_failure() {
     // given
-    Voucher voucher = new Voucher();
-    voucher.setDiscountRate(BigDecimal.valueOf(0.25));
+    BigDecimal discountRate = BigDecimal.valueOf(0.25);
+    Voucher voucher = createVoucher(discountRate);
 
     // when
     assertThatThrownBy(() ->
         voucher.apply(BigDecimal.valueOf(100), null)
     ).isInstanceOf(IllegalStateException.class);
+  }
 
+  private Voucher createVoucher(BigDecimal discountRate) {
+    return Voucher.builder()
+        .discountRate(discountRate)
+        .build();
   }
 }

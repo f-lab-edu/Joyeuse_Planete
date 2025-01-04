@@ -14,9 +14,9 @@ class FoodTest {
   @DisplayName("음식 수량을 줄였을 때 성공")
   void test_minus_food_quantity_success() {
     // given
-    Food food = new Food();
-    food.setPrice(BigDecimal.valueOf(1000));
-    food.setTotalQuantity(10);
+    BigDecimal price = BigDecimal.valueOf(1000);
+    int quantity = 10;
+    Food food = createFood(price, quantity);
 
     // when
     food.minusQuantity(5);
@@ -29,12 +29,19 @@ class FoodTest {
   @DisplayName("음식 수량을 줄였을 때 수량보다 많아서 실패할 때 예외 던짐")
   void test_minus_food_quantity_fail() {
     // given
-    Food food = new Food();
-    food.setPrice(BigDecimal.valueOf(1000));
-    food.setTotalQuantity(10);
+    BigDecimal price = BigDecimal.valueOf(1000);
+    int quantity = 10;
+    Food food = createFood(price, quantity);
 
     // then
     assertThatThrownBy(() -> food.minusQuantity(11))
         .isInstanceOf(IllegalStateException.class);
+  }
+
+  private Food createFood(BigDecimal price, int quantity) {
+    return Food.builder()
+        .price(price)
+        .totalQuantity(quantity)
+        .build();
   }
 }
