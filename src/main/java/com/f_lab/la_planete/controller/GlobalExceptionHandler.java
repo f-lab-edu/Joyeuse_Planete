@@ -2,18 +2,15 @@ package com.f_lab.la_planete.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.persistence.PessimisticLockException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.LockTimeoutException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @Hidden
@@ -25,6 +22,12 @@ public class GlobalExceptionHandler {
     return ResponseEntity
         .status(HttpStatus.CONFLICT)
         .body(ErrorResponse.of(e.getMessage(), HttpStatus.CONFLICT.value()));
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<ErrorResponse> handelResourceNotFoundException() {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(ErrorResponse.of("올바르지 않은 주소입니다. 다시 확인해 주세요", HttpStatus.NOT_FOUND.value()));
   }
 
   /**
