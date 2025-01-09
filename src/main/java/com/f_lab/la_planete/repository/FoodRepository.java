@@ -1,5 +1,6 @@
 package com.f_lab.la_planete.repository;
 
+import com.f_lab.la_planete.aspect.RetryOnLockFailure;
 import com.f_lab.la_planete.domain.Food;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
@@ -14,6 +15,7 @@ import static com.f_lab.la_planete.util.time.TimeConstantsString.FIVE_SECONDS;
 
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
+  @RetryOnLockFailure
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT f FROM Food f WHERE f.id = :id")
   @QueryHints({ @QueryHint(name = "jakarta.persistence.lock.timeout", value = FIVE_SECONDS) })

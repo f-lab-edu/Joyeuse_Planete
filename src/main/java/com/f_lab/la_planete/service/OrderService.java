@@ -5,7 +5,7 @@ import com.f_lab.la_planete.domain.Order;
 import com.f_lab.la_planete.domain.Payment;
 import com.f_lab.la_planete.dto.request.OrderCreateRequestDTO;
 import com.f_lab.la_planete.dto.response.OrderCreateResponseDTO;
-import com.f_lab.la_planete.facade.FoodRepositoryFacade;
+import com.f_lab.la_planete.repository.FoodRepository;
 import com.f_lab.la_planete.repository.OrderRepository;
 import com.f_lab.la_planete.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,16 +23,16 @@ import java.math.BigDecimal;
 public class OrderService {
 
   private final OrderRepository orderRepository;
-  private final FoodRepositoryFacade foodRepositoryFacade;
+  private final FoodRepository foodRepository;
   private final PaymentRepository paymentRepository;
 
   @Transactional
   public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
 
     // 음식을 조회 후 요청한 수 만큼 빼기
-    Food food = foodRepositoryFacade.findFoodWithLockAndRetry(request.getFoodId());
+    Food food = findFoodWithLock(request.getFoodId());
     food.minusQuantity(request.getQuantity());
-    foodRepositoryFacade.save(food);
+    foodRepository.save(food);
 
     // 주문 생성 후 총 금액 계산
     Order order = request.toEntity(food);
@@ -50,6 +50,10 @@ public class OrderService {
     paymentRepository.save(payment);
 
     return new OrderCreateResponseDTO("CREATED");
+  }
+
+  public Food findFoodWithLock(Long foodId) {
+    return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
   }
 }
 
