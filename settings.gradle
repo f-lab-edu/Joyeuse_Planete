@@ -1,1 +1,3 @@
 rootProject.name = 'la-planete'
+include 'core'
+
