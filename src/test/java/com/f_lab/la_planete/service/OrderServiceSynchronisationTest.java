@@ -1,6 +1,6 @@
 package com.f_lab.la_planete.service;
 
-import com.f_lab.la_planete.domain.Food;
+import com.f_lab.la_planete.core.domain.Food;
 import com.f_lab.la_planete.dto.request.OrderCreateRequestDTO;
 import com.f_lab.la_planete.repository.FoodRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 import java.math.BigDecimal;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,13 +1,7 @@
-package com.f_lab.la_planete.domain;
+package com.f_lab.la_planete.core.domain;
+import com.f_lab.la_planete.core.domain.base.BaseTimeEntity;
 
-import com.f_lab.la_planete.domain.base.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

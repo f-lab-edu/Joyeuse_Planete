@@ -1,8 +1,9 @@
 package com.f_lab.la_planete.service;
 
-import com.f_lab.la_planete.domain.Food;
-import com.f_lab.la_planete.domain.Order;
-import com.f_lab.la_planete.domain.Payment;
+
+import com.f_lab.la_planete.core.domain.Food;
+import com.f_lab.la_planete.core.domain.Order;
+import com.f_lab.la_planete.core.domain.Payment;
 import com.f_lab.la_planete.dto.request.OrderCreateRequestDTO;
 import com.f_lab.la_planete.dto.response.OrderCreateResponseDTO;
 import com.f_lab.la_planete.repository.FoodRepository;

@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.domain.base;
+package com.f_lab.la_planete.core.domain.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
