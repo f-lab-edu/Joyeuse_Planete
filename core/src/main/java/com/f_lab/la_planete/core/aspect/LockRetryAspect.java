@@ -1,6 +1,6 @@
-package com.f_lab.la_planete.aspect;
+package com.f_lab.la_planete.core.aspect;
 
-import com.f_lab.la_planete.util.time.TimeConstantsString;
+import com.f_lab.la_planete.core.util.time.TimeConstantsString;
 import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PessimisticLockException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +20,9 @@ public class LockRetryAspect {
   private static final int FIRST_WAIT_INTERVAL = Integer.parseInt(TimeConstantsString.ONE_SECOND);
   private static final int MULTIPLIER = 2;
 
-  @Around("@annotation(com.f_lab.la_planete.aspect.RetryOnLockFailure)")
+  @Around("@annotation(com.f_lab.la_planete.core.aspect.RetryOnLockFailure)")
   public Object lockRetry(ProceedingJoinPoint joinPoint) {
     int attempts = 0, stopInterval = FIRST_WAIT_INTERVAL;
-
-    log.info("ARGS={}", joinPoint.getArgs());
 
     while (attempts < MAX_RETRY) {
       try {

@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.domain;
+package com.f_lab.la_planete.core.domain;
 
 import lombok.Getter;
 

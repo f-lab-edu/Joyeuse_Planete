@@ -1,6 +1,7 @@
 package com.f_lab.la_planete.aspect;
 
-import com.f_lab.la_planete.domain.Food;
+import com.f_lab.la_planete.core.aspect.RetryOnLockFailure;
+import com.f_lab.la_planete.core.domain.Food;
 import com.f_lab.la_planete.repository.FoodRepository;
 import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PessimisticLockException;
