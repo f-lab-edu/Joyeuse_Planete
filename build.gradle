@@ -80,6 +80,12 @@ subprojects {
 	}
 }
 
+project(":notifications") {
+	dependencies {
+		compileOnly project(":core")
+	}
+}
+
 
 tasks.named('test') {
 	useJUnitPlatform()
