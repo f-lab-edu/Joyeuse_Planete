@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.aspect;
+package com.f_lab.la_planete.core.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

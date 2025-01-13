@@ -1,8 +1,9 @@
 package com.f_lab.la_planete.dto.request;
 
-import com.f_lab.la_planete.domain.Food;
-import com.f_lab.la_planete.domain.Order;
-import com.f_lab.la_planete.domain.OrderStatus;
+
+import com.f_lab.la_planete.core.domain.Food;
+import com.f_lab.la_planete.core.domain.Order;
+import com.f_lab.la_planete.core.domain.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

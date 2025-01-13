@@ -1,6 +1,6 @@
-package com.f_lab.la_planete.domain;
+package com.f_lab.la_planete.core.domain;
 
-import com.f_lab.la_planete.domain.base.BaseEntity;
+import com.f_lab.la_planete.core.domain.base.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
