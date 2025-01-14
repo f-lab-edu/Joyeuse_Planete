@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.repository;
+package com.f_lab.la_planete.orders.repository;
 
 
 import com.f_lab.la_planete.core.domain.Order;

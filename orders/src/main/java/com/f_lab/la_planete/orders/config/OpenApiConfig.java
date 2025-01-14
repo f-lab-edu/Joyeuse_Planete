@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.config;
+package com.f_lab.la_planete.orders.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;

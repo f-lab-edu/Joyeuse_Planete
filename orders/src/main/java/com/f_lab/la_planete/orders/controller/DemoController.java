@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.controller;
+package com.f_lab.la_planete.orders.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
