@@ -80,9 +80,17 @@ subprojects {
 	}
 }
 
+
 project(":notifications") {
 	dependencies {
 		compileOnly project(":core")
+	}
+}
+
+project(":foods") {
+	dependencies {
+		implementation project(":core")
+		testImplementation project(":core")
 	}
 }
 

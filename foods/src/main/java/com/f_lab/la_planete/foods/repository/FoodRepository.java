@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.repository;
+package com.f_lab.la_planete.foods.repository;
 
 import com.f_lab.la_planete.core.aspect.RetryOnLockFailure;
 import com.f_lab.la_planete.core.domain.Food;
