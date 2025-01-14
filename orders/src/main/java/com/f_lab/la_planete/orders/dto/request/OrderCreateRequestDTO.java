@@ -1,4 +1,4 @@
-package com.f_lab.la_planete.dto.request;
+package com.f_lab.la_planete.orders.dto.request;
 
 
 import com.f_lab.la_planete.core.domain.Food;

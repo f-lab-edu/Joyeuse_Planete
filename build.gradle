@@ -94,6 +94,13 @@ project(":foods") {
 	}
 }
 
+project(":orders") {
+	dependencies {
+		implementation project(":core")
+		testImplementation project(":core")
+	}
+}
+
 
 tasks.named('test') {
 	useJUnitPlatform()

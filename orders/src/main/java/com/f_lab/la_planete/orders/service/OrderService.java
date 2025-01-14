@@ -1,13 +1,12 @@
-package com.f_lab.la_planete.service;
+package com.f_lab.la_planete.orders.service;
 
 
-import com.f_lab.la_planete.dto.request.OrderCreateRequestDTO;
-import com.f_lab.la_planete.dto.response.OrderCreateResponseDTO;
-import com.f_lab.la_planete.repository.OrderRepository;
-import com.f_lab.la_planete.repository.PaymentRepository;
+
+import com.f_lab.la_planete.orders.dto.request.OrderCreateRequestDTO;
+import com.f_lab.la_planete.orders.dto.response.OrderCreateResponseDTO;
+import com.f_lab.la_planete.orders.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,7 @@ public class OrderService {
 
   private final OrderRepository orderRepository;
 //  private final FoodRepository foodRepository;
-  private final PaymentRepository paymentRepository;
+//  private final PaymentRepository paymentRepository;
 
   @Transactional
   public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
