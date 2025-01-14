@@ -101,6 +101,13 @@ project(":orders") {
 	}
 }
 
+project(":payment") {
+	dependencies {
+		implementation project(":core")
+		testImplementation project(":core")
+	}
+}
+
 
 tasks.named('test') {
 	useJUnitPlatform()

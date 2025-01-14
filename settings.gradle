@@ -1,4 +1,4 @@
 rootProject.name = 'la-planete'
-include 'core', 'notifications','foods', 'orders'
+include 'core', 'notifications','foods', 'orders', 'payment'
 
 
