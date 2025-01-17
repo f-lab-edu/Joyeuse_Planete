@@ -1,0 +1,37 @@
+server.port: 0
+
+spring:
+  application:
+    name: payments
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      acks: all
+      enable:
+        idempotence: true
+
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: payments
+      enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: com.f-lab.la_planete.core.*
+
+payments:
+  commands:
+    topic:
+      name: payments.payment-process-command
+
+  events:
+    topic:
+      name: payments.payment-processed-event
+
+
+
+kafka:
+  topic:
+    partitions: 3
+
+  container:
+    concurrency: 3
