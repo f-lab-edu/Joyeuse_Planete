@@ -1,0 +1,39 @@
+server:
+  port: 0
+
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      acks: all
+      enable:
+        idempotence: true
+
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: orders
+      enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: com.f-lab.la_planete.core.*
+
+
+orders:
+#  commands:
+#    topic:
+#      name: orders.foods-reserve-command
+
+  events:
+    topic:
+      name: orders.orders-created
+
+foods:
+  commands:
+    topic:
+      name: foods.food-reserve-command
+
+kafka:
+  topic:
+    partitions: 3
+
+  container:
+    concurrency: 3
