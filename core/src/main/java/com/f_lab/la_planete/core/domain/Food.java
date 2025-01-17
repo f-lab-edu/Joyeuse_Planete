@@ -31,6 +31,8 @@ public class Food extends BaseEntity {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
+  private String foodName;
+
   private BigDecimal price;
 
   private int totalQuantity;
