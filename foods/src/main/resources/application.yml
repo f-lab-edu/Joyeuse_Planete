@@ -1,0 +1,44 @@
+server.port: 0
+
+spring:
+  application:
+    name: foods
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      acks: all
+      enable:
+        idempotence: true
+      transaction-id-prefix: foods
+
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: foods
+      enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: com.f-lab.la_planete.core.*
+
+
+foods:
+  commands:
+    topic:
+      name: foods.food-reserve-command
+
+  events:
+    topics:
+      name:
+        reserve: foods.foods-reservation-processed-event
+        fail: foods.foods-reservation-fail-event
+
+payment:
+  commands:
+    topic:
+      name: payments.payment-process-command
+
+kafka:
+  topic:
+    partitions: 3
+
+  container:
+    concurrency: 3
