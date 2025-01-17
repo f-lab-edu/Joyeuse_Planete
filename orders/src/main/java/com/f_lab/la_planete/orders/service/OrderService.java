@@ -7,6 +7,8 @@ import com.f_lab.la_planete.orders.dto.response.OrderCreateResponseDTO;
 import com.f_lab.la_planete.orders.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,37 +19,44 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
   private final OrderRepository orderRepository;
-//  private final FoodRepository foodRepository;
-//  private final PaymentRepository paymentRepository;
+
+  private final KafkaTemplate<String, Object> kafkaTemplate;
+
+  @Value("${foods.commands.topic.name}")
+  private String FOOD_COMMAND;
 
   @Transactional
   public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
-
-    // 음식을 조회 후 요청한 수 만큼 빼기
-//    Food food = findFoodWithLock(request.getFoodId());
-//    food.minusQuantity(request.getQuantity());
-//    foodRepository.save(food);
-
-    // 주문 생성 후 총 금액 계산
-//    Order order = request.toEntity(food);
-//    BigDecimal totalCost = order.calculateTotalCost();
-//    order.setTotalCost(order.calculateTotalCost());
-
-    // TODO 추후에 따로 결제 진행 클래스를 만들어서 로직을 변경
-    // 결제 생성
-//    Payment payment = Payment.builder()
-//        .totalCost(totalCost)
-//        .order(order)
-//        .build();
-//
-//    orderRepository.save(order);
-//    paymentRepository.save(payment);
+    log.info("request={}", request);
+    try {
+      kafkaTemplate.send(FOOD_COMMAND, request.toFoodReserveCommand());
+    } catch (Exception e) {
+      throw new OrderCreatedFailureException(e);
+    }
 
     return new OrderCreateResponseDTO("CREATED");
   }
 
-//  public Food findFoodWithLock(Long foodId) {
-//    return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
-//  }
+
+  static class OrderCreatedFailureException extends RuntimeException {
+    public OrderCreatedFailureException() {
+    }
+
+    public OrderCreatedFailureException(String message) {
+      super(message);
+    }
+
+    public OrderCreatedFailureException(String message, Throwable cause) {
+      super(message, cause);
+    }
+
+    public OrderCreatedFailureException(Throwable cause) {
+      super(cause);
+    }
+
+    public OrderCreatedFailureException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+      super(message, cause, enableSuppression, writableStackTrace);
+    }
+  }
 }
 
