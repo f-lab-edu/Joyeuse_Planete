@@ -1,20 +1,22 @@
-package com.f_lab.la_planete.core.commands;
+package com.f_lab.la_planete.core.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FoodReserveCommand implements Serializable {
+public class OrderCreatedEvent {
 
   private Long foodId;
+
+  private String foodName;
 
   private Long storeId;
 
