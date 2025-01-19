@@ -32,15 +32,15 @@ public class KafkaConsumerConfig {
 
   @Bean
   public Map<String, Object> consumerConfig() {
-    Map<String, Object> consumerConfig = new HashMap<>();
+    Map<String, Object> config = new HashMap<>();
 
-    consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-    consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-    consumerConfig.put(JsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
-    consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, AUTO_COMMIT);
+    config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+    config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+    config.put(JsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
+    config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, AUTO_COMMIT);
 
-    return consumerConfig;
+    return config;
   }
 
   @Bean
