@@ -20,7 +20,6 @@ public class FoodService {
 
   @Transactional
   public void reserve(Long foodId, int quantity) {
-    foodRepository.save(Food.builder().totalQuantity(100).price(BigDecimal.valueOf(1000)).build());
     Food food = foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
     food.minusQuantity(quantity);
     foodRepository.save(food);
