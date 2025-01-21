@@ -1,5 +1,6 @@
 package com.f_lab.la_planete.core.aspect;
 
+import com.f_lab.la_planete.core.exceptions.LockAcquisitionFailException;
 import com.f_lab.la_planete.core.util.time.TimeConstantsString;
 import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PessimisticLockException;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LockRetryAspect {
 
-  @Value("${lock.max.retry:3}")
+  @Value("${lock.max.retry:2}")
   private int MAX_RETRY;
   private static final int FIRST_WAIT_INTERVAL = Integer.parseInt(TimeConstantsString.ONE_SECOND);
   private static final int MULTIPLIER = 2;
@@ -51,6 +52,6 @@ public class LockRetryAspect {
       }
     }
 
-    throw new RuntimeException("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요");
+    throw new LockAcquisitionFailException("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요");
   }
 }
