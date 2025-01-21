@@ -1,9 +1,12 @@
 package com.f_lab.la_planete.orders.dto.request;
 
 
-import com.f_lab.la_planete.core.commands.FoodReserveCommand;
+import com.f_lab.la_planete.core.events.OrderCreatedEvent;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -32,14 +35,14 @@ public class OrderCreateRequestDTO {
   private PaymentInformation paymentInformation;
 
 
-  public FoodReserveCommand toFoodReserveCommand() {
-    return FoodReserveCommand.builder()
+  public OrderCreatedEvent toEvent() {
+    return OrderCreatedEvent.builder()
         .foodId(foodId)
         .storeId(storeId)
         .quantity(quantity)
         .totalAmount(totalAmount)
         .voucherId(voucherId)
-        .paymentInformation(paymentInformation.toFoodReservePaymentInformation())
+        .paymentInformation(paymentInformation.toPaymentInformation())
         .build();
   }
 
@@ -61,8 +64,8 @@ public class OrderCreateRequestDTO {
     @JsonProperty("cvc")
     private String cvc;
 
-    public FoodReserveCommand.PaymentInformation toFoodReservePaymentInformation() {
-      return FoodReserveCommand.PaymentInformation.builder()
+    public OrderCreatedEvent.PaymentInformation toPaymentInformation() {
+      return OrderCreatedEvent.PaymentInformation.builder()
           .cardNumber(cardNumber)
           .cardHolderName(cardHolderName)
           .expiryDate(expiryDate)
