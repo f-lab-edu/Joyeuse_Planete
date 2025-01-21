@@ -1,35 +1,26 @@
 server:
-  port: 0
+  port: 8083
 
 spring:
   kafka:
+    bootstrap-servers: localhost:9094
     producer:
-      bootstrap-servers: localhost:9092
       acks: all
       enable:
         idempotence: true
 
     consumer:
-      bootstrap-servers: localhost:9092
       group-id: orders
       enable-auto-commit: false
       properties:
-        spring.json.trusted.packages: com.f-lab.la_planete.core.*
-
+        spring.json.trusted.packages: com.f_lab.la_planete.core.*
+      isolation-level: read_committed
 
 orders:
-#  commands:
-#    topic:
-#      name: orders.foods-reserve-command
-
   events:
     topic:
-      name: orders.orders-created
-
-foods:
-  commands:
-    topic:
-      name: foods.food-reserve-command
+      name: orders.order-created-event
+      fail: orders.orders-creation-failed-event
 
 kafka:
   topic:
@@ -37,3 +28,13 @@ kafka:
 
   container:
     concurrency: 3
+
+
+logging:
+  level:
+    org:
+      apache:
+        kafka: error
+        orm:
+          jpa:
+            JpaTransactionManager: trace
