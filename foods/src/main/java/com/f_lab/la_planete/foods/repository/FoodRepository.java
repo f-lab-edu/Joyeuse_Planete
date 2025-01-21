@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 import static com.f_lab.la_planete.core.util.time.TimeConstantsString.FIVE_SECONDS;
 
 
@@ -19,6 +21,6 @@ public interface FoodRepository extends JpaRepository<Food, Long> {
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT f FROM Food f WHERE f.id = :id")
   @QueryHints({ @QueryHint(name = "jakarta.persistence.lock.timeout", value = FIVE_SECONDS) })
-  Food findFoodByFoodIdWithPessimisticLock(@Param("id") Long id);
+  Optional<Food> findFoodByFoodIdWithPessimisticLock(@Param("id") Long id);
 }
 
