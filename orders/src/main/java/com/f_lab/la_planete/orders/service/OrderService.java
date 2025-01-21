@@ -22,14 +22,14 @@ public class OrderService {
 
   private final KafkaTemplate<String, Object> kafkaTemplate;
 
-  @Value("${foods.commands.topic.name}")
-  private String FOOD_COMMAND;
+  @Value("${orders.events.topic.name}")
+  String ORDER_CREATED_EVENT;
 
   @Transactional
   public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
     log.info("request={}", request);
     try {
-      kafkaTemplate.send(FOOD_COMMAND, request.toFoodReserveCommand());
+      kafkaTemplate.send(ORDER_CREATED_EVENT, request.toEvent());
     } catch (Exception e) {
       throw new OrderCreatedFailureException(e);
     }
