@@ -1,13 +1,14 @@
 package com.f_lab.la_planete.foods.service;
 
 import com.f_lab.la_planete.core.domain.Food;
+import com.f_lab.la_planete.foods.exceptions.FoodNotFoundException;
 import com.f_lab.la_planete.foods.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 
 @Slf4j
 @Service
@@ -20,8 +21,14 @@ public class FoodService {
 
   @Transactional
   public void reserve(Long foodId, int quantity) {
-    Food food = foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
+    Food food = findFoodWithLock(foodId);
+    log.info("음식 id = {}, 수량 = {}", food.getId(), food.getTotalQuantity());
     food.minusQuantity(quantity);
     foodRepository.save(food);
+  }
+
+  private Food findFoodWithLock(Long foodId) {
+    return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId)
+        .orElseThrow(() -> new FoodNotFoundException("상품이 존재하지 않습니다."));
   }
 }
