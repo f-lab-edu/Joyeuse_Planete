@@ -19,15 +19,10 @@ spring:
         spring.json.trusted.packages: com.f-lab.la_planete.core.*
 
 payments:
-  commands:
-    topic:
-      name: payments.payment-process-command
-
   events:
     topic:
-      name: payments.payment-processed-event
-
-
+      name: payments.order-created-event
+      fail: payments.order-creation-failed-event
 
 kafka:
   topic:
