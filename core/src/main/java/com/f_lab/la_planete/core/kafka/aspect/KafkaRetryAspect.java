@@ -27,18 +27,15 @@ public class KafkaRetryAspect {
       } catch (NonRetryableException e) {
         throw e;
 
-      } catch (Exception e) {
+      } catch (Throwable e) {
         log.warn("시도 횟수={}, 메서드={}", attempt, joinPoint.getSignature());
         attempt++;
 
         try {
           Thread.sleep(STOP_INTERVAL);
         } catch (InterruptedException ex) {
-          throw new RuntimeException(ex);
+          throw new NonRetryableException(ex);
         }
-
-      } catch (Throwable e) {
-        throw new NonRetryableException(e);
       }
     }
 
