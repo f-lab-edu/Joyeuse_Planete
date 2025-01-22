@@ -1,12 +1,12 @@
 package com.f_lab.la_planete.foods.service;
 
 import com.f_lab.la_planete.core.domain.Food;
-import com.f_lab.la_planete.foods.exceptions.FoodNotFoundException;
+import com.f_lab.la_planete.foods.exceptions.ErrorCode;
+import com.f_lab.la_planete.foods.exceptions.FoodApplicationKafkaNonRetryableException;
 import com.f_lab.la_planete.foods.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -29,6 +29,6 @@ public class FoodService {
 
   private Food findFoodWithLock(Long foodId) {
     return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId)
-        .orElseThrow(() -> new FoodNotFoundException("상품이 존재하지 않습니다."));
+        .orElseThrow(() -> new FoodApplicationKafkaNonRetryableException(ErrorCode.FOOD_NOT_EXIST_EXCEPTION));
   }
 }
