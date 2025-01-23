@@ -26,9 +26,6 @@ public class KafkaRetryAspect {
     while(attempt < MAX_RETRY) {
       try {
         return joinPoint.proceed();
-      } catch (NonRetryableException e) {
-        throw e;
-
       } catch (Throwable e) {
         log.warn("시도 횟수={}, 메서드={}", attempt, joinPoint.getSignature());
         attempt++;
