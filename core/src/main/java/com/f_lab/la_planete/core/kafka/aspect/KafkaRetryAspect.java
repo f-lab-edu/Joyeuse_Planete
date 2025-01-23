@@ -1,8 +1,7 @@
 package com.f_lab.la_planete.core.kafka.aspect;
 
+import com.f_lab.la_planete.core.exceptions.ApplicationException;
 import com.f_lab.la_planete.core.exceptions.ErrorCode;
-import com.f_lab.la_planete.core.kafka.exceptions.KafkaRetryFailException;
-import com.f_lab.la_planete.core.kafka.exceptions.NonRetryableException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,7 +19,7 @@ public class KafkaRetryAspect {
   private static final int STOP_INTERVAL = 1000;
 
   @Around("@annotation(com.f_lab.la_planete.core.kafka.aspect.KafkaRetry)")
-  public Object kafkaRetry(ProceedingJoinPoint joinPoint) throws KafkaRetryFailException {
+  public Object kafkaRetry(ProceedingJoinPoint joinPoint) {
     int attempt = 0;
 
     while(attempt < MAX_RETRY) {
@@ -33,11 +32,11 @@ public class KafkaRetryAspect {
         try {
           Thread.sleep(STOP_INTERVAL);
         } catch (InterruptedException ex) {
-          throw new KafkaRetryFailException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION, ex);
+          throw new ApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION, ex);
         }
       }
     }
 
-    throw new KafkaRetryFailException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION);
+    throw new ApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION);
   }
 }
