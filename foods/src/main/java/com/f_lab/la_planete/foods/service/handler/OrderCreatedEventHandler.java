@@ -3,7 +3,6 @@ package com.f_lab.la_planete.foods.service.handler;
 
 import com.f_lab.la_planete.core.events.OrderCreatedEvent;
 import com.f_lab.la_planete.core.events.OrderCreationFailedEvent;
-import com.f_lab.la_planete.core.exceptions.LockAcquisitionFailException;
 import com.f_lab.la_planete.core.kafka.aspect.KafkaRetry;
 import com.f_lab.la_planete.core.kafka.exceptions.NonRetryableException;
 import com.f_lab.la_planete.foods.exceptions.FoodApplicationKafkaRetryableException;
