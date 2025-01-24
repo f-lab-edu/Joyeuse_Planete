@@ -1,6 +1,6 @@
 package com.f_lab.joyeuse_planete.core.kafka.aspect;
 
-import com.f_lab.joyeuse_planete.core.exceptions.ApplicationException;
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,11 +32,11 @@ public class KafkaRetryAspect {
         try {
           Thread.sleep(STOP_INTERVAL);
         } catch (InterruptedException ex) {
-          throw new ApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION, ex);
+          throw new JoyeusePlaneteApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION, ex);
         }
       }
     }
 
-    throw new ApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION);
+    throw new JoyeusePlaneteApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION);
   }
 }
