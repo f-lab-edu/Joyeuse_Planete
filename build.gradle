@@ -7,7 +7,7 @@ plugins {
 bootJar.enabled = false
 jar.enabled = false
 
-group = 'com.f-lab.la_planete'
+group = 'com.f-lab.joyeuse_planete'
 version = '0.0.1-SNAPSHOT'
 
 subprojects {
@@ -15,7 +15,7 @@ subprojects {
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 
-	group = 'com.f-lab.la_planete'
+	group = 'com.f-lab.joyeuse_planete'
 
 	java {
 		toolchain {

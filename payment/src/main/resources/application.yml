@@ -16,7 +16,7 @@ spring:
       group-id: payments
       enable-auto-commit: false
       properties:
-        spring.json.trusted.packages: com.f-lab.la_planete.core.*
+        spring.json.trusted.packages: com.f-lab.joyeuse_planete.core.*
 
 payments:
   events:
