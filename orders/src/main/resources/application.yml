@@ -13,7 +13,7 @@ spring:
       group-id: orders
       enable-auto-commit: false
       properties:
-        spring.json.trusted.packages: com.f_lab.la_planete.core.*
+        spring.json.trusted.packages: com.f_lab.joyeuse_planete.core.*
       isolation-level: read_committed
 
 orders:
