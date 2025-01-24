@@ -1,6 +1,6 @@
 package com.f_lab.joyeuse_planete.core.aspect;
 
-import com.f_lab.joyeuse_planete.core.exceptions.ApplicationException;
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString;
 import jakarta.persistence.LockTimeoutException;
@@ -44,15 +44,15 @@ public class LockRetryAspect {
           Thread.sleep(stopInterval);
 
         } catch (InterruptedException ex) {
-          throw new ApplicationException(ErrorCode.LOCK_ACQUISITION_FAIL_EXCEPTION, e);
+          throw new JoyeusePlaneteApplicationException(ErrorCode.LOCK_ACQUISITION_FAIL_EXCEPTION, e);
         }
 
       } catch (Throwable e) {
         log.error("예상치 못한 오류가 발생하였습니다. 다시 시도해 주세요", e);
-        throw new ApplicationException(ErrorCode.LOCK_ACQUISITION_FAIL_EXCEPTION, e);
+        throw new JoyeusePlaneteApplicationException(ErrorCode.LOCK_ACQUISITION_FAIL_EXCEPTION, e);
       }
     }
 
-    throw new ApplicationException(ErrorCode.LOCK_ACQUISITION_FAIL_EXCEPTION);
+    throw new JoyeusePlaneteApplicationException(ErrorCode.LOCK_ACQUISITION_FAIL_EXCEPTION);
   }
 }

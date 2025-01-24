@@ -2,7 +2,7 @@ package com.f_lab.joyeuse_planete.foods.service;
 
 import com.f_lab.joyeuse_planete.core.domain.Food;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
-import com.f_lab.joyeuse_planete.core.exceptions.ApplicationException;
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +28,6 @@ public class FoodService {
 
   private Food findFoodWithLock(Long foodId) {
     return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId)
-        .orElseThrow(() -> new ApplicationException(ErrorCode.FOOD_NOT_EXIST_EXCEPTION));
+        .orElseThrow(() -> new JoyeusePlaneteApplicationException(ErrorCode.FOOD_NOT_EXIST_EXCEPTION));
   }
 }
