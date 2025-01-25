@@ -1,0 +1,22 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9094
+    listener:
+      ack-mode: manual
+    producer:
+      acks: all
+      enable:
+        idempotence: true
+      transaction-id-prefix: tx
+
+    consumer:
+      group-id: foods
+      enable-auto-commit: false
+      properties:
+        spring.json.trusted.packages: com.f_lab.joyeuse_planete.core.*
+        retries: false
+      isolation-level: read_committed
+
+kafka:
+  container:
+    concurrency: 3

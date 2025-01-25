@@ -1,39 +1,38 @@
 package com.f_lab.joyeuse_planete.core.kafka.config;
 
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
+import lombok.AccessLevel;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.transaction.KafkaTransactionManager;
 
-import java.util.HashMap;
 import java.util.Map;
 
+public abstract class KafkaProducerConfig {
 
-public class KafkaProducerConfig {
+  @Value("${spring.kafka.bootstrap-servers}")
+  protected String BOOTSTRAP_SERVERS;
 
-  public Map<String, Object> config(
-      String BOOTSTRAP_SERVERS,
-      String ACK,
-      String IDEMPOTENCE
-  ) {
-    Map<String, Object> config = new HashMap<>();
+  @Value("${spring.kafka.producer.ack:all}")
+  protected String ACK;
 
-    config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-    config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-    config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, IDEMPOTENCE);
-    config.put(ProducerConfig.ACKS_CONFIG, ACK);
+  @Value("${spring.kafka.producer.enable.idempotence:true}")
+  protected String IDEMPOTENCE;
 
-    return config;
+  abstract protected Map<String, Object> producerConfig();
+
+  public KafkaTemplate<String, Object> kafkaTemplate() {
+    return new KafkaTemplate<>(producerFactory());
   }
 
-  public ProducerFactory<String, Object> producerFactory(Map<String, Object> config) {
-    return new DefaultKafkaProducerFactory<>(config);
+  public KafkaTransactionManager<String, Object> kafkaTransactionManager() {
+    return new KafkaTransactionManager<>(producerFactory());
   }
 
-  public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
-    return new KafkaTemplate<>(producerFactory);
+  public ProducerFactory<String, Object> producerFactory() {
+    return new DefaultKafkaProducerFactory<>(producerConfig());
   }
 }
+
