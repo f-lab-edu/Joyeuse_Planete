@@ -4,94 +4,43 @@ package com.f_lab.joyeuse_planete.orders.config;
 
 import com.f_lab.joyeuse_planete.core.kafka.config.KafkaConsumerConfig;
 import com.f_lab.joyeuse_planete.core.kafka.config.KafkaProducerConfig;
+import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
+import jakarta.persistence.EntityManagerFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
-import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.transaction.KafkaTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Configuration
 public class KafkaConfig {
 
-  private final String BOOTSTRAP_SERVERS;
-  private final boolean AUTO_COMMIT;
-  private final int CONCURRENCY;
-  private final String TRUSTED_PACKAGES;
-  private final String ACK;
-  private final String IDEMPOTENCE;
-  private final int TOPIC_PARTITIONS;
-  private final String ORDER_CREATED_EVENT;
-  private final String ORDER_CREATION_FAILED_EVENT;
-
-
-  public KafkaConfig(
-      @Value("${spring.kafka.bootstrap-servers}") String BOOTSTRAP_SERVERS,
-      @Value("${spring.kafka.consumer.enable-auto-commit}") boolean AUTO_COMMIT,
-      @Value("${kafka.container.concurrency:3}") int CONCURRENCY,
-      @Value("${spring.kafka.consumer.properties.spring.json.trusted.packages}") String TRUSTED_PACKAGES,
-      @Value("${spring.kafka.producer.ack:all}") String ACK,
-      @Value("${spring.kafka.producer.enable.idempotence:true}") String IDEMPOTENCE,
-      @Value("${kafka.topic.partitions:3}") int TOPIC_PARTITIONS,
-      @Value("${orders.events.topic.name}") String ORDER_CREATED_EVENT,
-      @Value("${orders.events.topic.fail}") String ORDER_CREATION_FAILED_EVENT
-  ) {
-    this.BOOTSTRAP_SERVERS = BOOTSTRAP_SERVERS;
-    this.AUTO_COMMIT = AUTO_COMMIT;
-    this.CONCURRENCY = CONCURRENCY;
-    this.TRUSTED_PACKAGES = TRUSTED_PACKAGES;
-    this.ACK = ACK;
-    this.IDEMPOTENCE = IDEMPOTENCE;
-    this.TOPIC_PARTITIONS = TOPIC_PARTITIONS;
-    this.ORDER_CREATED_EVENT = ORDER_CREATED_EVENT;
-    this.ORDER_CREATION_FAILED_EVENT = ORDER_CREATION_FAILED_EVENT;
-  }
+  @Value("${kafka.topic.partitions:3}") int TOPIC_PARTITIONS;
+  @Value("${orders.events.topic.name}") String ORDER_CREATED_EVENT;
+  @Value("${orders.events.topic.fail}") String ORDER_CREATION_FAILED_EVENT;
 
   @Bean
-  public KafkaConsumerConfig kafkaConsumerConfig() {
-    return new KafkaConsumerConfig();
-  }
-
-  @Bean
-  public Map<String, Object> consumerConfig() {
-    return kafkaConsumerConfig().config(BOOTSTRAP_SERVERS, TRUSTED_PACKAGES, AUTO_COMMIT);
-  }
-
-  @Bean
-  public ConsumerFactory<String, Object> consumerFactory() {
-    return kafkaConsumerConfig().consumerFactory(consumerConfig());
-  }
-
-  @Bean
-  public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-    return kafkaConsumerConfig().kafkaListenerContainerFactory(CONCURRENCY, consumerFactory());
-  }
-
-  @Bean
-  public KafkaProducerConfig kafkaProducerConfig() {
-    return new KafkaProducerConfig();
-  }
-
-  @Bean
-  public Map<String, Object> producerConfig() {
-    return kafkaProducerConfig().config(BOOTSTRAP_SERVERS, ACK, IDEMPOTENCE);
-  }
-
-  @Bean
-  public ProducerFactory<String, Object> producerFactory() {
-    return kafkaProducerConfig().producerFactory(producerConfig());
-  }
-
-  @Bean
-  public KafkaTemplate<String, Object> kafkaTemplate() {
-    return kafkaProducerConfig().kafkaTemplate(producerFactory());
+  public KafkaService kafkaService(KafkaTemplate<String, Object> kafkaTemplate) {
+    return new KafkaService(kafkaTemplate);
   }
 
   @Bean
@@ -108,5 +57,90 @@ public class KafkaConfig {
         .name(ORDER_CREATION_FAILED_EVENT)
         .partitions(TOPIC_PARTITIONS)
         .build();
+  }
+
+//  @Bean
+//  public NewTopic
+
+  @Primary
+  @Bean(name = { "transactionManager", "jpaTransactionManager" })
+  public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
+    return new JpaTransactionManager(emf);
+  }
+
+  // KAFKA PRODUCER
+  @Configuration
+  static class CustomKafkaProducerConfig extends KafkaProducerConfig {
+
+    @Value("${spring.kafka.producer.transaction-id-prefix}")
+    private String TRANSACTION_ID;
+
+    @Override
+    public Map<String, Object> producerConfig() {
+      Map<String, Object> config = new HashMap<>();
+
+      config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+      config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+      config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+      config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, IDEMPOTENCE);
+      config.put(ProducerConfig.ACKS_CONFIG, ACK);
+      config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, TRANSACTION_ID);
+
+      return config;
+    }
+
+    @Bean
+    public KafkaTemplate<String, Object> kafkaTemplate() {
+      return super.kafkaTemplate();
+    }
+
+    @Bean("kafkaTransactionManager")
+    public KafkaTransactionManager<String, Object> kafkaTransactionManager() {
+      return super.kafkaTransactionManager();
+    }
+  }
+
+  // KAFKA CONSUMER
+  @Configuration
+  @RequiredArgsConstructor
+  static class CustomKafkaConsumerConfig extends KafkaConsumerConfig {
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Value("${kafka.dead-letter-topic.suffix:-dlt}")
+    private String DLT_SUFFIX;
+
+    @Override
+    protected Map<String, Object> consumerConfig() {
+      Map<String, Object> config = new HashMap<>();
+
+      config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+      config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+      config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+      config.put(JsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
+      config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, AUTO_COMMIT);
+      config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, ISOLATION_LEVEL);
+
+      return config;
+    }
+
+    @Override
+    protected DeadLetterPublishingRecoverer deadLetterPublishingRecoverer() {
+      return new DeadLetterPublishingRecoverer(kafkaTemplate,
+          (record, ex) -> new TopicPartition(record.topic() + DLT_SUFFIX, record.partition()));
+    }
+
+    @Override
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
+      ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+          new ConcurrentKafkaListenerContainerFactory<>();
+
+      factory.setConsumerFactory(consumerFactory());
+      factory.setConcurrency(CONCURRENCY);
+      factory.setCommonErrorHandler(defaultErrorHandler());
+
+      return factory;
+    }
   }
 }
