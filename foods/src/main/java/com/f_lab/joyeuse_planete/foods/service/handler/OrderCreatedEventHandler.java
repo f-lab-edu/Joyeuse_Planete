@@ -3,8 +3,8 @@ package com.f_lab.joyeuse_planete.foods.service.handler;
 
 import com.f_lab.joyeuse_planete.core.events.OrderCreatedEvent;
 import com.f_lab.joyeuse_planete.core.events.OrderCreationFailedEvent;
+import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
 import com.f_lab.joyeuse_planete.foods.service.FoodService;
-import com.f_lab.joyeuse_planete.foods.service.KafkaHandlerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ public class OrderCreatedEventHandler {
 
 
   private final FoodService foodService;
-  private final KafkaHandlerService kafkaHandlerService;
+  private final KafkaService kafkaService;
 
   @Value("${foods.events.topic.name}")
   private String foodReservationEvent;
@@ -35,32 +35,26 @@ public class OrderCreatedEventHandler {
   private String foodProcessFailEvent;
 
   @KafkaHandler
-  @Transactional(value = "jpaTransactionManager")
+  @Transactional("transactionManager")
   public void reserveFoodAfterOrderCreatedEvent(@Payload OrderCreatedEvent orderCreatedEvent) {
     try {
       foodService.reserve(orderCreatedEvent.getFoodId(), orderCreatedEvent.getQuantity());
     } catch(Exception e) {
       log.error("오류가 발생하였습니다. message = {}", e.getMessage(), e);
-      kafkaHandlerService.sendKafkaFailureEvent(
-          foodProcessFailEvent,
-          OrderCreationFailedEvent.toEvent(orderCreatedEvent)
-      );
+      kafkaService.sendKafkaEvent(foodProcessFailEvent, OrderCreationFailedEvent.toEvent(orderCreatedEvent));
 
       throw e;
     }
 
-    sendKafkaEvent(orderCreatedEvent);
+    sendKafkaOrderCreatedEvent(orderCreatedEvent);
   }
 
-  private void sendKafkaEvent(OrderCreatedEvent orderCreatedEvent) {
+  private void sendKafkaOrderCreatedEvent(OrderCreatedEvent orderCreatedEvent) {
     try {
-      kafkaHandlerService.sendKafkaEvent(foodReservationEvent, orderCreatedEvent);
+      kafkaService.sendKafkaEvent(foodReservationEvent, orderCreatedEvent);
     } catch (Exception e) {
       log.error("오류가 발생하였습니다. message = {}", e.getMessage(), e);
-      kafkaHandlerService.sendKafkaFailureEvent(
-          foodProcessFailEvent,
-          OrderCreationFailedEvent.toEvent(orderCreatedEvent)
-      );
+      kafkaService.sendKafkaEvent(foodProcessFailEvent, OrderCreationFailedEvent.toEvent(orderCreatedEvent));
 
       throw e;
     }
