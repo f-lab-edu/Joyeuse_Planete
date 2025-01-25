@@ -1,46 +1,59 @@
 package com.f_lab.joyeuse_planete.core.kafka.config;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import com.f_lab.joyeuse_planete.core.kafka.exceptions.NonRetryableException;
+import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.util.backoff.FixedBackOff;
 
-import java.util.HashMap;
 import java.util.Map;
 
+public abstract class KafkaConsumerConfig {
 
-public class KafkaConsumerConfig {
+  @Value("${spring.kafka.bootstrap-servers}")
+  protected String BOOTSTRAP_SERVERS;
 
-  public Map<String, Object> config(String BOOTSTRAP_SERVERS, String TRUSTED_PACKAGES, boolean AUTO_COMMIT
-  ) {
-    Map<String, Object> config = new HashMap<>();
+  @Value("${spring.kafka.consumer.enable-auto-commit}")
+  protected boolean AUTO_COMMIT;
 
-    config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-    config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-    config.put(JsonDeserializer.TRUSTED_PACKAGES, TRUSTED_PACKAGES);
-    config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, AUTO_COMMIT);
-    config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+  @Value("${kafka.container.concurrency}")
+  protected int CONCURRENCY;
 
-    return config;
+  @Value("${spring.kafka.consumer.properties.spring.json.trusted.packages}")
+  protected String TRUSTED_PACKAGES;
+
+  @Value("${spring.kafka.consumer.isolation-level}")
+  protected String ISOLATION_LEVEL;
+
+
+  abstract public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory();
+
+  abstract protected Map<String, Object> consumerConfig();
+
+  protected DeadLetterPublishingRecoverer deadLetterPublishingRecoverer() {
+    return null;
   }
 
-  public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
-      int CONCURRENCY,
-      ConsumerFactory<String, Object> consumerFactory
-  ) {
-    ConcurrentKafkaListenerContainerFactory<String, Object> factory =
-        new ConcurrentKafkaListenerContainerFactory<>();
-
-    factory.setConsumerFactory(consumerFactory);
-    factory.setConcurrency(CONCURRENCY);
-
-    return factory;
+  public FixedBackOff defaultBackOffStrategy() {
+    return new FixedBackOff(1500L, 10);
   }
 
-  public ConsumerFactory<String, Object> consumerFactory(Map<String, Object> config) {
-    return new DefaultKafkaConsumerFactory<>(config);
+  public DefaultErrorHandler defaultErrorHandler() {
+    DefaultErrorHandler errorHandler = new DefaultErrorHandler(
+        deadLetterPublishingRecoverer(),
+        defaultBackOffStrategy());
+
+    errorHandler.addNotRetryableExceptions(NonRetryableException.class);
+    errorHandler.addRetryableExceptions(RetryableException.class);
+
+    return errorHandler;
+  }
+
+  public ConsumerFactory<String, Object> consumerFactory() {
+    return new DefaultKafkaConsumerFactory<>(consumerConfig());
   }
 }
