@@ -3,24 +3,20 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: localhost:9094
     producer:
-      acks: all
-      enable:
-        idempotence: true
+      transaction-id-prefix: orders-tx
 
     consumer:
       group-id: orders
-      enable-auto-commit: false
-      properties:
-        spring.json.trusted.packages: com.f_lab.joyeuse_planete.core.*
-      isolation-level: read_committed
 
 orders:
   events:
     topic:
       name: orders.order-created-event
       fail: orders.orders-creation-failed-event
+
+  dead-letter-topic:
+    name: orders.dead-letter-topic
 
 kafka:
   topic:
@@ -34,7 +30,8 @@ logging:
   level:
     org:
       apache:
-        kafka: error
+#        kafka: TRACE
         orm:
           jpa:
-            JpaTransactionManager: trace
+            JpaTransactionManager: TRACE
+      hibernate.sql: TRACE

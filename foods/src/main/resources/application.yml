@@ -4,18 +4,25 @@ spring:
   application:
     name: foods
 
-  datasource:
-    url: jdbc:h2:tcp://localhost/~/Desktop/software/h2/h2-datafile/kafka
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/Desktop/software/h2/h2-datafile/kafka
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: validate
+#    database-platform: org.hibernate.dialect.H2Dialect
+#    hibernate:
+#      ddl-auto: validate
     properties:
       hibernate:
         show_sql: true
+
+  kafka:
+    producer:
+      transaction-id-prefix: foods-tx
+
+    consumer:
+      group-id: foods
 
 orders:
   events:
@@ -28,10 +35,8 @@ foods:
       name: foods.order-created-event
       fail: foods.foods-reservation-fail-event
 
-payment:
-  events:
-    topic:
-      name: payments.payment-process-command
+  dead-letter-topic:
+    name: foods.dead-letter-topic
 
 kafka:
   topic:
@@ -40,9 +45,14 @@ kafka:
   container:
     concurrency: 3
 
+non-retryable-errors:
+  - "상품이 존재하지 않습니다."
+  - "상품의 수량이 부족합니다"
+  - "현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요 (락)"
+
 logging:
   level:
     org.hibernate.sql: TRACE
-
-#    org.springframework.kafka: DEBUG
-#    org.apache.kafka: DEBUG
+#
+#    org.springframework.kafka: TRACE
+#    org.apache.kafka: TRACE
