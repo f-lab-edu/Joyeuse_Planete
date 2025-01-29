@@ -55,7 +55,7 @@ public abstract class KafkaConsumerConfig {
       LogUtil.exception("KafkaConsumerConfig.defaultDeadLetterTopicStrategy", ex);
 
       record.headers().add(KafkaHeaders.EXCEPTION_FQCN, ex.getClass().getName().getBytes());
-      record.headers().add(KafkaHeaders.EXCEPTION_MESSAGE, ex.getMessage().getBytes());
+      record.headers().add(KafkaHeaders.EXCEPTION_MESSAGE, ((ex.getMessage() != null) ? ex.getMessage() : "null").getBytes());
       record.headers().add(KafkaHeaders.ORIGINAL_TOPIC, record.topic().getBytes());
 
       return new TopicPartition(deadLetterTopic, -1);
