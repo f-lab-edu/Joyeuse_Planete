@@ -1,6 +1,8 @@
 package com.f_lab.joyeuse_planete.core.domain;
 
 import com.f_lab.joyeuse_planete.core.domain.base.BaseEntity;
+import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -51,7 +53,7 @@ public class Food extends BaseEntity {
 
   public void minusQuantity(int quantity) {
     if (totalQuantity - quantity < 0)
-      throw new IllegalStateException("수량이 부족합니다. 따라서 구매가 진행될 수 없습니다.");
+      throw new JoyeusePlaneteApplicationException(ErrorCode.FOOD_NOT_ENOUGH_STOCK);
 
     totalQuantity -= quantity;
   }
