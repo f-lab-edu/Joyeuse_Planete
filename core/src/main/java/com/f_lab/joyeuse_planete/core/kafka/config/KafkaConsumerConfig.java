@@ -4,6 +4,7 @@ import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationExcept
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.NonRetryableException;
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
 import com.f_lab.joyeuse_planete.core.kafka.util.ExceptionUtil;
+import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
@@ -17,8 +18,6 @@ import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.util.backoff.BackOff;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -40,6 +39,9 @@ public abstract class KafkaConsumerConfig {
   @Value("${spring.kafka.consumer.isolation-level:read_committed}")
   protected String ISOLATION_LEVEL;
 
+  @Value("${retry.attempts:5}")
+  private int RETRY_ATTEMPTS;
+
   abstract public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory();
   abstract protected Map<String, Object> consumerConfig();
   abstract protected String deadLetterTopicName();
@@ -49,8 +51,12 @@ public abstract class KafkaConsumerConfig {
   protected BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition> defaultDeadLetterTopicStrategy(String deadLetterTopic) {
     return (record, ex) -> {
       ex = ExceptionUtil.unwrap(ex);
-      record.headers().add(KafkaHeaders.EXCEPTION_MESSAGE, ex.getMessage().getBytes(StandardCharsets.UTF_8));
-      record.headers().add(KafkaHeaders.ORIGINAL_TOPIC, record.topic().getBytes(StandardCharsets.UTF_8));
+
+      LogUtil.exception("KafkaConsumerConfig.defaultDeadLetterTopicStrategy", ex);
+
+      record.headers().add(KafkaHeaders.EXCEPTION_FQCN, ex.getClass().getName().getBytes());
+      record.headers().add(KafkaHeaders.EXCEPTION_MESSAGE, ex.getMessage().getBytes());
+      record.headers().add(KafkaHeaders.ORIGINAL_TOPIC, record.topic().getBytes());
 
       return new TopicPartition(deadLetterTopic, -1);
     };
@@ -61,7 +67,7 @@ public abstract class KafkaConsumerConfig {
   }
 
   public BackOff defaultBackOffStrategy() {
-    return new ExponentialBackOffWithMaxRetries(5);
+    return new ExponentialBackOffWithMaxRetries(RETRY_ATTEMPTS);
   }
 
   public DefaultErrorHandler defaultErrorHandler() {
