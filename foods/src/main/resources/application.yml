@@ -33,10 +33,15 @@ foods:
   events:
     topic:
       name: foods.order-created-event
-      fail: foods.foods-reservation-fail-event
+      fail: foods.order-creation-failed-event
 
   dead-letter-topic:
     name: foods.dead-letter-topic
+
+payments:
+  events:
+    topic:
+      fail: payments.order-creation-failed-event
 
 kafka:
   topic:
@@ -44,11 +49,6 @@ kafka:
 
   container:
     concurrency: 3
-
-non-retryable-errors:
-  - "상품이 존재하지 않습니다."
-  - "상품의 수량이 부족합니다"
-  - "현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요 (락)"
 
 logging:
   level:
