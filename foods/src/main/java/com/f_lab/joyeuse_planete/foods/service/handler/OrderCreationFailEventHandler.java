@@ -1,7 +1,5 @@
 package com.f_lab.joyeuse_planete.foods.service.handler;
 
-
-import com.f_lab.joyeuse_planete.core.events.OrderCreatedEvent;
 import com.f_lab.joyeuse_planete.core.events.OrderCreationFailedEvent;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
@@ -14,47 +12,38 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Component
 @RequiredArgsConstructor
 @Transactional("transactionManager")
 @KafkaListener(
-    topics = { "${orders.events.topic.name}" },
+    topics = { "${payments.events.topic.fail}" },
     groupId = "${spring.kafka.consumer.group-id}"
 )
-public class OrderCreatedEventHandler {
-
+public class OrderCreationFailEventHandler {
 
   private final FoodService foodService;
   private final KafkaService kafkaService;
-
-  @Value("${foods.events.topic.name}")
-  private String foodReservationEvent;
 
   @Value("${foods.events.topic.fail}")
   private String foodProcessFailEvent;
 
   @KafkaHandler
-  public void reserveFoodAfterOrderCreatedEvent(@Payload OrderCreatedEvent orderCreatedEvent) {
+  public void releaseFoodReservation(@Payload OrderCreationFailedEvent orderCreationFailedEvent) {
     try {
-      foodService.reserve(orderCreatedEvent.getFoodId(), orderCreatedEvent.getQuantity());
-    } catch(Exception e) {
-      LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent", e);
-      kafkaService.sendKafkaEvent(foodProcessFailEvent, OrderCreationFailedEvent.toEvent(orderCreatedEvent));
-
+      foodService.release(orderCreationFailedEvent.getFoodId(), orderCreationFailedEvent.getQuantity());
+    } catch (Exception e) {
+      LogUtil.exception("OrderCreationFailEventHandler.releaseFoodReservation", e);
       throw e;
     }
 
-    sendKafkaOrderCreatedEvent(orderCreatedEvent);
+    sendKafkaOrderCreationFailEvent(orderCreationFailedEvent);
   }
 
-  private void sendKafkaOrderCreatedEvent(OrderCreatedEvent orderCreatedEvent) {
+  private void sendKafkaOrderCreationFailEvent(OrderCreationFailedEvent orderCreationFailedEvent) {
     try {
-      kafkaService.sendKafkaEvent(foodReservationEvent, orderCreatedEvent);
+      kafkaService.sendKafkaEvent(foodProcessFailEvent, orderCreationFailedEvent);
     } catch (Exception e) {
       LogUtil.exception("OrderCreatedEventHandler.sendKafkaOrderCreatedEvent", e);
-      kafkaService.sendKafkaEvent(foodProcessFailEvent, OrderCreationFailedEvent.toEvent(orderCreatedEvent));
-
       throw e;
     }
   }
