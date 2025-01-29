@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class OrderCreatedEvent {
 
+  private Long orderId;
+
   private Long foodId;
 
   private String foodName;
