@@ -4,6 +4,7 @@ package com.f_lab.joyeuse_planete.foods.service.handler;
 import com.f_lab.joyeuse_planete.core.events.OrderCreatedEvent;
 import com.f_lab.joyeuse_planete.core.events.OrderCreationFailedEvent;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
+import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.foods.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class OrderCreatedEventHandler {
     try {
       foodService.reserve(orderCreatedEvent.getFoodId(), orderCreatedEvent.getQuantity());
     } catch(Exception e) {
-      log.error("오류가 발생하였습니다. message = {}", e.getMessage(), e);
+      LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent", e);
       kafkaService.sendKafkaEvent(foodProcessFailEvent, OrderCreationFailedEvent.toEvent(orderCreatedEvent));
 
       throw e;
@@ -53,7 +54,7 @@ public class OrderCreatedEventHandler {
     try {
       kafkaService.sendKafkaEvent(foodReservationEvent, orderCreatedEvent);
     } catch (Exception e) {
-      log.error("오류가 발생하였습니다. message = {}", e.getMessage(), e);
+      LogUtil.exception("OrderCreatedEventHandler.sendKafkaOrderCreatedEvent", e);
       kafkaService.sendKafkaEvent(foodProcessFailEvent, OrderCreationFailedEvent.toEvent(orderCreatedEvent));
 
       throw e;
