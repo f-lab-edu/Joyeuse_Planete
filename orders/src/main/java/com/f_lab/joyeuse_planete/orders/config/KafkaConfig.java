@@ -34,9 +34,14 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-  @Value("${kafka.topic.partitions:3}") int TOPIC_PARTITIONS;
-  @Value("${orders.events.topic.name}") String ORDER_CREATED_EVENT;
-  @Value("${orders.events.topic.fail}") String ORDER_CREATION_FAILED_EVENT;
+  @Value("${kafka.topic.partitions:3}")
+  int TOPIC_PARTITIONS;
+
+  @Value("${orders.events.topic.name}")
+  String ORDER_CREATED_EVENT;
+
+  @Value("${orders.events.topic.fail}")
+  String ORDER_CREATION_FAILED_EVENT;
 
   @Bean
   public KafkaService kafkaService(KafkaTemplate<String, Object> kafkaTemplate) {
@@ -59,8 +64,6 @@ public class KafkaConfig {
         .build();
   }
 
-//  @Bean
-//  public NewTopic
 
   @Primary
   @Bean(name = { "transactionManager", "jpaTransactionManager" })
@@ -107,8 +110,8 @@ public class KafkaConfig {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${kafka.dead-letter-topic.suffix:-dlt}")
-    private String DLT_SUFFIX;
+    @Value("${orders.dead-letter-topic.name}")
+    private String DEAD_LETTER_TOPIC;
 
     @Override
     protected Map<String, Object> consumerConfig() {
@@ -125,9 +128,13 @@ public class KafkaConfig {
     }
 
     @Override
+    protected String deadLetterTopicName() {
+      return DEAD_LETTER_TOPIC;
+    }
+
+    @Override
     protected DeadLetterPublishingRecoverer deadLetterPublishingRecoverer() {
-      return new DeadLetterPublishingRecoverer(kafkaTemplate,
-          (record, ex) -> new TopicPartition(record.topic() + DLT_SUFFIX, record.partition()));
+      return new DeadLetterPublishingRecoverer(kafkaTemplate, deadLetterTopicStrategy());
     }
 
     @Override
