@@ -15,11 +15,16 @@ spring:
 payments:
   events:
     topic:
-      name: payments.order-created-event
+      name: payments.order-creation-event
       fail: payments.order-creation-failed-event
 
   dead-letter-topic:
     name: payments.dead-letter-topic
+
+foods:
+  events:
+    topic:
+      name: foods.order-created-event
 
 kafka:
   topic:
