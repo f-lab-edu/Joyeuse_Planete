@@ -2,6 +2,7 @@ package com.f_lab.joyeuse_planete.core.aspect;
 
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
+import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString;
 import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PessimisticLockException;
@@ -30,9 +31,7 @@ public class LockRetryAspect {
       try {
         return joinPoint.proceed();
       } catch (PessimisticLockException | LockTimeoutException e) {
-        attempts++;
-        log.warn("시도 횟수={}, 다시 메서드={} 락을 얻기를 시도합니다",
-            attempts, joinPoint.getSignature());
+        LogUtil.retry(++attempts, joinPoint.getSignature().toString());
 
         // 재시도 전 잠시 멈추고 다시 시작
         // 각 시도 마다 WAIT_INTERVAL 이 MULTIPLIER 에 상응하는 값을 지수적으로 늘어납니다 (backoff)
@@ -48,7 +47,7 @@ public class LockRetryAspect {
         }
 
       } catch (Throwable e) {
-        log.error("예상치 못한 오류가 발생하였습니다. 다시 시도해 주세요", e);
+        LogUtil.exception(joinPoint.getSignature().toString(), e);
         throw new JoyeusePlaneteApplicationException(ErrorCode.LOCK_ACQUISITION_FAIL_EXCEPTION, e);
       }
     }
