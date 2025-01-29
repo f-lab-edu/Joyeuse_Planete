@@ -47,7 +47,7 @@ public class KafkaConfig {
   }
 
   @Bean
-  public NewTopic foodsReservationFailEvent() {
+  public NewTopic paymentProcessedEvent() {
     return TopicBuilder
         .name(PAYMENT_PROCESSED_EVENT)
         .partitions(TOPIC_PARTITIONS)
@@ -55,7 +55,7 @@ public class KafkaConfig {
   }
 
   @Bean
-  public NewTopic foodsFoodsReservationProcessedEvent() {
+  public NewTopic paymentProcessingFailEvent() {
     return TopicBuilder
         .name(PAYMENT_PROCESS_FAILED_EVENT)
         .partitions(TOPIC_PARTITIONS)
