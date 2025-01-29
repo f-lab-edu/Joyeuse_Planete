@@ -2,6 +2,7 @@ package com.f_lab.joyeuse_planete.core.domain;
 
 
 import com.f_lab.joyeuse_planete.core.domain.base.BaseEntity;
+import com.f_lab.joyeuse_planete.core.domain.base.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,13 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -25,10 +23,11 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Builder
 @Getter @Setter
+@ToString(exclude = { "food", "payment", "voucher" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "orders")
-public class Order extends BaseEntity {
+public class Order extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -52,6 +51,8 @@ public class Order extends BaseEntity {
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "voucher_id")
   private Voucher voucher;
+
+  private LocalDateTime collectionTime;
 
   public BigDecimal calculateTotalCost() {
     return (voucher != null)
