@@ -19,6 +19,11 @@ orders:
   dead-letter-topic:
     name: orders.dead-letter-topic
 
+foods:
+  events:
+    topic:
+      fail: foods.order-creation-failed-event
+
 kafka:
   topic:
     partitions: 3

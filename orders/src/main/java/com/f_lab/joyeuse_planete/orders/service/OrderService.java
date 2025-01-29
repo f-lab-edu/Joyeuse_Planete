@@ -3,6 +3,9 @@ package com.f_lab.joyeuse_planete.orders.service;
 
 
 import com.f_lab.joyeuse_planete.core.domain.Order;
+import com.f_lab.joyeuse_planete.core.domain.OrderStatus;
+import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.orders.domain.OrderSearchCondition;
@@ -18,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +37,12 @@ public class OrderService {
 
   public Page<OrderDTO> findOrders(OrderSearchCondition condition, Pageable pageable) {
     return orderRepository.findOrders(condition, pageable);
+  }
+
+  public void updateOrderStatusToCancel(Long orderId) {
+    Order order = findOrderById(orderId);
+    order.setStatus(OrderStatus.FAIL);
+    orderRepository.save(order);
   }
 
   @Transactional
@@ -56,6 +67,11 @@ public class OrderService {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private Order findOrderById(Long orderId) {
+    return orderRepository.findById(orderId)
+        .orElseThrow(() -> new JoyeusePlaneteApplicationException(ErrorCode.ORDER_NOT_EXIST_EXCEPTION));
   }
 }
 
