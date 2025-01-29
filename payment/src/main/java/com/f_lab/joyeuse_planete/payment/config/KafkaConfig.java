@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,8 +107,8 @@ public class KafkaConfig {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${kafka.dead-letter-topic.suffix:-dlt}")
-    private String DLT_SUFFIX;
+    @Value("${payments.dead-letter-topic.name}")
+    private String DEAD_LETTER_TOPIC;
 
     @Override
     protected Map<String, Object> consumerConfig() {
@@ -126,9 +125,13 @@ public class KafkaConfig {
     }
 
     @Override
+    protected String deadLetterTopicName() {
+      return DEAD_LETTER_TOPIC;
+    }
+
+    @Override
     protected DeadLetterPublishingRecoverer deadLetterPublishingRecoverer() {
-      return new DeadLetterPublishingRecoverer(kafkaTemplate,
-          (record, ex) -> new TopicPartition(record.topic() + DLT_SUFFIX, record.partition()));
+      return new DeadLetterPublishingRecoverer(kafkaTemplate, deadLetterTopicStrategy());
     }
 
     @Override

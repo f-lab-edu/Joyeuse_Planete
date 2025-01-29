@@ -6,12 +6,15 @@ package com.f_lab.joyeuse_planete.foods.config;
 import com.f_lab.joyeuse_planete.core.kafka.config.KafkaConsumerConfig;
 import com.f_lab.joyeuse_planete.core.kafka.config.KafkaProducerConfig;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
+import com.f_lab.joyeuse_planete.core.kafka.util.ExceptionUtil;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -24,13 +27,17 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 @Slf4j
 @Configuration
@@ -98,10 +105,10 @@ public class KafkaConfig {
   @RequiredArgsConstructor
   static class CustomKafkaConsumerConfig extends KafkaConsumerConfig {
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    @Value("${foods.dead-letter-topic.name}")
+    private String DEAD_LETTER_TOPIC;
 
-    @Value("${kafka.dead-letter-topic.suffix:-dlt}")
-    private String DLT_SUFFIX;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     protected Map<String, Object> consumerConfig() {
@@ -118,9 +125,13 @@ public class KafkaConfig {
     }
 
     @Override
+    protected String deadLetterTopicName() {
+      return DEAD_LETTER_TOPIC;
+    }
+
+    @Override
     protected DeadLetterPublishingRecoverer deadLetterPublishingRecoverer() {
-      return new DeadLetterPublishingRecoverer(kafkaTemplate,
-          (record, ex) -> new TopicPartition(record.topic() + DLT_SUFFIX, record.partition()));
+      return new DeadLetterPublishingRecoverer(kafkaTemplate, deadLetterTopicStrategy());
     }
 
     @Override
