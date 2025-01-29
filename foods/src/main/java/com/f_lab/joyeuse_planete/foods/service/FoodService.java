@@ -18,7 +18,6 @@ public class FoodService {
 
   private final FoodRepository foodRepository;
 
-
   @Transactional
   public void reserve(Long foodId, int quantity) {
     Food food = findFoodWithLock(foodId);
