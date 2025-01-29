@@ -4,6 +4,7 @@ package com.f_lab.joyeuse_planete.orders.service;
 
 import com.f_lab.joyeuse_planete.core.domain.Order;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
+import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.orders.domain.OrderSearchCondition;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderDTO;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
@@ -39,8 +40,8 @@ public class OrderService {
     try {
       orderRepository.save(order);
     } catch (Exception e) {
-      log.error("오류가 발생하였습니다. message = {}", e.getMessage(), e);
-
+      LogUtil.exception("OrderService.createFoodOrder", e);
+      throw e;
     }
 
     sendKafkaOrderCreatedEvent(request, order);
