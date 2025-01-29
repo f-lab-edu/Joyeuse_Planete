@@ -4,6 +4,7 @@ import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationExcept
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.KafkaException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -26,7 +27,7 @@ public class KafkaRetryAspect {
     while (attempts < MAX_RETRY) {
       try {
         return joinPoint.proceed();
-      } catch (Throwable e) {
+      } catch (KafkaException e) {
         LogUtil.retry(++attempts, joinPoint.getSignature().toString());
 
         try {
@@ -35,9 +36,13 @@ public class KafkaRetryAspect {
           LogUtil.exception(joinPoint.getSignature().toString(), ex);
           throw new JoyeusePlaneteApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION, ex);
         }
+      } catch (Throwable e) {
+        LogUtil.exception(joinPoint.getSignature().toString(), e);
+        throw new JoyeusePlaneteApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION, e);
       }
     }
 
     throw new JoyeusePlaneteApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION);
   }
+
 }
