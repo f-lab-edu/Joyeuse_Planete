@@ -1,5 +1,6 @@
 package com.f_lab.joyeuse_planete.core.domain;
 
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ class FoodTest {
 
     // then
     assertThatThrownBy(() -> food.minusQuantity(11))
-        .isInstanceOf(IllegalStateException.class);
+        .isInstanceOf(JoyeusePlaneteApplicationException.class);
   }
 
   private Food createFood(BigDecimal price, int quantity) {
