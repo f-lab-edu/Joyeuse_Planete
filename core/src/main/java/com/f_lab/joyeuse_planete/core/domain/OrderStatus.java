@@ -11,6 +11,7 @@ public enum OrderStatus {
   MEMBER_CANCELED("승인된 결제가 사용자에 의해서 취소된 상태입니다."),
   STORE_CANCELED("승인된 결제가 가게에 의해서 취소된 상태입니다."),
   EXPIRED("주문의 유효 시간 5분이 지나 거래가 취소된 상태입니다."),
+  FAIL("주문이 실패하였습니다.")
   ;
 
   private final String description;
