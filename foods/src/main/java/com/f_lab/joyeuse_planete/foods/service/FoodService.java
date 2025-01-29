@@ -25,6 +25,13 @@ public class FoodService {
     foodRepository.save(food);
   }
 
+  @Transactional
+  public void release(Long foodId, int quantity) {
+    Food food = findFoodWithLock(foodId);
+    food.plusQuantity(quantity);
+    foodRepository.save(food);
+  }
+
   private Food findFoodWithLock(Long foodId) {
     return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId)
         .orElseThrow(() -> new JoyeusePlaneteApplicationException(ErrorCode.FOOD_NOT_EXIST_EXCEPTION));
