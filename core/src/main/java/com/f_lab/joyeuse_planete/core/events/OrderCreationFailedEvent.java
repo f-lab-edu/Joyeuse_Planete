@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderCreationFailedEvent {
 
+  private Long orderId;
+
   private Long foodId;
 
   private Long storeId;
@@ -20,6 +22,7 @@ public class OrderCreationFailedEvent {
 
   public static OrderCreationFailedEvent toEvent(OrderCreatedEvent orderCreatedEvent) {
     return OrderCreationFailedEvent.builder()
+        .orderId(orderCreatedEvent.getOrderId())
         .foodId(orderCreatedEvent.getFoodId())
         .storeId(orderCreatedEvent.getStoreId())
         .quantity(orderCreatedEvent.getQuantity())

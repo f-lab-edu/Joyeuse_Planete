@@ -57,4 +57,11 @@ public class Food extends BaseEntity {
 
     totalQuantity -= quantity;
   }
+
+  public void plusQuantity(int quantity) {
+    if (totalQuantity > Integer.MAX_VALUE - quantity)
+      throw new JoyeusePlaneteApplicationException(ErrorCode.FOOD_QUANTITY_OVERFLOW);
+
+    totalQuantity += quantity;
+  }
 }
