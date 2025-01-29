@@ -23,7 +23,7 @@ public class ExceptionUtil {
     return e;
   }
 
-  public static boolean checkRequeue(String message) {
-    return !nonRequeueList.contains(message);
+  public static boolean noRequeue(String message) {
+    return nonRequeueList.contains(message);
   }
 }
