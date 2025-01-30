@@ -7,6 +7,7 @@ import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationExcept
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
 import com.f_lab.joyeuse_planete.core.kafka.util.ExceptionUtil;
+import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
@@ -48,6 +49,7 @@ public class OrderCreatedDeadLetterTopicHandler {
         Objects.isNull(originalTopic)    ||
         ExceptionUtil.noRequeue(exceptionMessage)
     ) {
+      LogUtil.deadLetterMissingFormats(exceptionName, exceptionMessage, originalTopic);
       return;
     }
 
