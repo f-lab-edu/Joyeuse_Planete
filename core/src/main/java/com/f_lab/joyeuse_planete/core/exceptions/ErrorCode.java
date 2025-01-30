@@ -18,7 +18,7 @@ public enum ErrorCode {
 
   // KAFKA
   KAFKA_RETRY_FAIL_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 503),
-  KAFKA_DEAD_LETTER_TOPIC_FAIL_EXCEPTION("데드레터토픽을 다루는데 실패하였습니다.", 500),
+  KAFKA_DEAD_LETTER_TOPIC_FAIL_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 500),
   ;
 
   private String description;
