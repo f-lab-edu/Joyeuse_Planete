@@ -91,7 +91,7 @@ class LockRetryAspectTest {
     // then
     assertThatThrownBy(() -> foodTestService.findFood(foodId))
         .isInstanceOf(RuntimeException.class)
-        .hasMessage("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요 (락)");
+        .hasMessage("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요.");
   }
 
   private Food createFood(Long foodId) {
