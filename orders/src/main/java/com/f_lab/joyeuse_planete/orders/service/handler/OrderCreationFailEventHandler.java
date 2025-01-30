@@ -1,5 +1,6 @@
 package com.f_lab.joyeuse_planete.orders.service.handler;
 
+import com.f_lab.joyeuse_planete.core.domain.OrderStatus;
 import com.f_lab.joyeuse_planete.core.events.OrderCreationFailedEvent;
 import com.f_lab.joyeuse_planete.orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,6 @@ public class OrderCreationFailEventHandler {
 
   @KafkaHandler
   public void processOrderCreationFailEvent(@Payload OrderCreationFailedEvent orderCreationFailedEvent) {
-    orderService.updateOrderStatusToCancel(orderCreationFailedEvent.getOrderId());
-
-
+    orderService.updateOrderStatus(orderCreationFailedEvent.getOrderId(), OrderStatus.FAIL);
   }
 }
