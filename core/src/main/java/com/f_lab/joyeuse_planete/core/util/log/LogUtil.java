@@ -11,4 +11,8 @@ public class LogUtil {
   public static void retry(int attempts, String method) {
     log.warn("시도 횟수={}, 다시 메서드={} 락을 얻기를 시도합니다", attempts, method);
   }
+
+  public static void deadLetterMissingFormats(String exceptionName, String exceptionMessage, String originalTopic) {
+    log.warn("DEAD LETTER TOPIC 에서 오류가 발생하였습니다. topic = {} name = {} message = {}", originalTopic, exceptionName, exceptionMessage);
+  }
 }
