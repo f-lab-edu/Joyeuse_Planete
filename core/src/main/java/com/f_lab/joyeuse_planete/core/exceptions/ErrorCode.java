@@ -14,7 +14,7 @@ public enum ErrorCode {
   ORDER_NOT_EXIST_EXCEPTION("존재하지 않는 주문입니다.", 406),
 
   // LOCK
-  LOCK_ACQUISITION_FAIL_EXCEPTION("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요 (락)",503),
+  LOCK_ACQUISITION_FAIL_EXCEPTION("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요.",503),
 
   // KAFKA
   KAFKA_RETRY_FAIL_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 503),
