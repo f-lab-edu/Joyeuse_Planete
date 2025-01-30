@@ -3,6 +3,7 @@ server:
 
 spring:
   kafka:
+    bootstrap-servers: localhost:9092
     producer:
       transaction-id-prefix: orders-tx
 

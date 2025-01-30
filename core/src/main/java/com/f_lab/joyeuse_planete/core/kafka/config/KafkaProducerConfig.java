@@ -12,7 +12,7 @@ import java.util.Map;
 
 public abstract class KafkaProducerConfig {
 
-  @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
+  @Value("${spring.kafka.bootstrap-servers}")
   protected String BOOTSTRAP_SERVERS;
 
   @Value("${spring.kafka.producer.ack:all}")

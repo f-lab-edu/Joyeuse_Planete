@@ -4,20 +4,13 @@ spring:
   application:
     name: foods
 
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/Desktop/software/h2/h2-datafile/kafka
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
   jpa:
-#    database-platform: org.hibernate.dialect.H2Dialect
-#    hibernate:
-#      ddl-auto: validate
     properties:
       hibernate:
         show_sql: true
 
   kafka:
+    bootstrap-servers: localhost:9092
     producer:
       transaction-id-prefix: foods-tx
 
