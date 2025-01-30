@@ -5,18 +5,12 @@ spring:
     name: payments
 
   kafka:
+    bootstrap-servers: localhost:9092
     producer:
-      bootstrap-servers: localhost:9092
-      acks: all
-      enable:
-        idempotence: true
+      transaction-id-prefix: payments-tx
 
     consumer:
-      bootstrap-servers: localhost:9092
       group-id: payments
-      enable-auto-commit: false
-      properties:
-        spring.json.trusted.packages: com.f-lab.joyeuse_planete.core.*
 
 payments:
   events:

@@ -25,7 +25,7 @@ import java.util.function.BiFunction;
 @Slf4j
 public abstract class KafkaConsumerConfig {
 
-  @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
+  @Value("${spring.kafka.bootstrap-servers}")
   protected String BOOTSTRAP_SERVERS;
 
   @Value("${spring.kafka.consumer.enable-auto-commit:false}")
