@@ -39,9 +39,10 @@ public class OrderService {
     return orderRepository.findOrders(condition, pageable);
   }
 
-  public void updateOrderStatusToCancel(Long orderId) {
+  @Transactional
+  public void updateOrderStatus(Long orderId, OrderStatus status) {
     Order order = findOrderById(orderId);
-    order.setStatus(OrderStatus.FAIL);
+    order.setStatus(status);
     orderRepository.save(order);
   }
 
