@@ -92,9 +92,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
   }
 
   private BooleanExpression eqStatus(String status) {
-    return (status != null && !status.equals("ALL"))
-        ? order.status.eq(OrderStatus.valueOf(status))
-        : null;
+    return (status != null) ? order.status.eq(OrderStatus.valueOf(status)) : null;
   }
 
   private BooleanExpression dateGoe(LocalDateTime date) {
