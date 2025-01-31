@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,10 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.f_lab.joyeuse_planete.core.domain.QCurrency.currency;
 import static com.f_lab.joyeuse_planete.core.domain.QFood.food;
 import static com.f_lab.joyeuse_planete.core.domain.QOrder.order;
 import static com.f_lab.joyeuse_planete.core.domain.QPayment.payment;
-
 
 public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
@@ -58,11 +57,13 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             order.status.stringValue(),
             order.payment.id.as("paymentId"),
             order.voucher.id.as("voucherId"),
-            order.collectionTime
+            order.collectionTime.as("collectionTime"),
+            order.createdAt.as("createdAt")
         ))
         .from(order)
         .leftJoin(order.payment, payment)
         .leftJoin(order.food, food)
+        .leftJoin(food.currency, currency)
         .where(
             eqStatus(condition.getStatus()),
             dateGoe(condition.getStartDate()),

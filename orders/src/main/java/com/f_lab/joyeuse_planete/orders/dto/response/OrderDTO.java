@@ -1,9 +1,7 @@
 package com.f_lab.joyeuse_planete.orders.dto.response;
 
-import com.f_lab.joyeuse_planete.core.domain.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;
-import jakarta.persistence.JoinColumn;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,6 @@ import java.time.LocalDateTime;
 
 
 @Getter
-@Builder
 @NoArgsConstructor
 public class OrderDTO {
 
@@ -38,15 +35,19 @@ public class OrderDTO {
   @JsonProperty("status")
   private String status;
 
-  @JoinColumn(name = "payment_id")
+  @JsonProperty("payment_id")
   private Long payment;
 
-  @JoinColumn(name = "voucher_id")
+  @JsonProperty("voucher_id")
   private Long voucher;
 
-  @JoinColumn(name = "collection_time")
+  @JsonProperty("created_at")
+  private LocalDateTime createdAt;
+
+  @JsonProperty("collection_time")
   private LocalDateTime collectionTime;
 
+  @Builder
   @QueryProjection
   public OrderDTO(
       Long orderId,
@@ -58,7 +59,8 @@ public class OrderDTO {
       String status,
       Long payment,
       Long voucher,
-      LocalDateTime collectionTime
+      LocalDateTime collectionTime,
+      LocalDateTime createdAt
   ) {
 
     this.orderId = orderId;
@@ -71,5 +73,6 @@ public class OrderDTO {
     this.payment = payment;
     this.voucher = voucher;
     this.collectionTime = collectionTime;
+    this.createdAt = createdAt;
   }
 }
