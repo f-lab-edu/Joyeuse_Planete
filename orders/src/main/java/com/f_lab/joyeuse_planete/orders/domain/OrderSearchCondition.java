@@ -14,12 +14,12 @@ public class OrderSearchCondition {
 
   //TODO Java Bean Validation 추가
 
-  private BigDecimal minCost = BigDecimal.ZERO;   // Default value
+  private BigDecimal minCost = BigDecimal.ZERO;
   private BigDecimal maxCost;
-  private String status = "ALL";
+  private String status;
   private LocalDateTime startDate = LocalDateTime.of(2024, Month.JANUARY, 1, 0, 0);
   private LocalDateTime endDate;
   private List<String> sortBy = List.of("DATE_NEW");
-  private int page = 0;                           // Default page
-  private int size = 10;                          // Default page size
+  private int page = 0;
+  private int size = 10;
 }
