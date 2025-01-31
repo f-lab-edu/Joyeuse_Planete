@@ -12,11 +12,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,11 +25,11 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Builder
+@SuperBuilder
 @Getter @Setter
-@ToString(exclude = { "food", "payment", "voucher" })
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString(callSuper = true)
 @Table(name = "orders")
 public class Order extends BaseTimeEntity {
 
