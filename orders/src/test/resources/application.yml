@@ -27,3 +27,7 @@ foods:
   events:
     topic:
       fail: foods.test-order-creation-failed-event
+
+logging:
+  level:
+    org.hibernate.sql: TRACE
