@@ -1,5 +1,7 @@
 package com.f_lab.joyeuse_planete.core.kafka.service;
 
+import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.kafka.aspect.KafkaRetry;
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
@@ -24,8 +26,11 @@ public class KafkaService {
   public void sendKafkaEvent(String event, Object object) {
     try {
       kafkaTemplate.send(event, object);
+
     } catch(DisconnectException | NetworkException | BrokerNotAvailableException e) {
       LogUtil.exception("KafkaService.sendKafkaEvent (DisconnectException | NetworkException | BrokerNotAvailableException)", e);
+      throw new JoyeusePlaneteApplicationException(ErrorCode.KAFKA_UNAVAILABLE_EXCEPTION);
+
     } catch(Exception e) {
       LogUtil.exception("KafkaService.sendKafkaEvent (Exception)", e);
       throw new RetryableException();

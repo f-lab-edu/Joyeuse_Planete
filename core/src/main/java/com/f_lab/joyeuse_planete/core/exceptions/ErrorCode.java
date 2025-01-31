@@ -19,6 +19,7 @@ public enum ErrorCode {
   // KAFKA
   KAFKA_RETRY_FAIL_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 503),
   KAFKA_DEAD_LETTER_TOPIC_FAIL_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 500),
+  KAFKA_UNAVAILABLE_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 500),
   ;
 
   private String description;
