@@ -11,9 +11,19 @@ spring:
   kafka:
     producer:
       transaction-id-prefix: test-tx
+    consumer:
+      group-id: orders-test
 
 orders:
   events:
     topic:
       name: orders.test
       fail: orders.fail.test
+
+  dead-letter-topic:
+    name: orders.test-dead-letter-topic
+
+foods:
+  events:
+    topic:
+      fail: foods.test-order-creation-failed-event
