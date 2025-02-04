@@ -206,7 +206,6 @@ class OrderRepositoryTest {
         .status(order.getStatus().name())
         .payment(order.getPayment() != null ? order.getPayment().getId() : null)
         .voucher(order.getVoucher() != null ? order.getVoucher().getId() : null)
-        .collectionTime(order.getCollectionTime())
         .createdAt(order.getCreatedAt())
         .build();
   }
