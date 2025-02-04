@@ -32,6 +32,9 @@ public class OrderDTO {
   @JsonProperty("quantity")
   private int quantity;
 
+  @JsonProperty("rate")
+  private double rate;
+
   @JsonProperty("status")
   private String status;
 
@@ -44,9 +47,6 @@ public class OrderDTO {
   @JsonProperty("created_at")
   private LocalDateTime createdAt;
 
-  @JsonProperty("collection_time")
-  private LocalDateTime collectionTime;
-
   @Builder
   @QueryProjection
   public OrderDTO(
@@ -56,10 +56,10 @@ public class OrderDTO {
       String currencyCode,
       String currencySymbol,
       int quantity,
+      double rate,
       String status,
       Long payment,
       Long voucher,
-      LocalDateTime collectionTime,
       LocalDateTime createdAt
   ) {
 
@@ -69,10 +69,10 @@ public class OrderDTO {
     this.currencyCode = currencyCode;
     this.currencySymbol = currencySymbol;
     this.quantity = quantity;
+    this.rate = rate;
     this.status = status;
     this.payment = payment;
     this.voucher = voucher;
-    this.collectionTime = collectionTime;
     this.createdAt = createdAt;
   }
 }

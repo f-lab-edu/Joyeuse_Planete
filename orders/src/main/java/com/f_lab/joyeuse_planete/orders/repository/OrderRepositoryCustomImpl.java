@@ -1,7 +1,10 @@
 package com.f_lab.joyeuse_planete.orders.repository;
 
+import com.f_lab.joyeuse_planete.core.domain.Order;
 import com.f_lab.joyeuse_planete.core.domain.OrderStatus;
+
 import com.f_lab.joyeuse_planete.orders.domain.OrderSearchCondition;
+import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderDTO;
 import com.f_lab.joyeuse_planete.orders.dto.response.QOrderDTO;
 import com.querydsl.core.types.OrderSpecifier;
@@ -9,6 +12,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +49,29 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
   }
 
   @Override
+  public Order saveOrder(OrderCreateRequestDTO request) {
+    long orderId = queryFactory
+        .insert(order)
+        .columns(
+            order.food.id,
+            order.totalCost,
+            order.quantity,
+            order.status,
+            order.voucher.id
+        )
+        .values(
+            request.getFoodId(),
+            request.getTotalCost(),
+            request.getQuantity(),
+            OrderStatus.READY,
+            request.getVoucherId()
+        )
+        .execute();
+
+    return queryFactory.selectFrom(order).where(order.id.eq(orderId)).fetchFirst();
+  }
+
+  @Override
   public Page<OrderDTO> findOrders(OrderSearchCondition condition, Pageable pageable) {
     List<OrderDTO> results = queryFactory
         .select(new QOrderDTO(
@@ -54,10 +81,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             food.currency.currencyCode,
             food.currency.currencySymbol,
             order.quantity,
+            order.rate,
             order.status.stringValue(),
             order.payment.id.as("paymentId"),
             order.voucher.id.as("voucherId"),
-            order.collectionTime.as("collectionTime"),
             order.createdAt.as("createdAt")
         ))
         .from(order)

@@ -3,7 +3,6 @@ package com.f_lab.joyeuse_planete.orders.service;
 
 import com.f_lab.joyeuse_planete.core.domain.Order;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
-import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderCreateResponseDTO;
@@ -43,9 +42,10 @@ public class OrderServiceKafkaTest {
     // given
     OrderCreateResponseDTO expected = createOrderCreateResponseDTO("PROCESSING");
     OrderCreateRequestDTO request = createOrderCreateRequestDTO();
+    Order order = createOrder();
 
     // when
-    when(orderRepository.save(any(Order.class))).thenReturn(null);
+    when(orderRepository.saveOrder(any())).thenReturn(order);
     doNothing().when(kafkaService).sendKafkaEvent(anyString(), any(Object.class));
     OrderCreateResponseDTO response = orderService.createFoodOrder(request);
 
@@ -60,7 +60,7 @@ public class OrderServiceKafkaTest {
     OrderCreateRequestDTO request = createOrderCreateRequestDTO();
 
     // when
-    when(orderRepository.save(any(Order.class))).thenThrow(new RuntimeException());
+    when(orderRepository.saveOrder(any())).thenThrow(new RuntimeException());
 
     // then
     assertThatThrownBy(() -> orderService.createFoodOrder(request))
@@ -74,7 +74,7 @@ public class OrderServiceKafkaTest {
     OrderCreateRequestDTO request = createOrderCreateRequestDTO();
 
     // when
-    when(orderRepository.save(any(Order.class))).thenThrow(new JoyeusePlaneteApplicationException());
+    when(orderRepository.saveOrder(any())).thenThrow(new JoyeusePlaneteApplicationException());
 
     // then
     assertThatThrownBy(() -> orderService.createFoodOrder(request))
@@ -86,9 +86,10 @@ public class OrderServiceKafkaTest {
   void testCreateOrderRepositoryKafkaServiceFail() {
     // given
     OrderCreateRequestDTO request = createOrderCreateRequestDTO();
+    Order order = createOrder();
 
     // when
-    when(orderRepository.save(any(Order.class))).thenReturn(null);
+    when(orderRepository.saveOrder(any())).thenReturn(order);
     doThrow(JoyeusePlaneteApplicationException.class).when(kafkaService).sendKafkaEvent(any(), any());
 
     // then
@@ -111,6 +112,10 @@ public class OrderServiceKafkaTest {
             .cvc("123")
             .build())
         .build();
+  }
+
+  private Order createOrder() {
+    return Order.builder().id(1L).build();
   }
 
   private OrderCreateResponseDTO createOrderCreateResponseDTO(String message) {
