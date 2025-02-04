@@ -16,7 +16,7 @@ import java.util.Optional;
 import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.FIVE_SECONDS;
 
 
-public interface FoodRepository extends JpaRepository<Food, Long> {
+public interface FoodRepository extends JpaRepository<Food, Long>, FoodCustomRepository {
 
   @RetryOnLockFailure
   @Lock(LockModeType.PESSIMISTIC_WRITE)

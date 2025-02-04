@@ -5,7 +5,10 @@ import com.f_lab.joyeuse_planete.core.domain.Food;
 import com.f_lab.joyeuse_planete.core.domain.Store;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
+import com.f_lab.joyeuse_planete.foods.domain.FoodSearchCondition;
+import com.f_lab.joyeuse_planete.foods.dto.request.UpdateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
+import com.f_lab.joyeuse_planete.foods.repository.CurrencyRepository;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +16,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class FoodServiceTest {
@@ -30,9 +36,11 @@ class FoodServiceTest {
   FoodService foodService;
   @Mock
   FoodRepository foodRepository;
+  @Mock
+  CurrencyRepository currencyRepository;
 
   @Test
-  @DisplayName("getFood 호출시 성공")
+  @DisplayName("getFood() 호출시 성공")
   void testGetFoodSuccess() {
     Long foodId = 1L;
     Food food = createFood(foodId);
@@ -111,45 +119,112 @@ class FoodServiceTest {
     assertThat(food.getTotalQuantity()).isEqualTo(totalQuantity + quantity);
   }
 
+  @Test
+  @DisplayName("updateFood() 호출시 성공")
+  void testUpdateFoodSuccess() {
+    // given
+    Long foodId = 1L;
+    Food food = createFood(foodId);
+    String expectedCurrencyCode = "USD";
+    Currency currency = createCurrency();
+    String originalName = food.getFoodName();
+
+    UpdateFoodRequestDTO request = createExpectedUpdateFoodRequestDTO(food);
+
+    // when
+    when(foodRepository.findById(anyLong())).thenReturn(Optional.of(food));
+    when(currencyRepository.findByCurrencyCode(anyString())).thenReturn(Optional.of(currency));
+    foodService.updateFood(foodId, request);
+
+    // then
+    assertThat(food.getFoodName()).isEqualTo(originalName + "test");
+    assertThat(food.getCurrency().getCurrencyCode()).isEqualTo(expectedCurrencyCode);
+  }
+
+  @Test
+  @DisplayName("updateFood() 호출시 실패")
+  void testUpdateFoodOnNotExistingCurrencyFail() {
+    // given
+    Long foodId = 1L;
+    Food food = createFood(foodId);
+    UpdateFoodRequestDTO request = createExpectedUpdateFoodRequestDTO(food);
+
+    // when
+    when(foodRepository.findById(anyLong())).thenReturn(Optional.of(food));
+    when(currencyRepository.findByCurrencyCode(anyString())).thenReturn(Optional.empty());
+
+    // then
+    assertThatThrownBy(() -> foodService.updateFood(foodId, request))
+        .isInstanceOf(JoyeusePlaneteApplicationException.class)
+        .hasMessage(ErrorCode.CURRENCY_NOT_EXIST_EXCEPTION.getDescription());
+  }
+
+  @Test
+  @DisplayName("foodService 가 올바로 foodRepository 호출하고 Page를 return 하는 것을 확인")
+  void testGetFoodListSuccess() {
+    // given
+    Page<FoodDTO> expected = Page.empty();
+    FoodSearchCondition condition = new FoodSearchCondition();
+    Pageable pageable = PageRequest.of(0, 10);
+
+    // when
+    when(foodRepository.getFoodList(any(), any())).thenReturn(expected);
+    Page<FoodDTO> result = foodService.getFoodList(condition, pageable);
+
+    // then
+    assertThat(result).isEqualTo(expected);
+    verify(foodRepository, times(1)).getFoodList(condition, pageable);
+  }
+
   private Food createFood(Long foodId) {
-    Long storeId = 1L;
-    Long currencyId = 100L;
     String foodName = "Pizza";
     BigDecimal price = new BigDecimal("9.99");
     int totalQuantity = 50;
-    String currencyCode = "USD";
-    String currencySymbol = "$";
-
-    Store store = Store.builder()
-        .id(storeId)
-        .build();
-
-    Currency currency = Currency.builder()
-        .id(currencyId)
-        .currencyCode(currencyCode)
-        .currencySymbol(currencySymbol)
-        .build();
 
     return Food.builder()
         .id(foodId)
-        .store(store)
-        .currency(currency)
+        .store(createStore())
+        .currency(createCurrency())
         .foodName(foodName)
+        .rate(4.5)
         .price(price)
         .totalQuantity(totalQuantity)
         .build();
   }
 
-  private FoodDTO createExpectedFoodDTO(Food food) {
-    return FoodDTO.builder()
-        .foodId(food.getId())
-        .storeId(food.getStore().getId())
-        .currencyId(food.getCurrency().getId())
-        .foodName(food.getFoodName())
+  private Store createStore() {
+    Long storeId = 1L;
+
+    return Store.builder()
+        .id(storeId)
+        .build();
+  }
+
+  private Currency createCurrency() {
+    Long currencyId = 100L;
+    String currencyCode = "USD";
+    String currencySymbol = "$";
+
+    return Currency.builder()
+        .id(currencyId)
+        .currencyCode(currencyCode)
+        .currencySymbol(currencySymbol)
+        .build();
+  }
+
+  private UpdateFoodRequestDTO createExpectedUpdateFoodRequestDTO(Food food) {
+    String TEST_SUFFIX = "test";
+    String currencyCode = "USD";
+
+    return UpdateFoodRequestDTO.builder()
+        .foodName(food.getFoodName() + TEST_SUFFIX)
+        .currencyCode(currencyCode)
         .price(food.getPrice())
         .totalQuantity(food.getTotalQuantity())
-        .currencyCode(food.getCurrency().getCurrencyCode())
-        .currencySymbol(food.getCurrency().getCurrencySymbol())
         .build();
+  }
+
+  private FoodDTO createExpectedFoodDTO(Food food) {
+    return FoodDTO.from(food);
   }
 }
