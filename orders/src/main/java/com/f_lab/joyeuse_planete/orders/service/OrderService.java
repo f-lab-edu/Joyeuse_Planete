@@ -47,9 +47,9 @@ public class OrderService {
 
   @Transactional
   public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
-    Order order = request.toEntity();
+    Order order;
     try {
-      orderRepository.save(order);
+      order = orderRepository.saveOrder(request);
 
     } catch (JoyeusePlaneteApplicationException e) {
       LogUtil.exception("OrderService.createFoodOrder", e);
