@@ -39,4 +39,8 @@ public class Voucher extends BaseTimeEntity {
     BigDecimal multiplier = BigDecimal.ONE.subtract(discountRate);
     return totalCost.multiply(multiplier).setScale(currency.getRoundingScale(), currency.getRoundingMode());
   }
+
+  public boolean hasExpired(LocalDateTime now) {
+    return now.isBefore(expiryDate);
+  }
 }
