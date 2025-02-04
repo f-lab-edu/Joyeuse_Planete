@@ -27,6 +27,9 @@ public class OrderCreateRequestDTO {
   @JsonProperty("store_id")
   private Long storeId;
 
+  @JsonProperty("currency_id")
+  private Long currencyId;
+
   @JsonProperty("total_cost")
   private BigDecimal totalCost;
 

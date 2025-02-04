@@ -45,6 +45,8 @@ public class Order extends BaseTimeEntity {
 
   private int quantity;
 
+  private double rate;
+
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
@@ -55,8 +57,6 @@ public class Order extends BaseTimeEntity {
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "voucher_id")
   private Voucher voucher;
-
-  private LocalDateTime collectionTime;
 
   public BigDecimal calculateTotalCost() {
     return (voucher != null)
