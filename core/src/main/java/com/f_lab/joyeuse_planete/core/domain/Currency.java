@@ -1,7 +1,14 @@
 package com.f_lab.joyeuse_planete.core.domain;
 import com.f_lab.joyeuse_planete.core.domain.base.BaseTimeEntity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +39,13 @@ public class Currency extends BaseTimeEntity {
   private int roundingScale;
 
   @Enumerated(EnumType.STRING)
-  @Column(columnDefinition = "VARCHAR(20) NOT NULL DEFAULT 'FLOOR'")
+  @Column(nullable = false)
   private RoundingMode roundingMode;
+
+  @PrePersist
+  public void prePersist() {
+    if (this.roundingMode == null) {
+      this.roundingMode = RoundingMode.FLOOR;
+    }
+  }
 }

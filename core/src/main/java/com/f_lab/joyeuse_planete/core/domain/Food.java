@@ -18,6 +18,10 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -51,6 +55,14 @@ public class Food extends BaseEntity {
   @JoinColumn(name = "currency_id")
   private Currency currency;
 
+  private Double rate;
+
+  private String tags;
+
+  private LocalDateTime collectionStartTime;
+
+  private LocalDateTime collectionEndTime;
+
   public BigDecimal calculateCost(int quantity) {
     return price.multiply(BigDecimal.valueOf(quantity));
   }
@@ -67,5 +79,30 @@ public class Food extends BaseEntity {
       throw new JoyeusePlaneteApplicationException(ErrorCode.FOOD_QUANTITY_OVERFLOW);
 
     totalQuantity += quantity;
+  }
+
+  public void update(
+      String foodName,
+      BigDecimal price,
+      int totalQuantity,
+      Currency currency,
+      LocalDateTime collectionStartTime,
+      LocalDateTime collectionEndTime
+  ) {
+
+    this.foodName = foodName;
+    this.price = price;
+    this.totalQuantity = totalQuantity;
+    this.currency = currency;
+    this.collectionStartTime = collectionStartTime;
+    this.collectionEndTime = collectionEndTime;
+  }
+
+  public List<String> getTags() {
+    return tags == null ? new ArrayList<>() : Arrays.asList(tags.split(","));
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = String.join(",", tags);
   }
 }
