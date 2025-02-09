@@ -20,6 +20,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 
@@ -92,10 +93,6 @@ class FoodRepositoryTest {
     // when
     Page<FoodDTO> result = foodRepository.getFoodList(condition, pageable);
 
-    for (FoodDTO foodDTO : result) {
-      System.out.println("foodDTO = " + foodDTO);
-    }
-
     // then
     assertTrue(result, expected);
   }
@@ -116,6 +113,58 @@ class FoodRepositoryTest {
         .skip(page * size)
         .limit(size)
         .map(FoodDTO::from)
+        .toList();
+
+    // when
+    Page<FoodDTO> result = foodRepository.getFoodList(condition, pageable);
+
+    // then
+    assertTrue(result, expected);
+  }
+
+  @Test
+  @DisplayName("가짜 + 진짜 정렬 조건을 부여했을 때 무시 후 정상 작동")
+  void testNonDefinedSortBySuccess() {
+    // given
+    List<String> sortBy = List.of("FAKE_SORT_BY", "RATE_HIGH", "NO_RATE");
+    int page = 1;
+    int size = 10;
+
+    FoodSearchCondition condition = createSearchCondition(null, null, null, sortBy);
+    Pageable pageable = PageRequest.of(page, size);
+
+    List<FoodDTO> expected = getFoodList().stream()
+        .sorted(Comparator.comparing(Food::getRate).reversed())
+        .skip(page * size)
+        .limit(size)
+        .map(FoodDTO::from)
+        .toList();
+
+    // when
+    Page<FoodDTO> result = foodRepository.getFoodList(condition, pageable);
+
+    // then
+    assertTrue(result, expected);
+  }
+
+  @Test
+  @DisplayName("가짜 정렬 조건만을 부여했을 때 무시 후 정상 작동")
+  void testNonDefinedSortByOnlySuccess() {
+    // given
+    String search = "Asian";
+    List<String> sortBy = List.of("RATE_NO", "NO_RATE");
+
+    FoodSearchCondition condition = createSearchCondition(null, null, search, sortBy);
+    Pageable pageable = PageRequest.of(condition.getPage(), condition.getSize());
+
+    List<FoodDTO> expected = getFoodList().stream()
+        .filter(f ->
+            f.getFoodName().toLowerCase().contains(search.toLowerCase()) ||
+                f.getTags().stream().anyMatch(tag -> tag.toLowerCase().contains(search.toLowerCase())) ||
+                f.getStore().getName().toLowerCase().contains(search.toLowerCase()))
+        .sorted(Comparator.comparing(Food::getRate).reversed())
+        .map(FoodDTO::from)
+        .limit(condition.getSize())
         .toList();
 
     // when
@@ -170,6 +219,7 @@ class FoodRepositoryTest {
         .currencyCode("KRW")
         .currencySymbol("₩")
         .roundingScale(2)
+        .roundingMode(RoundingMode.FLOOR)
         .build();
 
     em.persist(currency);
@@ -179,291 +229,181 @@ class FoodRepositoryTest {
         Food.builder()
             .foodName("Chicken Burger")
             .price(BigDecimal.valueOf(1000))
-            .rate(4.5)
+            .rate(BigDecimal.valueOf(4.5))
             .store(store1)
             .currency(currency)
             .totalQuantity(100)
-            .tags("fast-food,burger,chicken")
+            .tags(List.of("fast-food", "burger", "chicken"))
             .build(),
 
         Food.builder()
             .foodName("Spaghetti Carbonara")
             .price(BigDecimal.valueOf(1200))
-            .rate(4.2)
+            .rate(BigDecimal.valueOf(4.2))
             .store(store2)
             .currency(currency)
             .totalQuantity(80)
-            .tags("pasta,creamy,Italian")
+            .tags(List.of("pasta", "creamy", "Italian"))
             .build(),
 
         Food.builder()
             .foodName("Caesar Salad")
             .price(BigDecimal.valueOf(900))
-            .rate(4.8)
+            .rate(BigDecimal.valueOf(4.8))
             .store(store3)
             .currency(currency)
             .totalQuantity(90)
-            .tags("healthy,salad,fresh")
+            .tags(List.of("healthy", "salad", "fresh"))
             .build(),
 
         Food.builder()
             .foodName("Pepperoni Pizza")
             .price(BigDecimal.valueOf(1500))
-            .rate(4.7)
+            .rate(BigDecimal.valueOf(4.7))
             .store(store1)
             .currency(currency)
             .totalQuantity(60)
-            .tags("pizza,cheesy,Italian")
+            .tags(List.of("pizza", "cheesy", "Italian"))
             .build(),
 
         Food.builder()
             .foodName("Grilled Steak")
             .price(BigDecimal.valueOf(2500))
-            .rate(4.9)
+            .rate(BigDecimal.valueOf(4.9))
             .store(store2)
             .currency(currency)
             .totalQuantity(50)
-            .tags("meat,grill,protein")
+            .tags(List.of("meat", "grill", "protein"))
             .build(),
 
         Food.builder()
             .foodName("Tuna Sandwich")
             .price(BigDecimal.valueOf(800))
-            .rate(3.9)
+            .rate(BigDecimal.valueOf(3.9))
             .store(store3)
             .currency(currency)
             .totalQuantity(110)
-            .tags("sandwich,fish,healthy")
+            .tags(List.of("sandwich", "fish", "healthy"))
             .build(),
 
         Food.builder()
             .foodName("Vegetable Stir Fry")
             .price(BigDecimal.valueOf(950))
-            .rate(4.1)
+            .rate(BigDecimal.valueOf(4.1))
             .store(store1)
             .currency(currency)
             .totalQuantity(85)
-            .tags("vegetarian,stir-fry,Asian")
+            .tags(List.of("vegetarian", "stir-fry", "Asian"))
             .build(),
 
         Food.builder()
             .foodName("Beef Tacos")
             .price(BigDecimal.valueOf(1100))
-            .rate(4.3)
+            .rate(BigDecimal.valueOf(4.3))
             .store(store2)
             .currency(currency)
             .totalQuantity(70)
-            .tags("Mexican,taco,spicy")
+            .tags(List.of("Mexican", "taco", "spicy"))
             .build(),
 
         Food.builder()
             .foodName("Chicken Noodles")
             .price(BigDecimal.valueOf(1050))
-            .rate(4.2)
+            .rate(BigDecimal.valueOf(4.2))
             .store(store3)
             .currency(currency)
             .totalQuantity(75)
-            .tags("asian,noodles,chicken")
+            .tags(List.of("Asian", "noodles", "chicken"))
             .build(),
 
         Food.builder()
             .foodName("Margarita Pizza")
             .price(BigDecimal.valueOf(1400))
-            .rate(4.6)
+            .rate(BigDecimal.valueOf(4.6))
             .store(store1)
             .currency(currency)
             .totalQuantity(65)
-            .tags("pizza,tomato,cheese")
+            .tags(List.of("pizza", "tomato", "cheese"))
             .build(),
 
         Food.builder()
             .foodName("Sushi Rolls")
             .price(BigDecimal.valueOf(1600))
-            .rate(4.8)
+            .rate(BigDecimal.valueOf(4.8))
             .store(store2)
             .currency(currency)
             .totalQuantity(55)
-            .tags("sushi,fish,Japanese")
-            .build(),
-
-        Food.builder()
-            .foodName("Pancakes with Maple Syrup")
-            .price(BigDecimal.valueOf(700))
-            .rate(4.4)
-            .store(store3)
-            .currency(currency)
-            .totalQuantity(120)
-            .tags("breakfast,sweet,fluffy")
-            .build(),
-
-        Food.builder()
-            .foodName("Lasagna")
-            .price(BigDecimal.valueOf(1300))
-            .rate(4.7)
-            .store(store1)
-            .currency(currency)
-            .totalQuantity(72)
-            .tags("pasta,Italian,cheese")
-            .build(),
-
-        Food.builder()
-            .foodName("Teriyaki Chicken")
-            .price(BigDecimal.valueOf(1150))
-            .rate(4.5)
-            .store(store2)
-            .currency(currency)
-            .totalQuantity(80)
-            .tags("Asian,sweet,chicken")
-            .build(),
-
-        Food.builder()
-            .foodName("Salmon Fillet")
-            .price(BigDecimal.valueOf(2000))
-            .rate(4.9)
-            .store(store3)
-            .currency(currency)
-            .totalQuantity(40)
-            .tags("fish,protein,healthy")
-            .build(),
-
-        Food.builder()
-            .foodName("Crispy French Fries")
-            .price(BigDecimal.valueOf(600))
-            .rate(3.8)
-            .store(store1)
-            .currency(currency)
-            .totalQuantity(150)
-            .tags("fast-food,potato,fried")
-            .build(),
-
-        Food.builder()
-            .foodName("BBQ Ribs")
-            .price(BigDecimal.valueOf(1800))
-            .rate(4.7)
-            .store(store2)
-            .currency(currency)
-            .totalQuantity(50)
-            .tags("grill,meat,BBQ")
-            .build(),
-
-        Food.builder()
-            .foodName("Falafel Wrap")
-            .price(BigDecimal.valueOf(900))
-            .rate(4.0)
-            .store(store3)
-            .currency(currency)
-            .totalQuantity(95)
-            .tags("vegan,wrap,Mediterranean")
-            .build(),
-
-        Food.builder()
-            .foodName("Egg Fried Rice")
-            .price(BigDecimal.valueOf(850))
-            .rate(4.2)
-            .store(store1)
-            .currency(currency)
-            .totalQuantity(105)
-            .tags("rice,Asian,egg")
+            .tags(List.of("sushi", "fish", "Japanese"))
             .build(),
 
         Food.builder()
             .foodName("Chocolate Cake")
             .price(BigDecimal.valueOf(950))
-            .rate(4.8)
+            .rate(BigDecimal.valueOf(4.8))
             .store(store2)
             .currency(currency)
             .totalQuantity(65)
-            .tags("dessert,chocolate,sweet")
+            .tags(List.of("dessert", "chocolate", "sweet"))
             .build(),
 
         Food.builder()
             .foodName("Vanilla Ice Cream")
             .price(BigDecimal.valueOf(500))
-            .rate(4.6)
+            .rate(BigDecimal.valueOf(4.6))
             .store(store3)
             .currency(currency)
             .totalQuantity(130)
-            .tags("dessert,ice-cream,cold")
+            .tags(List.of("dessert", "ice-cream", "cold"))
             .build(),
 
         Food.builder()
             .foodName("Strawberry Cheesecake")
             .price(BigDecimal.valueOf(1100))
-            .rate(4.7)
+            .rate(BigDecimal.valueOf(4.7))
             .store(store1)
             .currency(currency)
             .totalQuantity(70)
-            .tags("dessert,cake,strawberry")
+            .tags(List.of("dessert", "cake", "strawberry"))
             .build(),
 
         Food.builder()
             .foodName("Grilled Chicken Breast")
             .price(BigDecimal.valueOf(1350))
-            .rate(4.5)
+            .rate(BigDecimal.valueOf(4.5))
             .store(store2)
             .currency(currency)
             .totalQuantity(55)
-            .tags("protein,chicken,healthy")
+            .tags(List.of("protein", "chicken", "healthy"))
             .build(),
 
         Food.builder()
             .foodName("Mushroom Soup")
             .price(BigDecimal.valueOf(900))
-            .rate(4.3)
+            .rate(BigDecimal.valueOf(4.3))
             .store(store3)
             .currency(currency)
             .totalQuantity(95)
-            .tags("soup,warm,healthy")
+            .tags(List.of("soup", "warm", "healthy"))
             .build(),
 
         Food.builder()
             .foodName("Butter Chicken")
             .price(BigDecimal.valueOf(1250))
-            .rate(4.6)
+            .rate(BigDecimal.valueOf(4.6))
             .store(store1)
             .currency(currency)
             .totalQuantity(85)
-            .tags("Indian,spicy,curry")
+            .tags(List.of("Indian", "spicy", "curry"))
             .build(),
 
         Food.builder()
             .foodName("Garlic Bread")
             .price(BigDecimal.valueOf(700))
-            .rate(4.2)
+            .rate(BigDecimal.valueOf(4.2))
             .store(store2)
             .currency(currency)
             .totalQuantity(120)
-            .tags("bread,garlic,side-dish")
-            .build(),
-
-        Food.builder()
-            .foodName("Asian Bread")
-            .price(BigDecimal.valueOf(700))
-            .rate(4.2)
-            .store(store2)
-            .currency(currency)
-            .totalQuantity(120)
-            .tags("bread,garlic,side-dish")
-            .build(),
-
-        Food.builder()
-            .foodName("Garlic Bread")
-            .price(BigDecimal.valueOf(700))
-            .rate(4.2)
-            .store(store4)
-            .currency(currency)
-            .totalQuantity(120)
-            .tags("bread,garlic,side-dish")
-            .build(),
-
-        Food.builder()
-            .foodName("Garlic Bread")
-            .price(BigDecimal.valueOf(700))
-            .rate(4.2)
-            .store(store5)
-            .currency(currency)
-            .totalQuantity(120)
-            .tags("bread,garlic,side-dish")
+            .tags(List.of("bread", "garlic", "side-dish"))
             .build()
     );
   }

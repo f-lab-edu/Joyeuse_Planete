@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +55,7 @@ public class FoodCustomRepositoryImpl implements FoodCustomRepository {
         .from(food)
         .innerJoin(food.currency, currency)
         .innerJoin(food.store, store)
-        .where(Expressions.anyOf(
-            eqFoodName(condition.getSearch()),
-            eqFoodTag(condition.getSearch()),
-            eqStoreName(condition.getSearch()))
-        )
+        .where(eqFoodNameTagsAndStoreName(condition.getSearch()))
         .orderBy(getOrders(condition.getSortBy()))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
@@ -75,26 +70,36 @@ public class FoodCustomRepositoryImpl implements FoodCustomRepository {
     return new PageImpl<>(result, pageable, count);
   }
 
-  private BooleanExpression eqFoodName(String search) {
-    return (search != null) ? food.foodName.containsIgnoreCase(search) : null;
-  }
+  private BooleanExpression eqFoodNameTagsAndStoreName(String search) {
+    return (search != null)
+        ? Expressions.anyOf(
+            food.foodName.containsIgnoreCase(search),
+            Expressions.booleanTemplate(
+                "LOWER({0}) LIKE LOWER(CONCAT('%', {1}, '%'))",
+                food.tags, search),
+            food.store.name.containsIgnoreCase(search))
 
-  private BooleanExpression eqFoodTag(String search) {
-    return (search != null) ? food.tags.containsIgnoreCase(search) : null;
-  }
-
-  private BooleanExpression eqStoreName(String search) {
-    return (search != null) ? food.store.name.containsIgnoreCase(search) : null;
+        : null;
   }
 
   private OrderSpecifier[] getOrders(List<String> sortBy) {
-    List<OrderSpecifier> list = new ArrayList<>();
+    int size = 0, idx = 0;
 
     for (String sort : sortBy) {
       if (sortByMap.containsKey(sort))
-        list.add(sortByMap.get(sort));
+        size++;
     }
 
-    return list.toArray(OrderSpecifier[]::new);
+    if (size == 0)
+      return new OrderSpecifier[]{ food.rate.desc() };
+
+    OrderSpecifier[] list = new OrderSpecifier[size];
+
+    for (String sort : sortBy) {
+      if (sortByMap.containsKey(sort))
+        list[idx++] = sortByMap.get(sort);
+    }
+
+    return list;
   }
 }

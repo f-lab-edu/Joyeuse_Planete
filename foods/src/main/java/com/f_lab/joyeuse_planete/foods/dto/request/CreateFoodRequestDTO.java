@@ -37,12 +37,11 @@ public class CreateFoodRequestDTO {
   @JsonProperty("collection_end")
   private LocalDateTime collectionEndTime;
 
-  public Food toEntity(Currency currency) {
+  public Food toEntity() {
     return Food.builder()
         .foodName(foodName)
         .price(price)
         .totalQuantity(totalQuantity)
-        .currency(currency)
         .collectionStartTime(collectionStartTime)
         .collectionEndTime(collectionEndTime)
         .build();
