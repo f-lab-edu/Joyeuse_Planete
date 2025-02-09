@@ -49,3 +49,16 @@ logging:
 #
 #    org.springframework.kafka: TRACE
 #    org.apache.kafka: TRACE
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_IP}
+
+server:
+  port: 8080

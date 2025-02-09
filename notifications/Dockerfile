@@ -8,4 +8,4 @@ COPY ${JAVA_FILE} joyeuse_planete-notifications.jar
 
 EXPOSE 8080
 
-CMD [ "java", "-jar", "joyeuse_planete-notifications.jar" ]
+CMD [ "java", "-Dspring.profiles.active=prod", "-jar", "joyeuse_planete-notifications.jar" ]

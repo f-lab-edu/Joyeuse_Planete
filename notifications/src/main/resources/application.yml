@@ -1,2 +1,13 @@
+
+---
+
 spring:
-  jpa:
+  config:
+    activate:
+      on-profile: prod
+
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_IP}
+
+server:
+  port: 8080
