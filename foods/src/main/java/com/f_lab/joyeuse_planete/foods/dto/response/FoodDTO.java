@@ -40,7 +40,7 @@ public class FoodDTO {
   private String currencySymbol;
 
   @JsonProperty("rate")
-  private double rate;
+  private BigDecimal rate;
 
   @JsonProperty("collection_start")
   private LocalDateTime collectionStartTime;
@@ -59,7 +59,7 @@ public class FoodDTO {
       int totalQuantity,
       String currencyCode,
       String currencySymbol,
-      double rate,
+      BigDecimal rate,
       LocalDateTime collectionStartTime,
       LocalDateTime collectionEndTime
   ) {

@@ -8,7 +8,6 @@ import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationExcept
 import com.f_lab.joyeuse_planete.foods.domain.FoodSearchCondition;
 import com.f_lab.joyeuse_planete.foods.dto.request.UpdateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
-import com.f_lab.joyeuse_planete.foods.repository.CurrencyRepository;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,6 @@ class FoodServiceTest {
   FoodService foodService;
   @Mock
   FoodRepository foodRepository;
-  @Mock
-  CurrencyRepository currencyRepository;
 
   @Test
   @DisplayName("getFood() 호출시 성공")
@@ -133,7 +130,6 @@ class FoodServiceTest {
 
     // when
     when(foodRepository.findById(anyLong())).thenReturn(Optional.of(food));
-    when(currencyRepository.findByCurrencyCode(anyString())).thenReturn(Optional.of(currency));
     foodService.updateFood(foodId, request);
 
     // then
@@ -141,23 +137,6 @@ class FoodServiceTest {
     assertThat(food.getCurrency().getCurrencyCode()).isEqualTo(expectedCurrencyCode);
   }
 
-  @Test
-  @DisplayName("updateFood() 호출시 실패")
-  void testUpdateFoodOnNotExistingCurrencyFail() {
-    // given
-    Long foodId = 1L;
-    Food food = createFood(foodId);
-    UpdateFoodRequestDTO request = createExpectedUpdateFoodRequestDTO(food);
-
-    // when
-    when(foodRepository.findById(anyLong())).thenReturn(Optional.of(food));
-    when(currencyRepository.findByCurrencyCode(anyString())).thenReturn(Optional.empty());
-
-    // then
-    assertThatThrownBy(() -> foodService.updateFood(foodId, request))
-        .isInstanceOf(JoyeusePlaneteApplicationException.class)
-        .hasMessage(ErrorCode.CURRENCY_NOT_EXIST_EXCEPTION.getDescription());
-  }
 
   @Test
   @DisplayName("foodService 가 올바로 foodRepository 호출하고 Page를 return 하는 것을 확인")
@@ -186,7 +165,7 @@ class FoodServiceTest {
         .store(createStore())
         .currency(createCurrency())
         .foodName(foodName)
-        .rate(4.5)
+        .rate(BigDecimal.valueOf(4.5))
         .price(price)
         .totalQuantity(totalQuantity)
         .build();
