@@ -1,8 +1,10 @@
 package com.f_lab.joyeuse_planete.core.domain;
 
 import com.f_lab.joyeuse_planete.core.domain.base.BaseEntity;
+import com.f_lab.joyeuse_planete.core.domain.converter.StringListConverter;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -19,8 +21,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -55,9 +55,10 @@ public class Food extends BaseEntity {
   @JoinColumn(name = "currency_id")
   private Currency currency;
 
-  private Double rate;
+  private BigDecimal rate;
 
-  private String tags;
+  @Convert(converter = StringListConverter.class)
+  private List<String> tags;
 
   private LocalDateTime collectionStartTime;
 
@@ -96,13 +97,5 @@ public class Food extends BaseEntity {
     this.currency = currency;
     this.collectionStartTime = collectionStartTime;
     this.collectionEndTime = collectionEndTime;
-  }
-
-  public List<String> getTags() {
-    return tags == null ? new ArrayList<>() : Arrays.asList(tags.split(","));
-  }
-
-  public void setTags(List<String> tags) {
-    this.tags = String.join(",", tags);
   }
 }
