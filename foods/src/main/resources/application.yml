@@ -1,4 +1,22 @@
-server.port: 8081
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env, beans"
+
+  info:
+    java:
+      enabled: true
+
+    os:
+      enabled: true
+
+server:
+  port: 8084
+  tomcat:
+    mbeanregistry:
+      enabled: true
 
 spring:
   application:
@@ -60,5 +78,22 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_SERVER_IP}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env, beans"
+
+  info:
+    java:
+      enabled: true
+
+    os:
+      enabled: true
+
 server:
   port: 8080
+  tomcat:
+    mbeanregistry:
+      enabled: true

@@ -1,5 +1,22 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env, beans"
+
+  info:
+    java:
+      enabled: true
+
+    os:
+      enabled: true
+
 server:
-  port: 8083
+  port: 8080
+  tomcat:
+    mbeanregistry:
+      enabled: true
 
 spring:
   kafka:
@@ -37,7 +54,7 @@ logging:
     org:
       apache:
 #        kafka: TRACE
-        zorm:
+        orm:
           jpa:
             JpaTransactionManager: TRACE
       hibernate.sql: TRACE
@@ -52,5 +69,22 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_SERVER_IP}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env, beans"
+
+  info:
+    java:
+      enabled: true
+
+    os:
+      enabled: true
+
 server:
   port: 8080
+  tomcat:
+    mbeanregistry:
+      enabled: true
