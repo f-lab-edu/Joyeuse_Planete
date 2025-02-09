@@ -8,6 +8,7 @@ import com.f_lab.joyeuse_planete.foods.dto.request.CreateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.request.UpdateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Slf4j
+@Timed("foods")
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
