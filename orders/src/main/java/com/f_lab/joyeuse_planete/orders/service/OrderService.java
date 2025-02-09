@@ -13,8 +13,8 @@ import com.f_lab.joyeuse_planete.orders.dto.response.OrderDTO;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderCreateResponseDTO;
 import com.f_lab.joyeuse_planete.orders.repository.OrderRepository;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Slf4j
+@Timed("orders")
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
