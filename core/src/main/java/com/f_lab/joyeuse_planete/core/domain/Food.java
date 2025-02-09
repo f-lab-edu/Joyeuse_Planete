@@ -86,7 +86,6 @@ public class Food extends BaseEntity {
       String foodName,
       BigDecimal price,
       int totalQuantity,
-      Currency currency,
       LocalDateTime collectionStartTime,
       LocalDateTime collectionEndTime
   ) {
@@ -94,7 +93,6 @@ public class Food extends BaseEntity {
     this.foodName = foodName;
     this.price = price;
     this.totalQuantity = totalQuantity;
-    this.currency = currency;
     this.collectionStartTime = collectionStartTime;
     this.collectionEndTime = collectionEndTime;
   }
