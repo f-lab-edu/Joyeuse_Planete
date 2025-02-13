@@ -8,7 +8,6 @@ import org.apache.kafka.common.KafkaException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -16,15 +15,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class KafkaRetryAspect {
 
-  @Value("${kafka.lock.max.retry:3}")
-  private int MAX_RETRY;
   private static final int STOP_INTERVAL = 1000;
 
-  @Around("@annotation(com.f_lab.joyeuse_planete.core.kafka.aspect.KafkaRetry)")
-  public Object kafkaRetry(ProceedingJoinPoint joinPoint) {
-    int attempts = 0;
+  @Around("@annotation(retry)")
+  public Object kafkaRetry(ProceedingJoinPoint joinPoint, KafkaRetry retry) {
 
-    while (attempts < MAX_RETRY) {
+    for (int attempts = 0; attempts < retry.value(); attempts++) {
       try {
         return joinPoint.proceed();
       } catch (KafkaException e) {
@@ -44,5 +40,4 @@ public class KafkaRetryAspect {
 
     throw new JoyeusePlaneteApplicationException(ErrorCode.KAFKA_RETRY_FAIL_EXCEPTION);
   }
-
 }
