@@ -10,12 +10,14 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.ONE_SECOND;
+
 @Slf4j
 @Aspect
 @Component
 public class KafkaRetryAspect {
 
-  private static final int STOP_INTERVAL = 1000;
+  private static final int STOP_INTERVAL = Integer.parseInt(ONE_SECOND);
 
   @Around("@annotation(retry)")
   public Object kafkaRetry(ProceedingJoinPoint joinPoint, KafkaRetry retry) {
