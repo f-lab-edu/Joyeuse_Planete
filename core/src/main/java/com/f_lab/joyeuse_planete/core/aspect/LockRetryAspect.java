@@ -27,7 +27,7 @@ public class LockRetryAspect {
       try {
         return joinPoint.proceed();
       } catch (PessimisticLockException | LockTimeoutException e) {
-        LogUtil.retry(++attempts, joinPoint.getSignature().toString());
+        LogUtil.retry(attempts, retry.value(), joinPoint.getSignature().toString());
 
         // 재시도 전 잠시 멈추고 다시 시작
         // 각 시도 마다 WAIT_INTERVAL 이 MULTIPLIER 에 상응하는 값을 지수적으로 늘어납니다 (backoff)
