@@ -26,7 +26,7 @@ public class KafkaRetryAspect {
       try {
         return joinPoint.proceed();
       } catch (KafkaException e) {
-        LogUtil.retry(++attempts, joinPoint.getSignature().toString());
+        LogUtil.retry(attempts, retry.value(), joinPoint.getSignature().toString());
 
         try {
           Thread.sleep(STOP_INTERVAL);
