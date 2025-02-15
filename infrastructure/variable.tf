@@ -17,3 +17,15 @@ variable "DOCKER_PAYMENT_IMAGE" {
   description = "Docker payment image name"
   type        = string
 }
+
+variable "DATABASE_URL" {
+}
+
+variable "DATABASE_USERNAME" {
+}
+
+variable "DATABASE_PASSWORD" {
+}
+
+variable "DATABASE_NAME" {
+}

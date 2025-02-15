@@ -15,6 +15,10 @@ data "aws_instance" "KAFKA_SERVER" {
   instance_id = "i-04cb31060b856b83e"
 }
 
+data "aws_instance" "MONITORING_SERVER" {
+  instance_id = "i-0caeb491d91363733"
+}
+
 module "key_pair" {
   source = "./common/key"
 }
@@ -29,6 +33,10 @@ module "foods" {
   aws_security_group_id = module.securities.security_group_id
   aws_key_pair_name     = module.key_pair.aws_key_pair_name
   KAFKA_SERVER_IP       = data.aws_instance.KAFKA_SERVER.public_ip
+  MONITORING_SERVER_IP  = data.aws_instance.MONITORING_SERVER.public_ip
+  DATABASE_URL          = var.DATABASE_URL
+  DATABASE_USERNAME     = var.DATABASE_USERNAME
+  DATABASE_PASSWORD     = var.DATABASE_PASSWORD
 }
 
 module "orders" {
@@ -37,6 +45,10 @@ module "orders" {
   aws_security_group_id = module.securities.security_group_id
   aws_key_pair_name     = module.key_pair.aws_key_pair_name
   KAFKA_SERVER_IP       = data.aws_instance.KAFKA_SERVER.public_ip
+  MONITORING_SERVER_IP  = data.aws_instance.MONITORING_SERVER.public_ip
+  DATABASE_URL          = var.DATABASE_URL
+  DATABASE_USERNAME     = var.DATABASE_USERNAME
+  DATABASE_PASSWORD     = var.DATABASE_PASSWORD
 }
 
 module "notifications" {
@@ -45,6 +57,10 @@ module "notifications" {
   aws_security_group_id      = module.securities.security_group_id
   aws_key_pair_name          = module.key_pair.aws_key_pair_name
   KAFKA_SERVER_IP            = data.aws_instance.KAFKA_SERVER.public_ip
+  MONITORING_SERVER_IP       = data.aws_instance.MONITORING_SERVER.public_ip
+  DATABASE_URL               = var.DATABASE_URL
+  DATABASE_USERNAME          = var.DATABASE_USERNAME
+  DATABASE_PASSWORD          = var.DATABASE_PASSWORD
 }
 
 module "payment" {
@@ -53,6 +69,10 @@ module "payment" {
   aws_security_group_id = module.securities.security_group_id
   aws_key_pair_name     = module.key_pair.aws_key_pair_name
   KAFKA_SERVER_IP       = data.aws_instance.KAFKA_SERVER.public_ip
+  MONITORING_SERVER_IP  = data.aws_instance.MONITORING_SERVER.public_ip
+  DATABASE_URL          = var.DATABASE_URL
+  DATABASE_USERNAME     = var.DATABASE_USERNAME
+  DATABASE_PASSWORD     = var.DATABASE_PASSWORD
 }
 
  module "api_gate_way" {
