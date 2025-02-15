@@ -7,6 +7,7 @@ public enum OrderStatus {
 
   READY("주문을 생성하면 가지게 되는 초기 상태입니다."),
   IN_PROGRESS("주문이 진행되고 있는 상태입니다."),
+  READY_FOR_PAYMENT("결제에 앞서 모든 준비를 끝내놓은 상태입니다."),
   DONE("주문이 완료된 상태입니다."),
   MEMBER_CANCELED("승인된 결제가 사용자에 의해서 취소된 상태입니다."),
   STORE_CANCELED("승인된 결제가 가게에 의해서 취소된 상태입니다."),
