@@ -13,6 +13,7 @@ public enum ErrorCode {
   FOOD_QUANTITY_OVERFLOW("상품의 수량이 최대 값을 넘었습니다.", 406),
   ORDER_NOT_EXIST_EXCEPTION("존재하지 않는 주문입니다.", 406),
   CURRENCY_NOT_EXIST_EXCEPTION("존재하지 않는 화폐입니다.", 406),
+  PAYMENT_NOT_EXIST_EXCEPTION("존재하지 않는 결제입니다.", 406),
 
   // LOCK
   LOCK_ACQUISITION_FAIL_EXCEPTION("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요.",503),

@@ -1,7 +1,7 @@
 package com.f_lab.joyeuse_planete.core.domain;
 
 
-import com.f_lab.joyeuse_planete.core.domain.base.BaseTimeEntity;
+import com.f_lab.joyeuse_planete.core.domain.base.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,7 +20,9 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.THIRTY_MINUTES;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -31,7 +33,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @Table(name = "orders")
-public class Order extends BaseTimeEntity {
+public class Order extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -62,5 +64,10 @@ public class Order extends BaseTimeEntity {
     return (voucher != null)
         ? voucher.apply(food.calculateCost(quantity), food.getCurrency())
         : food.calculateCost(quantity);
+  }
+
+  public boolean checkCancellation() {
+    return food.getCollectionStartTime().isAfter(
+        LocalDateTime.now().plusMinutes(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(THIRTY_MINUTES))));
   }
 }
