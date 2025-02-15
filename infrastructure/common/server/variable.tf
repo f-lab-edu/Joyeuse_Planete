@@ -22,6 +22,18 @@ variable "KAFKA_SERVER_IP" {
 
 }
 
+variable "MONITORING_SERVER_IP" {
+}
+
+variable "DATABASE_URL" {
+}
+
+variable "DATABASE_USERNAME" {
+}
+
+variable "DATABASE_PASSWORD" {
+}
+
 variable "aws_security_group_id" {
   description = "Security group ID for EC2"
 }
