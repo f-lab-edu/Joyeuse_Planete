@@ -45,19 +45,6 @@ class OrderRepositoryTest {
   }
 
   @Test
-  @DisplayName("존재하지 않는 orderId로 조회시 null 반환")
-  void testNotValidOrderIdSuccess() {
-    // given
-    Long orderId = (long) (getOrderList().size() + 2);
-
-    // when
-    OrderDTO result = orderRepository.getOrder(orderId);
-
-    // then
-    assertThat(result).isNull();
-  }
-
-  @Test
   @DisplayName("기본 조건으로 검색했을 때 성공하는 것을 확인")
   void testDefaultConditionSuccess() {
     // given

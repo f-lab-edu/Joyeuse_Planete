@@ -34,7 +34,7 @@ spring:
 orders:
   events:
     topic:
-      create: orders.order-created-event
+      name: orders.order-created-event
       cancel: orders.order-cancellation-event
       fail: orders.orders-creation-failed-event
 

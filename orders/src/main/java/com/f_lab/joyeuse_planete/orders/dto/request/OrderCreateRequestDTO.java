@@ -49,11 +49,7 @@ public class OrderCreateRequestDTO {
     return OrderCreatedEvent.builder()
         .orderId(orderId)
         .foodId(foodId)
-        .foodName(foodName)
-        .storeId(storeId)
         .quantity(quantity)
-        .totalAmount(totalCost)
-        .voucherId(voucherId)
         .build();
   }
 }
