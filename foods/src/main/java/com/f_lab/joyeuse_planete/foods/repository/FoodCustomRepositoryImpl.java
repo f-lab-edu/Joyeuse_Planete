@@ -1,19 +1,17 @@
 package com.f_lab.joyeuse_planete.foods.repository;
 
-import com.f_lab.joyeuse_planete.foods.domain.FoodSearchCondition;
+import com.f_lab.joyeuse_planete.foods.dto.request.FoodSearchCondition;
 import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import com.f_lab.joyeuse_planete.foods.dto.response.QFoodDTO;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +23,12 @@ import static com.f_lab.joyeuse_planete.core.domain.QStore.store;
 public class FoodCustomRepositoryImpl implements FoodCustomRepository {
 
   private final JPAQueryFactory queryFactory;
-  private Map<String, OrderSpecifier> sortByMap = new HashMap<>();
+  private static final Map<String, OrderSpecifier> sortByMap = Map.of(
+      "RATE_HIGH", food.rate.desc()
+  );
 
   public FoodCustomRepositoryImpl(EntityManager em) {
     queryFactory = new JPAQueryFactory(em);
-  }
-
-  @PostConstruct
-  public void init() {
-    sortByMap.put("RATE_HIGH", food.rate.desc());
   }
 
   @Override

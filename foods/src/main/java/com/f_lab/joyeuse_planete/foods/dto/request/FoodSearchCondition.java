@@ -1,4 +1,4 @@
-package com.f_lab.joyeuse_planete.foods.domain;
+package com.f_lab.joyeuse_planete.foods.dto.request;
 
 
 import lombok.Data;
