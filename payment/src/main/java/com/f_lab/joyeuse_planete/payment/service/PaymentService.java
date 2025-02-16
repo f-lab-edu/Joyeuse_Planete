@@ -53,6 +53,11 @@ public class PaymentService {
     }
   }
 
+  @Transactional
+  public void processRefund(Long paymentId) {
+    Payment payment = findPaymentById(paymentId);
+  }
+
   public void sendKafkaPaymentProcessedEvent(PaymentProcessedEvent event) {
     try {
       kafkaService.sendKafkaEvent(PAYMENT_PROCESS_EVENT, event);
