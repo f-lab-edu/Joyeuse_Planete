@@ -35,10 +35,10 @@ public class KafkaConfig {
   @Value("${kafka.topic.partitions:3}")
   private int TOPIC_PARTITIONS;
 
-  @Value("${payments.events.topic.name}")
+  @Value("${payment.events.topics.process}")
   private String PAYMENT_PROCESSED_EVENT;
 
-  @Value("${payments.events.topic.fail}")
+  @Value("${payment.events.topics.process-fail}")
   private String PAYMENT_PROCESS_FAILED_EVENT;
 
   @Bean
@@ -107,7 +107,7 @@ public class KafkaConfig {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${payments.dead-letter-topic.name}")
+    @Value("${payment.dead-letter-topic}")
     private String DEAD_LETTER_TOPIC;
 
     @Override
