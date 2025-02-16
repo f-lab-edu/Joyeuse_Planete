@@ -3,7 +3,7 @@ package com.f_lab.joyeuse_planete.foods.repository;
 import com.f_lab.joyeuse_planete.core.domain.Currency;
 import com.f_lab.joyeuse_planete.core.domain.Food;
 import com.f_lab.joyeuse_planete.core.domain.Store;
-import com.f_lab.joyeuse_planete.foods.domain.FoodSearchCondition;
+import com.f_lab.joyeuse_planete.foods.dto.request.FoodSearchCondition;
 import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;

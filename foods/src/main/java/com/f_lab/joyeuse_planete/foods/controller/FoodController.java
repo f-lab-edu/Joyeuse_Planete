@@ -1,7 +1,7 @@
 package com.f_lab.joyeuse_planete.foods.controller;
 
 import com.f_lab.joyeuse_planete.core.util.web.CommonResponses;
-import com.f_lab.joyeuse_planete.foods.domain.FoodSearchCondition;
+import com.f_lab.joyeuse_planete.foods.dto.request.FoodSearchCondition;
 import com.f_lab.joyeuse_planete.foods.dto.request.CreateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.request.UpdateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
