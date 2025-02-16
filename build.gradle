@@ -52,6 +52,12 @@ subprojects {
 
 		// Prometheus 추가
 		implementation 'io.micrometer:micrometer-registry-prometheus'
+
+		// MySQL 추가
+		runtimeOnly 'com.mysql:mysql-connector-j'
+
+		// Bean Validator 추가
+		implementation 'org.hibernate.validator:hibernate-validator'
 	}
 
 	tasks.named('test') {
