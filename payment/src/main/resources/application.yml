@@ -27,6 +27,8 @@ foods:
     topics:
       reserve: foods.food-reserved-event
       reserve-fail: foods.food-reservation-failed-event
+      release: foods.food-release-event
+      release-fail: foods.food-release-fail-event
 
   dead-letter-topic: foods.dead-letter-topic
 
