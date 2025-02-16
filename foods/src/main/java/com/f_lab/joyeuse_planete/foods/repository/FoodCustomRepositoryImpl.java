@@ -25,15 +25,12 @@ import static com.f_lab.joyeuse_planete.core.domain.QStore.store;
 public class FoodCustomRepositoryImpl implements FoodCustomRepository {
 
   private final JPAQueryFactory queryFactory;
-  private Map<String, OrderSpecifier> sortByMap = new HashMap<>();
+  private static final Map<String, OrderSpecifier> sortByMap = Map.of(
+      "RATE_HIGH", food.rate.desc()
+  );
 
   public FoodCustomRepositoryImpl(EntityManager em) {
     queryFactory = new JPAQueryFactory(em);
-  }
-
-  @PostConstruct
-  public void init() {
-    sortByMap.put("RATE_HIGH", food.rate.desc());
   }
 
   @Override
@@ -89,9 +86,6 @@ public class FoodCustomRepositoryImpl implements FoodCustomRepository {
       if (sortByMap.containsKey(sort))
         size++;
     }
-
-    if (size == 0)
-      return new OrderSpecifier[]{ food.rate.desc() };
 
     OrderSpecifier[] list = new OrderSpecifier[size];
 
