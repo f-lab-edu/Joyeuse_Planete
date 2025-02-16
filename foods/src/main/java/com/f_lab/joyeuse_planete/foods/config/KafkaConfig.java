@@ -6,16 +6,13 @@ package com.f_lab.joyeuse_planete.foods.config;
 import com.f_lab.joyeuse_planete.core.kafka.config.KafkaConsumerConfig;
 import com.f_lab.joyeuse_planete.core.kafka.config.KafkaProducerConfig;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
-import com.f_lab.joyeuse_planete.core.kafka.util.ExceptionUtil;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.TopicPartition;
+
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,17 +24,13 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.transaction.KafkaTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 @Slf4j
 @Configuration
@@ -46,7 +39,10 @@ public class KafkaConfig {
   @Value("${kafka.topic.partitions:3}")
   private int TOPIC_PARTITIONS;
 
-  @Value("${foods.events.topic.fail}")
+  @Value("${foods.events.topics.reserve}")
+  private String FOOD_RESERVATION_EVENT;
+
+  @Value("${foods.events.topics.reserve-fail}")
   private String FOOD_RESERVATION_FAILED_EVENT;
 
   @Bean
@@ -62,6 +58,14 @@ public class KafkaConfig {
 
   @Bean
   public NewTopic foodsFoodsReservationProcessedEvent() {
+    return TopicBuilder
+        .name(FOOD_RESERVATION_EVENT)
+        .partitions(TOPIC_PARTITIONS)
+        .build();
+  }
+
+  @Bean
+  public NewTopic foodsFoodsReservationProcessedFailEvent() {
     return TopicBuilder
         .name(FOOD_RESERVATION_FAILED_EVENT)
         .partitions(TOPIC_PARTITIONS)
@@ -105,7 +109,7 @@ public class KafkaConfig {
   @RequiredArgsConstructor
   static class CustomKafkaConsumerConfig extends KafkaConsumerConfig {
 
-    @Value("${foods.dead-letter-topic.name}")
+    @Value("${foods.dead-letter-topic}")
     private String DEAD_LETTER_TOPIC;
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
