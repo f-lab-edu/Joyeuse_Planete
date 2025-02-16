@@ -77,7 +77,7 @@ class OrderServiceTest {
 
     // when
     when(orderRepository.findOrders(any(), any())).thenReturn(expected);
-    Page<OrderDTO> result = orderService.findOrders(condition, pageable);
+    Page<OrderDTO> result = orderService.getOrderList(condition, pageable);
 
     // then
     assertThat(result).isEqualTo(expected);
