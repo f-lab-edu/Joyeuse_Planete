@@ -12,4 +12,7 @@ dependencies {
 	// kafka 설정 추가
 	implementation 'org.springframework.kafka:spring-kafka'
 	testImplementation 'org.springframework.kafka:spring-kafka'
+
+	// prometheus
+	implementation 'io.prometheus:simpleclient_pushgateway'
 }
