@@ -1,22 +1,5 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-        exclude: "env, beans"
-
-  info:
-    java:
-      enabled: true
-
-    os:
-      enabled: true
-
 server:
-  port: 8080
-  tomcat:
-    mbeanregistry:
-      enabled: true
+  port: 8081
 
 spring:
   kafka:
@@ -27,19 +10,36 @@ spring:
     consumer:
       group-id: orders
 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
 orders:
   events:
-    topic:
-      name: orders.order-created-event
-      fail: orders.orders-creation-failed-event
+    topics:
+      create: orders.order-created-event
+      cancel: orders.order-cancellation-event
 
-  dead-letter-topic:
-    name: orders.dead-letter-topic
+  dead-letter-topic: orders.dead-letter-topic
 
 foods:
   events:
-    topic:
-      fail: foods.order-creation-failed-event
+    topics:
+      reserve: foods.food-reserved-event
+      reserve-fail: foods.food-reservation-failed-event
+      release: foods.food-release-event
+      release-fail: foods.food-release-fail-event
+
+  dead-letter-topic: foods.dead-letter-topic
+
+
+payment:
+  events:
+    topics:
+      process: payment.payment-processed-event
+      process-fail: payment.payment-processing-fail-event
+
+  dead-letter-topic: payment.dead-letter-topic
 
 kafka:
   topic:
@@ -48,43 +48,6 @@ kafka:
   container:
     concurrency: 3
 
-
 logging:
   level:
-    org:
-      apache:
-#        kafka: TRACE
-        orm:
-          jpa:
-            JpaTransactionManager: TRACE
-      hibernate.sql: TRACE
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVER_IP}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-        exclude: "env, beans"
-
-  info:
-    java:
-      enabled: true
-
-    os:
-      enabled: true
-
-server:
-  port: 8080
-  tomcat:
-    mbeanregistry:
-      enabled: true
+    org.hibernate.sql: TRACE

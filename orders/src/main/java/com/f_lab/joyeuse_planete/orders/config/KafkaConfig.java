@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,11 +36,11 @@ public class KafkaConfig {
   @Value("${kafka.topic.partitions:3}")
   int TOPIC_PARTITIONS;
 
-  @Value("${orders.events.topic.name}")
+  @Value("${orders.events.topics.create}")
   String ORDER_CREATED_EVENT;
 
-  @Value("${orders.events.topic.fail}")
-  String ORDER_CREATION_FAILED_EVENT;
+  @Value("${orders.events.topics.cancel}")
+  String ORDER_CANCELLATION_EVENT;
 
   @Bean
   public KafkaService kafkaService(KafkaTemplate<String, Object> kafkaTemplate) {
@@ -57,13 +56,12 @@ public class KafkaConfig {
   }
 
   @Bean
-  public NewTopic orderCreationFailedEvent() {
+  public NewTopic orderCancellationEvent() {
     return TopicBuilder
-        .name(ORDER_CREATION_FAILED_EVENT)
+        .name(ORDER_CANCELLATION_EVENT)
         .partitions(TOPIC_PARTITIONS)
         .build();
   }
-
 
   @Primary
   @Bean(name = { "transactionManager", "jpaTransactionManager" })
@@ -110,7 +108,7 @@ public class KafkaConfig {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${orders.dead-letter-topic.name}")
+    @Value("${orders.dead-letter-topic}")
     private String DEAD_LETTER_TOPIC;
 
     @Override

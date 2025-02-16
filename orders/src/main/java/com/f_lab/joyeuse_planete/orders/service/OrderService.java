@@ -1,9 +1,8 @@
 package com.f_lab.joyeuse_planete.orders.service;
 
-
-
 import com.f_lab.joyeuse_planete.core.domain.Order;
 import com.f_lab.joyeuse_planete.core.domain.OrderStatus;
+import com.f_lab.joyeuse_planete.core.events.OrderCancelEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
@@ -11,7 +10,7 @@ import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderSearchCondition;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderDTO;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
-import com.f_lab.joyeuse_planete.orders.dto.response.OrderCreateResponseDTO;
+import com.f_lab.joyeuse_planete.orders.dto.response.OrderPollingResponseDTO;
 import com.f_lab.joyeuse_planete.orders.repository.OrderRepository;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +30,48 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final KafkaService kafkaService;
 
-  @Value("${orders.events.topic.name}")
+  @Value("${orders.events.topics.create}")
   String ORDER_CREATED_EVENT;
 
-  public Page<OrderDTO> findOrders(OrderSearchCondition condition, Pageable pageable) {
+  @Value("${orders.events.topics.cancel}")
+  String ORDER_CANCELLATION_EVENT;
+
+  public Page<OrderDTO> getOrderList(OrderSearchCondition condition, Pageable pageable) {
     return orderRepository.findOrders(condition, pageable);
+  }
+
+  public OrderDTO getOrder(Long orderId) {
+    OrderDTO orderDTO = orderRepository.getOrder(orderId);
+
+    if (orderDTO == null)
+      throw new JoyeusePlaneteApplicationException(ErrorCode.ORDER_NOT_EXIST_EXCEPTION);
+
+    return orderDTO;
+  }
+
+  @Transactional
+  public void deleteOrderByMember(Long orderId) {
+    Order order;
+    try {
+      order = findOrderById(orderId);
+
+      if (!order.checkCancellation())
+        throw new JoyeusePlaneteApplicationException(ErrorCode.ORDER_CANCELLATION_NOT_AVAILABLE_EXCEPTION);
+
+      updateOrderStatus(orderId, OrderStatus.MEMBER_CANCELED);
+      order.setDeleted(true);
+      orderRepository.save(order);
+
+    } catch (JoyeusePlaneteApplicationException e) {
+      LogUtil.exception("OrderService.deleteOrderByMember", e);
+      throw e;
+
+    } catch (Exception e) {
+      LogUtil.exception("OrderService.deleteOrderByMember", e);
+      throw new JoyeusePlaneteApplicationException(ErrorCode.ORDER_CANCELLATION_FAIL_EXCEPTION);
+    }
+
+    sendKafkaOrderCancellationEvent(order);
   }
 
   @Transactional
@@ -46,7 +82,7 @@ public class OrderService {
   }
 
   @Transactional
-  public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
+  public void createFoodOrder(OrderCreateRequestDTO request) {
     Order order;
     try {
       order = orderRepository.saveOrder(request);
@@ -61,8 +97,6 @@ public class OrderService {
     }
 
     sendKafkaOrderCreatedEvent(request, order);
-
-    return new OrderCreateResponseDTO("PROCESSING");
   }
 
 
@@ -78,6 +112,23 @@ public class OrderService {
       LogUtil.exception("OrderService.sendKafkaOrderCreatedEvent", e);
       throw new RuntimeException(e);
     }
+  }
+
+  public void sendKafkaOrderCancellationEvent(Order order) {
+    try {
+      kafkaService.sendKafkaEvent(ORDER_CANCELLATION_EVENT, OrderCancelEvent.from(order));
+    } catch(JoyeusePlaneteApplicationException e) {
+      LogUtil.exception("OrderService.sendKafkaOrderCancellationEvent", e);
+      throw e;
+
+    } catch(Exception e) {
+      LogUtil.exception("OrderService.sendKafkaOrderCancellationEvent", e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  public OrderPollingResponseDTO polling(Long orderId) {
+    return OrderPollingResponseDTO.from(findOrderById(orderId));
   }
 
   private Order findOrderById(Long orderId) {
