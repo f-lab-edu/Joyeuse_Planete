@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: "env, beans"
+  info:
+    java:
+      enabled: true
+    os:
+      enabled: true
+
+  prometheus:
+    metrics:
+      export:
+        pushgateway:
+          enabled: true
+          base-url: ${MONITORING_SERVER_IP}
+          push-rate: 30s
+          job: foods-service
+        enabled: true
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_IP}
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    org.hibernate.sql: ERROR
