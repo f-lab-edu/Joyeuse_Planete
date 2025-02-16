@@ -30,6 +30,10 @@ public class Payment extends BaseEntity {
   @Id @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
+  private String paymentKey;
+
+  private String processor;
+
   private BigDecimal totalCost;
 
   @Enumerated(EnumType.STRING)
