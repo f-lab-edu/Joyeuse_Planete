@@ -1,5 +1,6 @@
 package com.f_lab.joyeuse_planete.foods.controller;
 
+import com.f_lab.joyeuse_planete.core.util.web.CommonResponses;
 import com.f_lab.joyeuse_planete.foods.domain.FoodSearchCondition;
 import com.f_lab.joyeuse_planete.foods.dto.request.CreateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.request.UpdateFoodRequestDTO;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.f_lab.joyeuse_planete.foods.controller.FoodController.ResponseUtil.FOOD_CREATE_SUCCESS;
 
 
 @RestController
@@ -52,7 +52,7 @@ public class FoodController {
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(FOOD_CREATE_SUCCESS);
+        .body(CommonResponses.CREATE_SUCCESS);
   }
 
   @PutMapping("/{foodId}")
@@ -62,7 +62,7 @@ public class FoodController {
 
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(ResponseUtil.FOOD_UPDATE_SUCCESS);
+        .body(CommonResponses.UPDATE_SUCCESS);
   }
 
   @DeleteMapping("/{foodId}")
@@ -71,13 +71,12 @@ public class FoodController {
 
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(ResponseUtil.FOOD_DELETE_SUCCESS);
+        .body(CommonResponses.DELETE_SUCCESS);
   }
 
-  static abstract class ResponseUtil {
-
-    public static final String FOOD_CREATE_SUCCESS = "성공적으로 생성되었습니다.";
-    public static final String FOOD_UPDATE_SUCCESS = "업데이트 요청이 완료되었습니다.";
-    public static final String FOOD_DELETE_SUCCESS = "삭제 요청이 완료되었습니다.";
+  @GetMapping("/ping")
+  public ResponseEntity<String> healthcheck() {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(CommonResponses.PONG);
   }
 }
