@@ -1,22 +1,5 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-        exclude: "env, beans"
-
-  info:
-    java:
-      enabled: true
-
-    os:
-      enabled: true
-
 server:
-  port: 8080
-  tomcat:
-    mbeanregistry:
-      enabled: true
+  port: 8082
 
 spring:
   kafka:
@@ -33,19 +16,28 @@ spring:
 
 orders:
   events:
-    topic:
-      name: orders.order-created-event
+    topics:
+      create: orders.order-created-event
       cancel: orders.order-cancellation-event
-      fail: orders.orders-creation-failed-event
 
-  dead-letter-topic:
-    name: orders.dead-letter-topic
+  dead-letter-topic: orders.dead-letter-topic
 
 foods:
   events:
-    topic:
-      name: foods.order-
-      fail: foods.order-creation-failed-event
+    topics:
+      reserve: foods.food-reserved-event
+      reserve-fail: foods.food-reservation-failed-event
+
+  dead-letter-topic: foods.dead-letter-topic
+
+
+payment:
+  events:
+    topics:
+      process: payment.payment-processed-event
+      process-fail: payment.payment-processing-fail-event
+
+  dead-letter-topic: payment.dead-letter-topic
 
 kafka:
   topic:
@@ -54,64 +46,6 @@ kafka:
   container:
     concurrency: 3
 
-
 logging:
   level:
-    org:
-      apache:
-        #        kafka: TRACE
-        orm:
-          jpa:
-            JpaTransactionManager: TRACE
-      hibernate.sql: TRACE
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-  kafka:
-    bootstrap-servers: ${KAFKA_SERVER_IP}
-
-  datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-    hibernate:
-      ddl-auto: validate
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-        exclude: "env, beans"
-
-  info:
-    java:
-      enabled: true
-
-    os:
-      enabled: true
-
-  prometheus:
-    metrics:
-      export:
-        pushgateway:
-          enabled: true
-          base-url: ${MONITORING_SERVER_IP}
-          push-rate: 30s
-          job: orders-service
-        enabled: true
-
-server:
-  port: 8080
-  tomcat:
-    mbeanregistry:
-      enabled: true
+    org.hibernate.sql: TRACE
