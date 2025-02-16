@@ -21,9 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @EmbeddedKafka
 @SpringBootTest
@@ -40,17 +38,16 @@ public class OrderServiceKafkaTest {
   @DisplayName("주문 생성 메서드 호출 후 성공")
   void testCreateOrderSuccess() {
     // given
-    OrderCreateResponseDTO expected = createOrderCreateResponseDTO("PROCESSING");
     OrderCreateRequestDTO request = createOrderCreateRequestDTO();
     Order order = createOrder();
 
     // when
     when(orderRepository.saveOrder(any())).thenReturn(order);
     doNothing().when(kafkaService).sendKafkaEvent(anyString(), any(Object.class));
-    OrderCreateResponseDTO response = orderService.createFoodOrder(request);
+    orderService.createFoodOrder(request);
 
     // then
-    assertThat(response.getMessage()).isEqualTo(expected.getMessage());
+    verify(orderRepository, times(1)).saveOrder(any());
   }
 
   @Test
@@ -105,12 +102,6 @@ public class OrderServiceKafkaTest {
         .totalCost(new BigDecimal("19.99"))
         .quantity(2)
         .voucherId(200L)
-        .paymentInformation(OrderCreateRequestDTO.PaymentInformation.builder()
-            .cardNumber("1234-5678-9012-3456")
-            .cardHolderName("John Doe")
-            .expiryDate("12/25")
-            .cvc("123")
-            .build())
         .build();
   }
 
