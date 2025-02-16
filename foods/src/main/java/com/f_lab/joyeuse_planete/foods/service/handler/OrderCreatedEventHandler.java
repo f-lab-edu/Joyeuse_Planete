@@ -1,7 +1,7 @@
 package com.f_lab.joyeuse_planete.foods.service.handler;
 
 
-import com.f_lab.joyeuse_planete.core.events.FoodReservationFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.FoodReservationOrReleaseFailedEvent;
 import com.f_lab.joyeuse_planete.core.events.FoodReservationProcessedEvent;
 import com.f_lab.joyeuse_planete.core.events.OrderCreatedEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
@@ -23,18 +23,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional("transactionManager")
-@KafkaListener(topics = { "${orders.events.topic.name}" }, groupId = "${spring.kafka.consumer.group-id}")
+@KafkaListener(topics = { "${orders.events.topics.create}" }, groupId = "${spring.kafka.consumer.group-id}")
 public class OrderCreatedEventHandler {
-
 
   private final FoodService foodService;
   private final KafkaService kafkaService;
 
-  @Value("${foods.events.topic.name}")
-  private String foodReservationEvent;
+  @Value("${foods.events.topics.reserve}")
+  private String FOOD_RESERVATION_EVENT;
 
-  @Value("${foods.events.topic.fail}")
-  private String foodProcessFailEvent;
+  @Value("${foods.events.topics.reserve-fail}")
+  private String FOOD_RESERVATION_FAIL_EVENT;
 
   @KafkaHandler
   public void reserveFoodAfterOrderCreatedEvent(@Payload OrderCreatedEvent orderCreatedEvent) {
@@ -42,25 +41,25 @@ public class OrderCreatedEventHandler {
       foodService.reserve(orderCreatedEvent.getFoodId(), orderCreatedEvent.getQuantity());
     } catch (JoyeusePlaneteApplicationException e) {
       LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent", e);
-      kafkaService.sendKafkaEvent(foodProcessFailEvent, FoodReservationFailedEvent.toEvent(orderCreatedEvent, e.getErrorCode()));
+      kafkaService.sendKafkaEvent(FOOD_RESERVATION_FAIL_EVENT, FoodReservationOrReleaseFailedEvent.toEvent(orderCreatedEvent, e.getErrorCode()));
 
       throw e;
 
     } catch(Exception e) {
       LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent", e);
-      kafkaService.sendKafkaEvent(foodProcessFailEvent, FoodReservationFailedEvent.toEvent(orderCreatedEvent, ErrorCode.UNKNOWN_EXCEPTION));
+      kafkaService.sendKafkaEvent(FOOD_RESERVATION_FAIL_EVENT, FoodReservationOrReleaseFailedEvent.toEvent(orderCreatedEvent, ErrorCode.UNKNOWN_EXCEPTION));
 
       throw e;
     }
 
-    sendKafkaOrderCreatedEvent(FoodReservationProcessedEvent.toEvent(orderCreatedEvent));
+    sendKafkaFoodReservationEvent(FoodReservationProcessedEvent.toEvent(orderCreatedEvent));
   }
 
-  private void sendKafkaOrderCreatedEvent(FoodReservationProcessedEvent foodReservationProcessedEvent) {
+  private void sendKafkaFoodReservationEvent(FoodReservationProcessedEvent foodReservationProcessedEvent) {
     try {
-      kafkaService.sendKafkaEvent(foodReservationEvent, foodReservationProcessedEvent);
+      kafkaService.sendKafkaEvent(FOOD_RESERVATION_EVENT, foodReservationProcessedEvent);
     } catch (Exception e) {
-      LogUtil.exception("OrderCreatedEventHandler.sendKafkaOrderCreatedEvent", e);
+      LogUtil.exception("OrderCreatedEventHandler.sendKafkaFoodReservationEvent", e);
     }
   }
 }
