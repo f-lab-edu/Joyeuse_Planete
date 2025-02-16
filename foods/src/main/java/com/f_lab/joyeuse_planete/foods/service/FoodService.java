@@ -10,7 +10,6 @@ import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
