@@ -5,6 +5,7 @@ import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.response.PaymentResponse;
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.token.PaymentToken;
+import com.f_lab.joyeuse_planete.payment.service.thirdparty.toss.TossPaymentProvider;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -44,5 +45,6 @@ public class PaymentManagerService {
   @PostConstruct
   private void init() {
     paymentProviders = new ArrayList<>();
+    paymentProviders.add(new TossPaymentProvider());
   }
 }
