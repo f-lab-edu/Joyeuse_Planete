@@ -28,7 +28,7 @@ foods:
       reserve: foods.food-reserved-event
       reserve-fail: foods.food-reservation-failed-event
       release: foods.food-release-event
-      release-fail: foods.food-release-fail-event
+      release-fail: foods.food-release-failed-event
 
   dead-letter-topic: foods.dead-letter-topic
 
@@ -37,7 +37,9 @@ payment:
   events:
     topics:
       process: payment.payment-processed-event
-      process-fail: payment.payment-processing-fail-event
+      process-fail: payment.payment-processing-failed-event
+      refund: payment.refund-processed-event
+      refund-fail: payment.refund-processing-failed-event
 
   dead-letter-topic: payment.dead-letter-topic
 
