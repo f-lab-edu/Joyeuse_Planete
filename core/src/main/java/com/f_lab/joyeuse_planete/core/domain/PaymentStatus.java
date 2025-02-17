@@ -11,6 +11,10 @@ public enum PaymentStatus {
   CANCELED("승인된 결제가 취소된 상태입니다."),
   ABORTED("결제 승인이 실패한 상태입니다."),
   EXPIRED("결제 유효 시간 5분이 지나 거래가 취소된 상태입니다."),
+
+  REFUND_IN_PROGRESS(""),
+  REFUND_ABORTED(""),
+  REFUND_DONE(""),
   ;
 
   private final String description;
