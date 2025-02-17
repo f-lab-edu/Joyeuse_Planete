@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PaymentProcessedEvent {
+public class PaymentOrRefundProcessedEvent {
 
   private Long orderId;
 
-  public static PaymentProcessedEvent toEvent(Long orderId) {
-    return PaymentProcessedEvent.builder()
+  public static PaymentOrRefundProcessedEvent toEvent(Long orderId) {
+    return PaymentOrRefundProcessedEvent.builder()
         .orderId(orderId)
         .build();
   }

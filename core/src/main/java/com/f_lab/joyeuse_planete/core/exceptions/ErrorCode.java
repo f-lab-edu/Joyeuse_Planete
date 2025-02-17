@@ -16,7 +16,10 @@ public enum ErrorCode {
   ORDER_CANCELLATION_NOT_AVAILABLE_EXCEPTION("요청하신 주문 취소가 주문 취소허용 시간을 넘겨 진행되지 않았습니다.", 401),
   ORDER_CANCELLATION_FAIL_EXCEPTION("요청하신 주문 취소가 진행되지 않았습니다. 다시 시도해주세요", 406),
   CURRENCY_NOT_EXIST_EXCEPTION("존재하지 않는 화폐입니다.", 400),
+
+  // 결제
   PAYMENT_NOT_EXIST_EXCEPTION("존재하지 않는 결제입니다.", 400),
+  PAYMENT_NOT_SUPPORTED("지원하지 않는 결제입니다.", 400),
   UNKNOWN_EXCEPTION("알 수 없는 오류가 발생하였습니다. 다시 시도해주세요.", 500),
 
   // LOCK
