@@ -58,6 +58,9 @@ subprojects {
 
 		// Bean Validator 추가
 		implementation 'org.hibernate.validator:hibernate-validator'
+
+		// WebFlux 추가
+		implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	}
 
 	tasks.named('test') {
