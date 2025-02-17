@@ -1,7 +1,5 @@
 package com.f_lab.joyeuse_planete.payment.service.handler;
 
-
-
 import com.f_lab.joyeuse_planete.core.events.PaymentOrRefundProcessedEvent;
 import com.f_lab.joyeuse_planete.core.events.PaymentOrRefundProcessingFailedEvent;
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;

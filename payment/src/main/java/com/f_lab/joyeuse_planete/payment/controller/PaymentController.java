@@ -17,8 +17,6 @@ import java.math.BigDecimal;
 @RequestMapping("/api/v1/payment")
 public class PaymentController {
 
-  private static final String TOSS = "토스";
-
   private final PaymentService paymentService;
 
   @GetMapping("/toss-success")
@@ -26,7 +24,7 @@ public class PaymentController {
                           @RequestParam("orderId") Long orderId,
                           @RequestParam("amount") BigDecimal amount) {
 
-    paymentService.processPaymentSuccess(paymentKey, orderId, amount, TOSS);
+    paymentService.processPaymentSuccessToss(paymentKey, orderId, amount);
   }
 
   @GetMapping("/toss-fail")
@@ -39,6 +37,6 @@ public class PaymentController {
       return;
     }
 
-    paymentService.processPaymentFailure(orderId, code, message, TOSS);
+    paymentService.processPaymentFailureToss(orderId, code, message);
   }
 }
