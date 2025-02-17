@@ -2,7 +2,7 @@ package com.f_lab.joyeuse_planete.payment.service;
 
 import com.f_lab.joyeuse_planete.core.domain.Payment;
 import com.f_lab.joyeuse_planete.core.domain.PaymentStatus;
-import com.f_lab.joyeuse_planete.core.events.PaymentProcessedEvent;
+import com.f_lab.joyeuse_planete.core.events.PaymentOrRefundProcessedEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
@@ -58,7 +58,7 @@ public class PaymentService {
     Payment payment = findPaymentById(paymentId);
   }
 
-  public void sendKafkaPaymentProcessedEvent(PaymentProcessedEvent event) {
+  public void sendKafkaPaymentProcessedEvent(PaymentOrRefundProcessedEvent event) {
     try {
       kafkaService.sendKafkaEvent(PAYMENT_PROCESS_EVENT, event);
     } catch(Exception e) {
