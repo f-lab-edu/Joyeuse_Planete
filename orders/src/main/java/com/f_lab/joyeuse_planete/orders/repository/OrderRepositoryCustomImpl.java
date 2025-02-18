@@ -29,7 +29,7 @@ import static com.f_lab.joyeuse_planete.core.domain.QPayment.payment;
 
 public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
-  private Map<String, OrderSpecifier> sortByMap = Map.of(
+  private static final Map<String, OrderSpecifier> sortByMap = Map.of(
       "PRICE_LOW", order.totalCost.asc(),
       "PRICE_HIGH", order.totalCost.desc(),
       "DATE_NEW", order.createdAt.desc(),

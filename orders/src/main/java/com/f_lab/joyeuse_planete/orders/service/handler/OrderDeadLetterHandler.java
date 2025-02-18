@@ -39,12 +39,16 @@ public class OrderDeadLetterHandler {
       return;
     }
 
+    sleep(FIVE_SECONDS);
+
+    kafkaService.sendKafkaEvent(originalTopic, orderCancellationEvent);
+  }
+
+  private void sleep(String seconds) {
     try {
-      Thread.sleep(Integer.parseInt(FIVE_SECONDS));
+      Thread.sleep(Integer.parseInt(seconds));
     } catch (Throwable e) {
       throw new RetryableException();
     }
-
-    kafkaService.sendKafkaEvent(originalTopic, orderCancellationEvent);
   }
 }
