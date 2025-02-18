@@ -50,7 +50,7 @@ public class OrderService {
   }
 
   @Transactional
-  public void deleteOrderByMember(Long orderId) {
+  public void deleteOrderByMemberId(Long orderId) {
     Order order;
     try {
       order = findOrderById(orderId);
