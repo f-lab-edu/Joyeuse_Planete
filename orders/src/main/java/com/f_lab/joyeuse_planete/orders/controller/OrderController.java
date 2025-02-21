@@ -63,7 +63,7 @@ public class OrderController {
 
   @DeleteMapping("/member/{orderId}")
   public ResponseEntity<String> deleteMemberOrder(@PathVariable("orderId") Long orderId) {
-    orderService.deleteOrderByMemberId(orderId);
+    orderService.deleteOrderByMember(orderId);
 
     return ResponseEntity
         .status(HttpStatus.OK)
