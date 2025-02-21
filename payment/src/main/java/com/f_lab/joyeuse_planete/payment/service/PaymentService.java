@@ -8,7 +8,6 @@ import com.f_lab.joyeuse_planete.core.events.RefundProcessedEvent;
 import com.f_lab.joyeuse_planete.core.events.RefundProcessingFailedEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
-import com.f_lab.joyeuse_planete.core.exceptions.TransactionRollbackException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.payment.repository.PaymentRepository;
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.PaymentManagerService;
@@ -93,8 +92,6 @@ public class PaymentService {
         errorCode,
         isRetryable
     ));
-
-    throw new TransactionRollbackException(e);
   }
 
   private void handleRefundSuccess(Payment payment) {
@@ -117,8 +114,6 @@ public class PaymentService {
         errorCode,
         isRetryable
     ));
-
-    throw new TransactionRollbackException(e);
   }
 
   private Payment findPaymentById(Long paymentId) {
