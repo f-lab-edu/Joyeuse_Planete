@@ -1,10 +1,14 @@
 package com.f_lab.joyeuse_planete.core.events;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FoodReservationProcessedEvent {
 
   private Long orderId;
