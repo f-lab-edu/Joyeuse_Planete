@@ -2,11 +2,13 @@ package com.f_lab.joyeuse_planete.payment.service;
 
 import com.f_lab.joyeuse_planete.core.domain.Payment;
 import com.f_lab.joyeuse_planete.core.domain.PaymentStatus;
-import com.f_lab.joyeuse_planete.core.events.PaymentOrRefundProcessedEvent;
-import com.f_lab.joyeuse_planete.core.events.PaymentOrRefundProcessingFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.PaymentProcessedEvent;
+import com.f_lab.joyeuse_planete.core.events.PaymentProcessingFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.RefundProcessedEvent;
+import com.f_lab.joyeuse_planete.core.events.RefundProcessingFailedEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
-import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
+import com.f_lab.joyeuse_planete.core.exceptions.TransactionRollbackException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.payment.repository.PaymentRepository;
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.PaymentManagerService;
@@ -15,7 +17,7 @@ import com.f_lab.joyeuse_planete.payment.service.thirdparty.exceptions.PaymentRe
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.response.PaymentResponse;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -34,19 +36,7 @@ public class PaymentService {
 
   private final PaymentRepository paymentRepository;
   private final PaymentManagerService paymentManagerService;
-  private final KafkaService kafkaService;
-
-  @Value("${payment.events.topics.process}")
-  private String PAYMENT_PROCESS_EVENT;
-
-  @Value("${payment.events.topics.process-fail}")
-  private String PAYMENT_PROCESS_FAIL_EVENT;
-
-  @Value("${payment.events.topics.refund}")
-  private String PAYMENT_REFUND_PROCESSED_EVENT;
-
-  @Value("${payment.events.topics.refund-fail}")
-  private String PAYMENT_REFUND_FAIL_EVENT;
+  private final ApplicationEventPublisher eventPublisher;
 
 
   @Transactional
@@ -68,9 +58,7 @@ public class PaymentService {
       LogUtil.exception("PaymentService.processPaymentFailureToss", e);
     }
 
-    sendKafkaPaymentEvent(
-        PAYMENT_PROCESS_FAIL_EVENT,
-        PaymentOrRefundProcessingFailedEvent.toEvent(orderId, ErrorCode.PAYMENT_UNKNOWN_EXCEPTION, false));
+    eventPublisher.publishEvent(PaymentProcessingFailedEvent.toEvent(orderId, ErrorCode.PAYMENT_UNKNOWN_EXCEPTION, false));
   }
 
   @Transactional
@@ -88,9 +76,7 @@ public class PaymentService {
     payment.setStatus(PaymentStatus.DONE);
     paymentRepository.save(payment);
 
-    sendKafkaPaymentEvent(
-        PAYMENT_PROCESS_EVENT,
-        PaymentOrRefundProcessedEvent.toEvent(payment.getOrder().getId()));
+    eventPublisher.publishEvent(PaymentProcessedEvent.toEvent(payment.getOrder().getId()));
   }
 
   private void handleFailedPayment(Payment payment, Long orderId, Throwable e) {
@@ -102,21 +88,19 @@ public class PaymentService {
     ErrorCode errorCode = getErrorCodeFromException(e);
     boolean isRetryable = (e instanceof PaymentRetryableException);
 
-    sendKafkaPaymentEvent(
-        PAYMENT_PROCESS_FAIL_EVENT,
-        PaymentOrRefundProcessingFailedEvent.toEvent(
-          orderId,
-          errorCode,
-          isRetryable
+    eventPublisher.publishEvent(PaymentProcessingFailedEvent.toEvent(
+        payment.getOrder().getId(),
+        errorCode,
+        isRetryable
     ));
+
+    throw new TransactionRollbackException(e);
   }
 
   private void handleRefundSuccess(Payment payment) {
     payment.setStatus(PaymentStatus.REFUND_DONE);
     paymentRepository.save(payment);
-    sendKafkaPaymentEvent(
-        PAYMENT_REFUND_PROCESSED_EVENT,
-        PaymentOrRefundProcessedEvent.toEvent(payment.getOrder().getId()));
+    eventPublisher.publishEvent(RefundProcessedEvent.toEvent(payment.getOrder().getId()));
   }
 
   private void handleRefundFailure(Payment payment, Throwable e) {
@@ -128,21 +112,13 @@ public class PaymentService {
     ErrorCode errorCode = getErrorCodeFromException(e);
     boolean isRetryable = true;
 
-    sendKafkaPaymentEvent(
-        PAYMENT_REFUND_FAIL_EVENT,
-        PaymentOrRefundProcessingFailedEvent.toEvent(
-            payment.getOrder().getId(),
-            errorCode,
-            isRetryable
-        ));
-  }
+    eventPublisher.publishEvent(RefundProcessingFailedEvent.toEvent(
+        payment.getOrder().getId(),
+        errorCode,
+        isRetryable
+    ));
 
-  public void sendKafkaPaymentEvent(String event, Object payload) {
-    try {
-      kafkaService.sendKafkaEvent(event, payload);
-    } catch(Exception e) {
-      LogUtil.exception("PaymentService.sendKafkaPaymentEvent", e);
-    }
+    throw new TransactionRollbackException(e);
   }
 
   private Payment findPaymentById(Long paymentId) {
