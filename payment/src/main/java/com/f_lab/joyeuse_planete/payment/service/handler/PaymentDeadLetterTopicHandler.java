@@ -1,7 +1,7 @@
 package com.f_lab.joyeuse_planete.payment.service.handler;
 
-import com.f_lab.joyeuse_planete.core.events.PaymentOrRefundProcessedEvent;
-import com.f_lab.joyeuse_planete.core.events.PaymentOrRefundProcessingFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.PaymentProcessedEvent;
+import com.f_lab.joyeuse_planete.core.events.PaymentProcessingFailedEvent;
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
 
@@ -28,7 +28,7 @@ public class PaymentDeadLetterTopicHandler {
   private final KafkaService kafkaService;
 
   @KafkaHandler
-  public void processDeadPaymentProcessedEvent(@Payload PaymentOrRefundProcessedEvent paymentOrRefundProcessedEvent,
+  public void processDeadPaymentProcessedEvent(@Payload PaymentProcessedEvent paymentOrRefundProcessedEvent,
                                                @Header(value = KafkaHeaders.EXCEPTION_FQCN, required = false) String exceptionName,
                                                @Header(value = KafkaHeaders.EXCEPTION_MESSAGE, required = false) String exceptionMessage,
                                                @Header(value = KafkaHeaders.ORIGINAL_TOPIC, required = false) String originalTopic) {
@@ -37,7 +37,7 @@ public class PaymentDeadLetterTopicHandler {
   }
 
   @KafkaHandler
-  public void processDeadPaymentProcessingFailedEvent(@Payload PaymentOrRefundProcessingFailedEvent paymentOrRefundProcessingFailedEvent,
+  public void processDeadPaymentProcessingFailedEvent(@Payload PaymentProcessingFailedEvent paymentOrRefundProcessingFailedEvent,
                                                       @Header(value = KafkaHeaders.EXCEPTION_FQCN, required = false) String exceptionName,
                                                       @Header(value = KafkaHeaders.EXCEPTION_MESSAGE, required = false) String exceptionMessage,
                                                       @Header(value = KafkaHeaders.ORIGINAL_TOPIC, required = false) String originalTopic) {
