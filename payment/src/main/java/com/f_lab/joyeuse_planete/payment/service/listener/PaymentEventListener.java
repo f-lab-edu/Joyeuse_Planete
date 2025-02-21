@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
-import static org.springframework.transaction.event.TransactionPhase.AFTER_ROLLBACK;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class PaymentEventListener {
     kafkaService.sendKafkaEvent(PAYMENT_PROCESS_EVENT, event);
   }
 
-  @TransactionalEventListener(phase = AFTER_ROLLBACK)
+  @TransactionalEventListener(phase = AFTER_COMMIT)
   public void on(PaymentProcessingFailedEvent event) {
     kafkaService.sendKafkaEvent(PAYMENT_PROCESS_FAIL_EVENT, event);
   }
@@ -46,7 +45,7 @@ public class PaymentEventListener {
     kafkaService.sendKafkaEvent(PAYMENT_REFUND_PROCESSED_EVENT, event);
   }
 
-  @TransactionalEventListener(phase = AFTER_ROLLBACK)
+  @TransactionalEventListener(phase = AFTER_COMMIT)
   public void on(RefundProcessingFailedEvent event) {
     kafkaService.sendKafkaEvent(PAYMENT_REFUND_FAIL_EVENT, event);
   }
