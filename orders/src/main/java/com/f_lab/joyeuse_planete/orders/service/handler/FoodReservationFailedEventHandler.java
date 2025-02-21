@@ -1,6 +1,6 @@
 package com.f_lab.joyeuse_planete.orders.service.handler;
 
-import com.f_lab.joyeuse_planete.core.events.FoodReservationOrReleaseFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.FoodReservationFailedEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCodeOrderStatusTranslator;
 import com.f_lab.joyeuse_planete.orders.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class FoodReservationFailedEventHandler {
   private final OrderService orderService;
 
   @KafkaHandler
-  public void processFoodReservationFailEvent(@Payload FoodReservationOrReleaseFailedEvent foodReservationFailedEvent) {
+  public void processFoodReservationFailEvent(@Payload FoodReservationFailedEvent foodReservationFailedEvent) {
     orderService.updateOrderStatus(
         foodReservationFailedEvent.getOrderId(),
         ErrorCodeOrderStatusTranslator.translate(foodReservationFailedEvent.getErrorCode()));
