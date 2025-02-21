@@ -51,7 +51,7 @@ public class FoodCustomRepositoryImpl implements FoodCustomRepository {
         .innerJoin(food.currency, currency)
         .innerJoin(food.store, store)
         .where(eqFoodNameTagsAndStoreName(condition.getSearch()))
-        .orderBy(getOrders(condition.getSortBy()))
+        .orderBy(getOrderSpecifiers(condition.getSortBy()))
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize())
         .fetch();
@@ -77,24 +77,14 @@ public class FoodCustomRepositoryImpl implements FoodCustomRepository {
         : null;
   }
 
-  private OrderSpecifier[] getOrders(List<String> sortBy) {
-    int size = 0, idx = 0;
+  private OrderSpecifier[] getOrderSpecifiers(List<String> sortBy) {
+    OrderSpecifier[] specifiedOrders = sortBy.stream()
+        .filter(sortByMap::containsKey)
+        .map(sortByMap::get)
+        .toArray(OrderSpecifier[]::new);
 
-    for (String sort : sortBy) {
-      if (sortByMap.containsKey(sort))
-        size++;
-    }
-
-    if (size == 0)
-      return new OrderSpecifier[]{ food.rate.desc() };
-
-    OrderSpecifier[] list = new OrderSpecifier[size];
-
-    for (String sort : sortBy) {
-      if (sortByMap.containsKey(sort))
-        list[idx++] = sortByMap.get(sort);
-    }
-
-    return list;
+    return specifiedOrders.length > 0
+        ? specifiedOrders
+        : new OrderSpecifier[]{ food.rate.desc() };
   }
 }
