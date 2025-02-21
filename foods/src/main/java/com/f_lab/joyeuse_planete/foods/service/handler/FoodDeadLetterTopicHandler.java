@@ -1,7 +1,8 @@
 package com.f_lab.joyeuse_planete.foods.service.handler;
 
 import com.f_lab.joyeuse_planete.core.events.FoodReleaseEvent;
-import com.f_lab.joyeuse_planete.core.events.FoodReservationOrReleaseFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.FoodReleaseFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.FoodReservationFailedEvent;
 import com.f_lab.joyeuse_planete.core.events.FoodReservationProcessedEvent;
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
 import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
@@ -39,7 +40,7 @@ public class FoodDeadLetterTopicHandler {
   }
 
   @KafkaHandler
-  public void processDeadFoodReservationOrReleaseFailedEvent(@Payload FoodReservationOrReleaseFailedEvent foodReservationFailedEvent,
+  public void processDeadFoodReservationOrReleaseFailedEvent(@Payload FoodReservationFailedEvent foodReservationFailedEvent,
                                                              @Header(value = KafkaHeaders.EXCEPTION_FQCN, required = false) String exceptionName,
                                                              @Header(value = KafkaHeaders.EXCEPTION_MESSAGE, required = false) String exceptionMessage,
                                                              @Header(value = KafkaHeaders.ORIGINAL_TOPIC, required = false) String originalTopic) {
@@ -49,6 +50,15 @@ public class FoodDeadLetterTopicHandler {
 
   @KafkaHandler
   public void processDeadFoodReleaseEvent(@Payload FoodReleaseEvent foodReleaseEvent,
+                                          @Header(value = KafkaHeaders.EXCEPTION_FQCN, required = false) String exceptionName,
+                                          @Header(value = KafkaHeaders.EXCEPTION_MESSAGE, required = false) String exceptionMessage,
+                                          @Header(value = KafkaHeaders.ORIGINAL_TOPIC, required = false) String originalTopic) {
+
+    handleDeadEventsForRetries(foodReleaseEvent, exceptionName, exceptionMessage, originalTopic);
+  }
+
+  @KafkaHandler
+  public void processDeadFoodReleaseEvent(@Payload FoodReleaseFailedEvent foodReleaseEvent,
                                           @Header(value = KafkaHeaders.EXCEPTION_FQCN, required = false) String exceptionName,
                                           @Header(value = KafkaHeaders.EXCEPTION_MESSAGE, required = false) String exceptionMessage,
                                           @Header(value = KafkaHeaders.ORIGINAL_TOPIC, required = false) String originalTopic) {
