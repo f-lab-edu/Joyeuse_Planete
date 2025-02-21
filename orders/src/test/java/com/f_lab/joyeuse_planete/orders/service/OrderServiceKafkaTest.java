@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import java.math.BigDecimal;
@@ -30,7 +31,7 @@ public class OrderServiceKafkaTest {
   @InjectMocks
   OrderService orderService;
   @Mock
-  KafkaService kafkaService;
+  ApplicationEventPublisher eventPublisher;
   @Mock
   OrderRepository orderRepository;
 
@@ -43,7 +44,7 @@ public class OrderServiceKafkaTest {
 
     // when
     when(orderRepository.saveOrder(any())).thenReturn(order);
-    doNothing().when(kafkaService).sendKafkaEvent(anyString(), any(Object.class));
+    doNothing().when(eventPublisher).publishEvent(any(Object.class));
     orderService.createFoodOrder(request);
 
     // then
@@ -76,22 +77,6 @@ public class OrderServiceKafkaTest {
     // then
     assertThatThrownBy(() -> orderService.createFoodOrder(request))
         .isInstanceOf(RuntimeException.class);
-  }
-
-  @Test
-  @DisplayName("주문 생성 메서드 호출 후 카프카 관련 에러로 인한 실패")
-  void testCreateOrderRepositoryKafkaServiceFail() {
-    // given
-    OrderCreateRequestDTO request = createOrderCreateRequestDTO();
-    Order order = createOrder();
-
-    // when
-    when(orderRepository.saveOrder(any())).thenReturn(order);
-    doThrow(JoyeusePlaneteApplicationException.class).when(kafkaService).sendKafkaEvent(any(), any());
-
-    // then
-    assertThatThrownBy(() -> orderService.createFoodOrder(request))
-        .isInstanceOf(JoyeusePlaneteApplicationException.class);
   }
 
   private OrderCreateRequestDTO createOrderCreateRequestDTO() {
