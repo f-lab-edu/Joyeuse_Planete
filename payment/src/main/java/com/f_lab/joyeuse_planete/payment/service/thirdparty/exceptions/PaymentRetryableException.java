@@ -1,5 +1,6 @@
 package com.f_lab.joyeuse_planete.payment.service.thirdparty.exceptions;
 
+import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,6 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PaymentRetryableException extends Exception {
 
-  private String code;
-  private String description;
+  private final ErrorCode errorCode;
 }
