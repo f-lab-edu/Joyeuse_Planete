@@ -51,7 +51,8 @@ public class PaymentService {
 
   @Transactional
   public void processPaymentSuccessToss(String paymentKey, Long orderId, BigDecimal amount) {
-    Payment payment = paymentRepository.save(paymentKey, TOSS, orderId, amount, PaymentStatus.IN_PROGRESS.toString());
+    paymentRepository.save(paymentKey, TOSS, orderId, amount, PaymentStatus.IN_PROGRESS.toString());
+    Payment payment = findPaymentByPaymentKey(paymentKey);
     Mono<PaymentResponse> result = paymentManagerService.processPayment(payment);
 
     result.subscribe(
@@ -69,7 +70,7 @@ public class PaymentService {
 
     sendKafkaPaymentEvent(
         PAYMENT_PROCESS_FAIL_EVENT,
-        PaymentOrRefundProcessingFailedEvent.toEvent(orderId, code, message, false));
+        PaymentOrRefundProcessingFailedEvent.toEvent(orderId, ErrorCode.PAYMENT_UNKNOWN_EXCEPTION, false));
   }
 
   @Transactional
@@ -98,27 +99,13 @@ public class PaymentService {
     payment.setStatus(PaymentStatus.ABORTED);
     paymentRepository.save(payment);
 
-    String errorMessage = e.getMessage();
-    String errorCode = "UNKNOWN_ERROR";
-    boolean isRetryable = false;
-
-    if (e instanceof PaymentRetryableException) {
-      PaymentRetryableException ex = (PaymentRetryableException) e;
-      errorMessage = ex.getDescription();
-      errorCode = ex.getCode();
-      isRetryable = true;
-
-    } else if (e instanceof PaymentNonRetryableException) {
-      PaymentNonRetryableException ex = (PaymentNonRetryableException) e;
-      errorMessage = ex.getMessage();
-      errorCode = ex.getCode();
-    }
+    ErrorCode errorCode = getErrorCodeFromException(e);
+    boolean isRetryable = (e instanceof PaymentRetryableException);
 
     sendKafkaPaymentEvent(
         PAYMENT_PROCESS_FAIL_EVENT,
         PaymentOrRefundProcessingFailedEvent.toEvent(
           orderId,
-          errorMessage,
           errorCode,
           isRetryable
     ));
@@ -138,27 +125,13 @@ public class PaymentService {
     payment.setStatus(PaymentStatus.REFUND_ABORTED);
     paymentRepository.save(payment);
 
-    String errorMessage = e.getMessage();
-    String errorCode = "UNKNOWN_ERROR";
-    boolean isRetryable = false;
-
-    if (e instanceof PaymentRetryableException) {
-      PaymentRetryableException ex = (PaymentRetryableException) e;
-      errorMessage = ex.getDescription();
-      errorCode = ex.getCode();
-      isRetryable = true;
-
-    } else if (e instanceof PaymentNonRetryableException) {
-      PaymentNonRetryableException ex = (PaymentNonRetryableException) e;
-      errorMessage = ex.getMessage();
-      errorCode = ex.getCode();
-    }
+    ErrorCode errorCode = getErrorCodeFromException(e);
+    boolean isRetryable = true;
 
     sendKafkaPaymentEvent(
         PAYMENT_REFUND_FAIL_EVENT,
         PaymentOrRefundProcessingFailedEvent.toEvent(
             payment.getOrder().getId(),
-            errorMessage,
             errorCode,
             isRetryable
         ));
@@ -176,5 +149,23 @@ public class PaymentService {
     return paymentRepository.findById(paymentId).orElseThrow(
         () -> new JoyeusePlaneteApplicationException(ErrorCode.PAYMENT_NOT_EXIST_EXCEPTION)
     );
+  }
+
+  private Payment findPaymentByPaymentKey(String paymentKey) {
+    return paymentRepository.findByPaymentKey(paymentKey).orElseThrow(
+        () -> new JoyeusePlaneteApplicationException(ErrorCode.PAYMENT_NOT_EXIST_EXCEPTION)
+    );
+  }
+
+  private ErrorCode getErrorCodeFromException(Throwable e) {
+    if (e instanceof PaymentRetryableException) {
+      return ((PaymentRetryableException) e).getErrorCode();
+    }
+
+    else if (e instanceof PaymentNonRetryableException) {
+      return ((PaymentNonRetryableException) e).getErrorCode();
+    }
+
+    return ErrorCode.UNKNOWN_EXCEPTION;
   }
 }
