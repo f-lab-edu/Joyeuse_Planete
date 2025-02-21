@@ -1,13 +1,17 @@
 package com.f_lab.joyeuse_planete.core.events;
 
 import com.f_lab.joyeuse_planete.core.domain.Order;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderCancelEvent {
 
   private Long orderId;
