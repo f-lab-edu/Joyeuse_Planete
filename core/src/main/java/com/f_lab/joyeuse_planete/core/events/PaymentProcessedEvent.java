@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentOrRefundProcessedEvent {
+public class PaymentProcessedEvent {
 
   private Long orderId;
 
-  public static PaymentOrRefundProcessedEvent toEvent(Long orderId) {
-    return PaymentOrRefundProcessedEvent.builder()
+  public static PaymentProcessedEvent toEvent(Long orderId) {
+    return PaymentProcessedEvent.builder()
         .orderId(orderId)
         .build();
   }
