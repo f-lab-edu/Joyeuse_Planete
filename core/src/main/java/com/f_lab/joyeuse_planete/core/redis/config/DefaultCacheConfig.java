@@ -1,4 +1,4 @@
-package com.f_lab.joyeuse_planete.core.config;
+package com.f_lab.joyeuse_planete.core.redis.config;
 
 import com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
