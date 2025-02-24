@@ -3,11 +3,8 @@ package com.f_lab.joyeuse_planete.orders.service;
 
 import com.f_lab.joyeuse_planete.core.domain.Order;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
-import com.f_lab.joyeuse_planete.core.kafka.service.KafkaService;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
-import com.f_lab.joyeuse_planete.orders.dto.response.OrderCreateResponseDTO;
 import com.f_lab.joyeuse_planete.orders.repository.OrderRepository;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,10 +15,8 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @EmbeddedKafka
@@ -92,9 +87,5 @@ public class OrderServiceKafkaTest {
 
   private Order createOrder() {
     return Order.builder().id(1L).build();
-  }
-
-  private OrderCreateResponseDTO createOrderCreateResponseDTO(String message) {
-    return new OrderCreateResponseDTO(message);
   }
 }
