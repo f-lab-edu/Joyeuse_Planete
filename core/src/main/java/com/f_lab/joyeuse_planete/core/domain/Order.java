@@ -20,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.THIRTY_MINUTES;
@@ -68,6 +69,6 @@ public class Order extends BaseEntity {
 
   public boolean checkCancellation() {
     return food.getCollectionStartTime().isAfter(
-        LocalDateTime.now().plusMinutes(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(THIRTY_MINUTES))));
+        LocalTime.now().plusMinutes(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(THIRTY_MINUTES))));
   }
 }
