@@ -1,11 +1,13 @@
 package com.f_lab.joyeuse_planete.foods.controller;
 
-import com.f_lab.joyeuse_planete.core.util.web.CommonResponses;
-import com.f_lab.joyeuse_planete.foods.dto.request.FoodSearchCondition;
+import com.f_lab.joyeuse_planete.core.util.web.ResultResponse;
+import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonResponses;
 import com.f_lab.joyeuse_planete.foods.dto.request.CreateFoodRequestDTO;
+import com.f_lab.joyeuse_planete.foods.dto.request.FoodSearchCondition;
 import com.f_lab.joyeuse_planete.foods.dto.request.UpdateFoodRequestDTO;
 import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import com.f_lab.joyeuse_planete.foods.service.FoodService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,13 +34,6 @@ public class FoodController {
 
   private final FoodService foodService;
 
-  @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public Page<FoodDTO> getFoodList(@ModelAttribute FoodSearchCondition condition) {
-    Pageable pageable = PageRequest.of(condition.getPage(), condition.getSize());
-    return foodService.getFoodList(condition, pageable);
-  }
-
   @GetMapping("/{foodId}")
   public ResponseEntity<FoodDTO> getFood(@PathVariable("foodId") Long foodId) {
     return ResponseEntity
@@ -46,37 +41,46 @@ public class FoodController {
         .body(foodService.getFood(foodId));
   }
 
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public Page<FoodDTO> getFoodList(@ModelAttribute @Valid FoodSearchCondition condition) {
+    Pageable pageable = PageRequest.of(condition.getPage(), condition.getSize());
+    return foodService.getFoodList(condition, pageable);
+  }
+
   @PostMapping
-  public ResponseEntity<String> createFood(@RequestBody CreateFoodRequestDTO request) {
+  public ResponseEntity<ResultResponse> createFood(@RequestBody @Valid CreateFoodRequestDTO request) {
     foodService.createFood(request);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(CommonResponses.CREATE_SUCCESS);
+        .body(ResultResponse.of(CommonResponses.CREATE_SUCCESS, HttpStatus.CREATED.value()));
   }
 
   @PutMapping("/{foodId}")
-  public ResponseEntity<String> updateFood(@PathVariable Long foodId,
-                                           @RequestBody UpdateFoodRequestDTO request) {
+  public ResponseEntity<ResultResponse> updateFood(@PathVariable Long foodId,
+                                                   @RequestBody @Valid UpdateFoodRequestDTO request
+  ) {
+
     foodService.updateFood(foodId, request);
 
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(CommonResponses.UPDATE_SUCCESS);
+        .body(ResultResponse.of(CommonResponses.UPDATE_SUCCESS, HttpStatus.OK.value()));
   }
 
   @DeleteMapping("/{foodId}")
-  public ResponseEntity<String> deleteFood(@PathVariable Long foodId) {
+  public ResponseEntity<ResultResponse> deleteFood(@PathVariable Long foodId) {
     foodService.deleteFood(foodId);
 
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(CommonResponses.DELETE_SUCCESS);
+        .body(ResultResponse.of(CommonResponses.DELETE_SUCCESS, HttpStatus.OK.value()));
   }
 
   @GetMapping("/ping")
-  public ResponseEntity<String> healthcheck() {
+  public ResponseEntity<ResultResponse> healthcheck() {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(CommonResponses.PONG);
+        .body(ResultResponse.of(CommonResponses.PONG, HttpStatus.OK.value()));
   }
 }
