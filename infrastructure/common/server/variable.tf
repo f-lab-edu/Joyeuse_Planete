@@ -22,9 +22,6 @@ variable "KAFKA_SERVER_IP" {
 
 }
 
-variable "MONITORING_SERVER_IP" {
-}
-
 variable "DATABASE_URL" {
 }
 
