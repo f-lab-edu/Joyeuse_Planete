@@ -6,9 +6,10 @@ import com.f_lab.joyeuse_planete.core.events.OrderCancelEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
-import com.f_lab.joyeuse_planete.orders.dto.request.OrderSearchCondition;
-import com.f_lab.joyeuse_planete.orders.dto.response.OrderDTO;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
+import com.f_lab.joyeuse_planete.orders.dto.request.OrderSearchCondition;
+import com.f_lab.joyeuse_planete.orders.dto.response.OrderCreateResponseDTO;
+import com.f_lab.joyeuse_planete.orders.dto.response.OrderDTO;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderPollingResponseDTO;
 import com.f_lab.joyeuse_planete.orders.repository.OrderRepository;
 import io.micrometer.core.annotation.Timed;
@@ -43,7 +44,7 @@ public class OrderService {
   }
 
   @Transactional
-  public void createFoodOrder(OrderCreateRequestDTO request) {
+  public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
     Order order;
     try {
       order = orderRepository.saveOrder(request);
@@ -58,6 +59,8 @@ public class OrderService {
     }
 
     eventPublisher.publishEvent(request.toEvent(order.getId()));
+
+    return OrderCreateResponseDTO.of(order.getId());
   }
 
   @Transactional
