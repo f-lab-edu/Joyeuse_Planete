@@ -18,6 +18,9 @@ variable "DOCKER_PAYMENT_IMAGE" {
   type        = string
 }
 
+variable "KAFKA_SERVER_IP" {
+}
+
 variable "DATABASE_URL" {
 }
 

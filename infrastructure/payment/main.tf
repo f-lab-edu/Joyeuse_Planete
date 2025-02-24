@@ -9,7 +9,6 @@ module "servers" {
   aws_security_group_id = var.aws_security_group_id
   aws_key_pair_name     = var.aws_key_pair_name
   KAFKA_SERVER_IP       = var.KAFKA_SERVER_IP
-  MONITORING_SERVER_IP  = var.MONITORING_SERVER_IP
   DATABASE_URL          = var.DATABASE_URL
   DATABASE_USERNAME     = var.DATABASE_USERNAME
   DATABASE_PASSWORD     = var.DATABASE_PASSWORD
@@ -33,9 +32,6 @@ variable "aws_key_pair_name" {
 }
 
 variable "KAFKA_SERVER_IP" {
-}
-
-variable "MONITORING_SERVER_IP" {
 }
 
 variable "DATABASE_URL" {

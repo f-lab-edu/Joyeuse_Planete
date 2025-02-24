@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentOrRefundProcessingFailedEvent {
+public class RefundProcessingFailedEvent {
 
   private Long orderId;
   private ErrorCode errorCode;
   private boolean retryable;
 
-  public static PaymentOrRefundProcessingFailedEvent toEvent(Long orderId, ErrorCode errorCode, boolean retryable) {
-    return PaymentOrRefundProcessingFailedEvent.builder()
+  public static RefundProcessingFailedEvent toEvent(Long orderId, ErrorCode errorCode, boolean retryable) {
+    return RefundProcessingFailedEvent.builder()
         .orderId(orderId)
         .errorCode(errorCode)
         .retryable(retryable)

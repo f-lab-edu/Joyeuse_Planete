@@ -17,7 +17,6 @@ resource "aws_instance" "server" {
     # Run the Docker container
     docker run -d -p 8080:8080 --name web_server \
      -e KAFKA_SERVER_IP=${var.KAFKA_SERVER_IP}:9092 \
-     -e MONITORING_SERVER_IP=${var.MONITORING_SERVER_IP}:9091 \
      -e DATABASE_URL=${var.DATABASE_URL} \
      -e DATABASE_USERNAME=${var.DATABASE_USERNAME} \
      -e DATABASE_PASSWORD=${var.DATABASE_PASSWORD} \
