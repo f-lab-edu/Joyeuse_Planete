@@ -10,6 +10,9 @@ import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,10 +27,12 @@ public class FoodService {
 
   private final FoodRepository foodRepository;
 
+  @Cacheable(value = "food", key = "#foodId")
   public FoodDTO getFood(Long foodId) {
     return FoodDTO.from(findFood(foodId));
   }
 
+  @Cacheable(value = "foods", keyGenerator = "foodSearchKeyGenerator")
   public Page<FoodDTO> getFoodList(FoodSearchCondition condition, Pageable pageable) {
     return foodRepository.getFoodList(condition, pageable);
   }
@@ -39,11 +44,13 @@ public class FoodService {
     foodRepository.save(food);
   }
 
+  @CacheEvict(value = "food", key = "#foodId")
   @Transactional
   public void deleteFood(Long foodId) {
     foodRepository.delete(findFood(foodId));
   }
 
+  @CachePut(value = "food", key = "#foodId")
   @Transactional
   public void updateFood(Long foodId, UpdateFoodRequestDTO request) {
     Food food = findFood(foodId);
