@@ -16,11 +16,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -29,11 +31,13 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Builder
+@DynamicInsert
+@DynamicUpdate
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "foods")
-@SQLRestriction("is_deleted IS false")
+@SQLRestriction("is_deleted IS FALSE")
 @SQLDelete(sql = "UPDATE foods SET is_deleted = true WHERE id = ?")
 public class Food extends BaseEntity {
 
@@ -60,9 +64,9 @@ public class Food extends BaseEntity {
   @Convert(converter = StringListConverter.class)
   private List<String> tags;
 
-  private LocalDateTime collectionStartTime;
+  private LocalTime collectionStartTime;
 
-  private LocalDateTime collectionEndTime;
+  private LocalTime collectionEndTime;
 
   public BigDecimal calculateCost(int quantity) {
     return price.multiply(BigDecimal.valueOf(quantity));
@@ -86,8 +90,8 @@ public class Food extends BaseEntity {
       String foodName,
       BigDecimal price,
       int totalQuantity,
-      LocalDateTime collectionStartTime,
-      LocalDateTime collectionEndTime
+      LocalTime collectionStartTime,
+      LocalTime collectionEndTime
   ) {
 
     this.foodName = foodName;
