@@ -48,7 +48,7 @@ public class Order extends BaseEntity {
 
   private int quantity;
 
-  private double rate;
+  private BigDecimal rate;
 
   @Enumerated(EnumType.STRING)
   private OrderStatus status;

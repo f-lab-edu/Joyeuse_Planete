@@ -3,14 +3,14 @@ package com.f_lab.joyeuse_planete.orders.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
-@Getter
+@Data
 @NoArgsConstructor
 public class OrderDTO {
 
@@ -33,7 +33,7 @@ public class OrderDTO {
   private int quantity;
 
   @JsonProperty("rate")
-  private double rate;
+  private BigDecimal rate;
 
   @JsonProperty("status")
   private String status;
@@ -56,7 +56,7 @@ public class OrderDTO {
       String currencyCode,
       String currencySymbol,
       int quantity,
-      double rate,
+      BigDecimal rate,
       String status,
       Long payment,
       Long voucher,
