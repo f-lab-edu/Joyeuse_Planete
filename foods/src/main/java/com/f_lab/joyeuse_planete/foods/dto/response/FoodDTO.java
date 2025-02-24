@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 @Data
@@ -43,10 +44,10 @@ public class FoodDTO {
   private BigDecimal rate;
 
   @JsonProperty("collection_start")
-  private LocalDateTime collectionStartTime;
+  private LocalTime collectionStartTime;
 
   @JsonProperty("collection_end")
-  private LocalDateTime collectionEndTime;
+  private LocalTime collectionEndTime;
 
   @Builder
   @QueryProjection
@@ -60,8 +61,8 @@ public class FoodDTO {
       String currencyCode,
       String currencySymbol,
       BigDecimal rate,
-      LocalDateTime collectionStartTime,
-      LocalDateTime collectionEndTime
+      LocalTime collectionStartTime,
+      LocalTime collectionEndTime
   ) {
     this.foodId = foodId;
     this.storeId = storeId;
