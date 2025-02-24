@@ -1,22 +1,20 @@
 package com.f_lab.joyeuse_planete.orders.controller;
 
 
-
-import com.f_lab.joyeuse_planete.core.util.web.CommonResponses;
+import com.f_lab.joyeuse_planete.core.util.web.ResultResponse;
+import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonResponses;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderCreateRequestDTO;
 import com.f_lab.joyeuse_planete.orders.dto.request.OrderSearchCondition;
+import com.f_lab.joyeuse_planete.orders.dto.response.OrderCreateResponseDTO;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderDTO;
 import com.f_lab.joyeuse_planete.orders.dto.response.OrderPollingResponseDTO;
 import com.f_lab.joyeuse_planete.orders.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,21 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/orders")
 public class OrderController {
 
   private final OrderService orderService;
-
-  @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public Page<OrderDTO> getOrderList(@ModelAttribute OrderSearchCondition condition) {
-    PageRequest pageRequest = PageRequest.of(condition.getPage(), condition.getSize());
-
-    return orderService.getOrderList(condition, pageRequest);
-  }
 
   @GetMapping("/{orderId}")
   public ResponseEntity<OrderDTO> getOrder(@PathVariable("orderId") Long orderId) {
@@ -52,34 +41,41 @@ public class OrderController {
         .body(orderService.getOrder(orderId));
   }
 
-  @PostMapping("/foods")
-  public ResponseEntity<String> createFoodOrder(@RequestBody OrderCreateRequestDTO orderCreateRequestDTO) {
-    orderService.createFoodOrder(orderCreateRequestDTO);
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public Page<OrderDTO> getOrderList(@ModelAttribute @Valid OrderSearchCondition condition) {
+    PageRequest pageRequest = PageRequest.of(condition.getPage(), condition.getSize());
 
+    return orderService.getOrderList(condition, pageRequest);
+  }
+
+  @PostMapping("/foods")
+  public ResponseEntity<OrderCreateResponseDTO> createFoodOrder(@RequestBody @Valid OrderCreateRequestDTO orderCreateRequestDTO) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(CommonResponses.CREATE_SUCCESS);
+        .body(orderService.createFoodOrder(orderCreateRequestDTO));
   }
 
   @DeleteMapping("/member/{orderId}")
-  public ResponseEntity<String> deleteMemberOrder(@PathVariable("orderId") Long orderId) {
+  public ResponseEntity<ResultResponse> deleteMemberOrder(@PathVariable("orderId") Long orderId) {
     orderService.deleteOrderByMember(orderId);
 
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(CommonResponses.DELETE_SUCCESS);
+        .body(ResultResponse.of(CommonResponses.DELETE_SUCCESS, HttpStatus.OK.value()));
   }
 
-  @GetMapping("{orderId}/polling/order-status")
-  public ResponseEntity<OrderPollingResponseDTO> polling(@PathVariable Long orderId) {
+  @GetMapping("{orderId}/order-status")
+  public ResponseEntity<OrderPollingResponseDTO> orderStatus(@PathVariable Long orderId) {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(orderService.polling(orderId));
   }
 
   @GetMapping("/ping")
-  public ResponseEntity<String> healthcheck() {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(CommonResponses.PONG);
+  public ResponseEntity<ResultResponse> healthcheck() {
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(ResultResponse.of(CommonResponses.PONG, HttpStatus.OK.value()));
   }
 }
