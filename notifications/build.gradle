@@ -11,7 +11,4 @@ dependencies {
 
 	// swagger 패키지
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-
-	// prometheus
-	implementation 'io.prometheus:simpleclient_pushgateway'
 }
