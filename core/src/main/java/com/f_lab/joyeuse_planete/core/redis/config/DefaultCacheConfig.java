@@ -1,23 +1,18 @@
 package com.f_lab.joyeuse_planete.core.redis.config;
 
-import com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-import java.time.Duration;
+public abstract class DefaultCacheConfig {
 
-public class CacheConfig {
-
+  @Bean
   public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
     return RedisCacheManager.builder(connectionFactory)
-        .cacheDefaults()
+        .cacheDefaults(redisCacheConfiguration())
         .build();
   }
 
-  public RedisCacheConfiguration redisCacheConfiguration() {
-    return RedisCacheManager.builder().cacheDefaults()
-        .entryTtl(Duration.ofMillis(Long.parseLong(TimeConstantsString.THIRTY_MINUTES)))
-        .disableCachingNullValues();
-  }
+  protected abstract RedisCacheConfiguration redisCacheConfiguration();
 }
