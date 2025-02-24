@@ -1,4 +1,4 @@
-package com.f_lab.joyeuse_planete.core.config;
+package com.f_lab.joyeuse_planete.core.redis.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
