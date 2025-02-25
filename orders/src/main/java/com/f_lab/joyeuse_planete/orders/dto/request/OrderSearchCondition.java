@@ -55,7 +55,7 @@ public class OrderSearchCondition {
   }
 
   @AssertTrue(message = BeanValidationErrorMessage.INVALID_DATE_RANGE_ERROR_MESSAGE)
-  public boolean isStartDateEarlierThanEndDate() {
-    return startDate.isBefore(endDate);
+  public boolean isEndDateAfterStartDate() {
+    return endDate.isAfter(startDate);
   }
 }
