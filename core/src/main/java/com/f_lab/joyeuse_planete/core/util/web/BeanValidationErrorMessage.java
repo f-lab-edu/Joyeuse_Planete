@@ -2,6 +2,7 @@ package com.f_lab.joyeuse_planete.core.util.web;
 
 public abstract class BeanValidationErrorMessage {
 
+  public static final String DEFAULT_ERROR_MESSAGE = "요청값에 오류가 있습니다. 요청을 다시 확인해주세요.";
   public static final String NO_NEGATIVE_ERROR_MESSAGE = "0 미만의 값은 입력할 수 없습니다.";
   public static final String NO_ABOVE_MAXIMUM_ERROR_MESSAGE = "999999999를 초과한 값은 입력할 수 없습니다.";
   public static final String NO_FUTURE_DATE_ERROR_MESSAGE = "과거 또는 현재 날짜만을 허용합니다.";
