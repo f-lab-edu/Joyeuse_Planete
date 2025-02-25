@@ -2,10 +2,12 @@ package com.f_lab.joyeuse_planete.orders.controller;
 
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
+import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonErrorResponses;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -32,15 +37,15 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ResultResponse> handle(MethodArgumentNotValidException e) {
     LogUtil.exception("GlobalExceptionHandler.handle (MethodArgumentNotValidException)", e);
-    StringBuilder sb = new StringBuilder();
 
-    for (ObjectError error : e.getBindingResult().getAllErrors()) {
-      sb.append(error.getDefaultMessage()).append("\n");
-    }
+    String errorMessages = e.getBindingResult().getAllErrors()
+        .stream()
+        .map(err -> err != null ? err.getDefaultMessage() : BeanValidationErrorMessage.DEFAULT_ERROR_MESSAGE)
+        .collect(Collectors.joining("\n"));
 
     return ResponseEntity
         .status(HttpStatus.BAD_REQUEST)
-        .body(ResultResponse.of(sb.toString().trim(), HttpStatus.BAD_REQUEST.value()));
+        .body(ResultResponse.of(errorMessages, HttpStatus.BAD_REQUEST.value()));
   }
 
   @ExceptionHandler(NoResourceFoundException.class)
