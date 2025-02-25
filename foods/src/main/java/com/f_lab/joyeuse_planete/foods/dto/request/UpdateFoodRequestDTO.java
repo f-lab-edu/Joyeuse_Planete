@@ -47,7 +47,7 @@ public class UpdateFoodRequestDTO {
   private LocalTime collectionEndTime;
 
   @AssertTrue(message = BeanValidationErrorMessage.INVALID_COLLECTION_TIME_ERROR_MESSAGE)
-  public boolean isCollectionEndTimeLaterThanCollectionStartTime() {
+  public boolean isCollectionEndTimeAfterCollectionStartTime() {
     return collectionEndTime.isAfter(collectionStartTime);
   }
 }
