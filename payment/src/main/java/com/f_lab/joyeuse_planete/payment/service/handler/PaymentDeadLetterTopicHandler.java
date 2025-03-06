@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.FIVE_SECONDS;
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsString.FIVE_SECONDS;
 
 
 @Component
