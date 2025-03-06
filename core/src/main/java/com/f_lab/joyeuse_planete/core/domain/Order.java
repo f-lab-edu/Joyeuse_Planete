@@ -19,11 +19,10 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
-import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.THIRTY_MINUTES;
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsString.THIRTY_MINUTES;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 

@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.FIVE_SECONDS;
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsString.FIVE_SECONDS;
 
 
 public interface FoodRepository extends JpaRepository<Food, Long>, FoodCustomRepository {
