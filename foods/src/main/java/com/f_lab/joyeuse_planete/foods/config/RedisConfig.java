@@ -14,7 +14,8 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 
 import java.time.Duration;
 
-import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.THIRTY_MINUTES;
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsString.THIRTY_MINUTES;
+
 
 @Configuration
 @EnableCaching

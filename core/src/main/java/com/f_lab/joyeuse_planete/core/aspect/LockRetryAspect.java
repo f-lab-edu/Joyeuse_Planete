@@ -3,7 +3,6 @@ package com.f_lab.joyeuse_planete.core.aspect;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
-import com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString;
 import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PessimisticLockException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +11,13 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsString.ONE_SECOND;
+
 @Slf4j
 @Aspect
 @Component
 public class LockRetryAspect {
-  private static final int FIRST_WAIT_INTERVAL = Integer.parseInt(TimeConstantsString.ONE_SECOND);
+  private static final int FIRST_WAIT_INTERVAL = Integer.parseInt(ONE_SECOND);
   private static final int MULTIPLIER = 2;
 
   @Around("@annotation(retry)")

@@ -10,7 +10,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-import static com.f_lab.joyeuse_planete.core.util.time.TimeConstantsString.ONE_SECOND;
+import static com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsString.ONE_SECOND;
+
 
 @Slf4j
 @Aspect
