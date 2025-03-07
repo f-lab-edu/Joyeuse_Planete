@@ -22,8 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static com.f_lab.joyeuse_planete.core.domain.QCurrency.currency;
-import static com.f_lab.joyeuse_planete.core.domain.QFood.food;
 import static com.f_lab.joyeuse_planete.core.domain.QOrder.order;
 import static com.f_lab.joyeuse_planete.core.domain.QPayment.payment;
 
@@ -47,7 +45,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     long orderId = queryFactory
         .insert(order)
         .columns(
-            order.food.id,
+            order.foodId,
             order.totalCost,
             order.quantity,
             order.status,
@@ -70,10 +68,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     return queryFactory.select(
         new QOrderDTO(
             order.id.as("orderId"),
-            food.foodName,
+            order.foodName,
             order.totalCost,
-            food.currency.currencyCode,
-            food.currency.currencySymbol,
+            order.currencyCode,
+            order.currencySymbol,
             order.quantity,
             order.rate,
             order.status.stringValue(),
@@ -82,9 +80,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             order.createdAt.as("createdAt")
         ))
         .from(order)
-        .leftJoin(order.food, food)
         .leftJoin(order.payment, payment)
-        .leftJoin(food.currency, currency)
         .where(eqOrderId(orderId))
         .fetchOne();
   }
@@ -94,10 +90,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     List<OrderDTO> results = queryFactory
         .select(new QOrderDTO(
             order.id.as("orderId"),
-            food.foodName,
+            order.foodName,
             order.totalCost,
-            food.currency.currencyCode,
-            food.currency.currencySymbol,
+            order.currencyCode,
+            order.currencySymbol,
             order.quantity,
             order.rate,
             order.status.stringValue(),
@@ -107,8 +103,6 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         ))
         .from(order)
         .leftJoin(order.payment, payment)
-        .leftJoin(order.food, food)
-        .leftJoin(food.currency, currency)
         .where(
             eqStatus(condition.getStatus()),
             dateGoe(condition.getStartDate()),

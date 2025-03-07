@@ -93,6 +93,7 @@ class FoodServiceTest {
 
     // when
     when(foodRepository.findFoodByFoodIdWithPessimisticLock(anyLong())).thenReturn(Optional.of(food));
+    when(foodRepository.save(any(Food.class))).thenReturn(food);
     foodService.reserve(foodId, quantity);
 
     // then
@@ -110,6 +111,7 @@ class FoodServiceTest {
 
     // when
     when(foodRepository.findFoodByFoodIdWithPessimisticLock(anyLong())).thenReturn(Optional.of(food));
+    when(foodRepository.save(any(Food.class))).thenReturn(food);
     foodService.release(foodId, quantity);
 
     // then
@@ -123,18 +125,18 @@ class FoodServiceTest {
     Long foodId = 1L;
     Food food = createFood(foodId);
     String expectedCurrencyCode = "USD";
-    Currency currency = createCurrency();
     String originalName = food.getFoodName();
 
     UpdateFoodRequestDTO request = createExpectedUpdateFoodRequestDTO(food);
 
     // when
     when(foodRepository.findById(anyLong())).thenReturn(Optional.of(food));
+    when(foodRepository.save(any(Food.class))).thenReturn(food);
     foodService.updateFood(foodId, request);
 
     // then
     assertThat(food.getFoodName()).isEqualTo(originalName + "test");
-    assertThat(food.getCurrency().getCurrencyCode()).isEqualTo(expectedCurrencyCode);
+    assertThat(food.getCurrencyCode()).isEqualTo(expectedCurrencyCode);
   }
 
 
@@ -163,8 +165,9 @@ class FoodServiceTest {
     return Food.builder()
         .id(foodId)
         .store(createStore())
-        .currency(createCurrency())
         .foodName(foodName)
+        .currencyCode("USD")
+        .currencySymbol("$")
         .rate(BigDecimal.valueOf(4.5))
         .price(price)
         .totalQuantity(totalQuantity)

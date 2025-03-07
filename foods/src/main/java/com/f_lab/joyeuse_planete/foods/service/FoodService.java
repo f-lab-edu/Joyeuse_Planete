@@ -1,5 +1,7 @@
 package com.f_lab.joyeuse_planete.foods.service;
 
+import com.f_lab.joyeuse_planete.core.annotation.Backoff;
+import com.f_lab.joyeuse_planete.core.annotation.Retry;
 import com.f_lab.joyeuse_planete.core.domain.Food;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
@@ -10,6 +12,8 @@ import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.PessimisticLockException;
+import org.hibernate.exception.LockTimeoutException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -40,7 +44,6 @@ public class FoodService {
   @Transactional
   public void createFood(CreateFoodRequestDTO request) {
     Food food = request.toEntity();
-
     foodRepository.save(food);
   }
 
@@ -52,7 +55,7 @@ public class FoodService {
 
   @CachePut(value = "food", key = "#foodId")
   @Transactional
-  public void updateFood(Long foodId, UpdateFoodRequestDTO request) {
+  public FoodDTO updateFood(Long foodId, UpdateFoodRequestDTO request) {
     Food food = findFood(foodId);
 
     food.update(
@@ -63,21 +66,27 @@ public class FoodService {
         request.getCollectionEndTime()
     );
 
-    foodRepository.save(food);
+    return FoodDTO.from(foodRepository.save(food));
   }
 
+  @CachePut(value = "food", key = "#foodId")
   @Transactional
-  public void reserve(Long foodId, int quantity) {
+  public FoodDTO reserve(Long foodId, int quantity) {
     Food food = findFoodWithLock(foodId);
+
     food.minusQuantity(quantity);
     foodRepository.save(food);
+
+    return FoodDTO.from(food);
   }
 
+  @CachePut(value = "food", key = "#foodId")
   @Transactional
-  public void release(Long foodId, int quantity) {
+  public FoodDTO release(Long foodId, int quantity) {
     Food food = findFoodWithLock(foodId);
     food.plusQuantity(quantity);
-    foodRepository.save(food);
+
+    return FoodDTO.from(foodRepository.save(food));
   }
 
   private Food findFood(Long foodId) {
