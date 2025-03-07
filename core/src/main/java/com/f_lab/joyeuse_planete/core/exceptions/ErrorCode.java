@@ -14,9 +14,12 @@ public enum ErrorCode {
   ORDER_NOT_EXIST_EXCEPTION("존재하지 않는 주문입니다.", 400),
   ORDER_NOT_PROCESSED_EXCEPTION_CUSTOMER("유저가 결제를 진행하지 않았습니다.", 422),
   ORDER_CREATION_FAIL_EXCEPTION("주문을 생성하는데 실패하였습니다. 다시 시도해주세요.", 500),
+  ORDER_TOTAL_COST_INVALID_EXCEPTION("결제 금액이 올바르지 않습니다. 다시 시도해주세요", 400),
   ORDER_CANCELLATION_NOT_AVAILABLE_EXCEPTION("요청하신 주문 취소가 주문 취소 허용 시간을 넘겨 진행되지 않았습니다.", 401),
   ORDER_CANCELLATION_FAIL_EXCEPTION("요청하신 주문 취소가 진행되지 않았습니다. 다시 시도해주세요", 406),
   CURRENCY_NOT_EXIST_EXCEPTION("존재하지 않는 화폐입니다.", 400),
+  VOUCHER_NOT_EXIST_EXCEPTION("존재하지 않는 할인 쿠폰입니다.", 400),
+  VOUCHER_EXPIRED_EXCEPTION("이미 만료된 할인 쿠폰입니다.", 400),
 
   // 결제 관련 오류
   PAYMENT_NOT_EXIST_EXCEPTION("존재하지 않는 결제입니다.", 400),
@@ -38,6 +41,7 @@ public enum ErrorCode {
   LOCK_ACQUISITION_FAIL_EXCEPTION("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요.",503),
 
   // KAFKA
+  KAFKA_RETRY_NOT_ACCEPTABLE_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 400),
   KAFKA_RETRY_FAIL_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 503),
   KAFKA_DEAD_LETTER_TOPIC_FAIL_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 500),
   KAFKA_UNAVAILABLE_EXCEPTION("오류 발생! 잠시 후 다시 시도해주세요.", 500),
