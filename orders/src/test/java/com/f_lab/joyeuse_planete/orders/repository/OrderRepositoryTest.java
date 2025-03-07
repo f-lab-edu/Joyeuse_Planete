@@ -198,10 +198,10 @@ class OrderRepositoryTest {
   private OrderDTO from(Order order) {
     return OrderDTO.builder()
         .orderId(order.getId())
-        .foodName(order.getFood() != null ? order.getFood().getFoodName() : null)
+        .foodName(order.getFoodName())
         .totalCost(order.getTotalCost())
-        .currencyCode(order.getFood() != null ? order.getFood().getCurrency().getCurrencyCode() : null)
-        .currencySymbol(order.getFood() != null ? order.getFood().getCurrency().getCurrencySymbol() : null)
+        .currencyCode(order.getCurrencyCode())
+        .currencySymbol(order.getCurrencySymbol())
         .quantity(order.getQuantity())
         .status(order.getStatus().name())
         .payment(order.getPayment() != null ? order.getPayment().getId() : null)
