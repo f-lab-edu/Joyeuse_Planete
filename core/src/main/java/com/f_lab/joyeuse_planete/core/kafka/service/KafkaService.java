@@ -1,12 +1,13 @@
 package com.f_lab.joyeuse_planete.core.kafka.service;
 
+import com.f_lab.joyeuse_planete.core.annotation.Backoff;
+import com.f_lab.joyeuse_planete.core.annotation.Retry;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
-import com.f_lab.joyeuse_planete.core.kafka.aspect.KafkaRetry;
 import com.f_lab.joyeuse_planete.core.kafka.exceptions.RetryableException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.errors.BrokerNotAvailableException;
 import org.apache.kafka.common.errors.DisconnectException;
 import org.apache.kafka.common.errors.NetworkException;
@@ -15,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
-@Slf4j
+
 @RequiredArgsConstructor
 public class KafkaService {
 
   private final KafkaTemplate<String, Object> kafkaTemplate;
 
-  @KafkaRetry
+  @Retry(retryable = { KafkaException.class }, backoff = @Backoff(multiplier = 2))
   @Transactional(propagation = REQUIRES_NEW)
   public void sendKafkaEvent(String event, Object object) {
     try {

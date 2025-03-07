@@ -18,7 +18,9 @@ import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.util.backoff.BackOff;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.BiFunction;
 
 @Slf4j
@@ -39,24 +41,32 @@ public abstract class KafkaConsumerConfig {
   @Value("${spring.kafka.consumer.isolation-level:read_committed}")
   protected String ISOLATION_LEVEL;
 
-  @Value("${retry.attempts:5}")
+  @Value("${retry.attempts:3}")
   private int RETRY_ATTEMPTS;
 
+  public static final String KAFKA_DEAD_LETTER_TOPIC_ID = "kafka_dead_letter_topic-id";
+
   abstract public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory();
+
   abstract protected Map<String, Object> consumerConfig();
+
   abstract protected String deadLetterTopicName();
+
   protected BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition> deadLetterTopicStrategy() {
     return defaultDeadLetterTopicStrategy(deadLetterTopicName());
   }
+
   protected BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition> defaultDeadLetterTopicStrategy(String deadLetterTopic) {
     return (record, ex) -> {
       ex = ExceptionUtil.unwrap(ex);
 
       LogUtil.exception("KafkaConsumerConfig.defaultDeadLetterTopicStrategy", ex);
 
+      record.headers().add(KAFKA_DEAD_LETTER_TOPIC_ID, UUID.randomUUID().toString().getBytes());
       record.headers().add(KafkaHeaders.EXCEPTION_FQCN, ex.getClass().getName().getBytes());
       record.headers().add(KafkaHeaders.EXCEPTION_MESSAGE, ((ex.getMessage() != null) ? ex.getMessage() : "null").getBytes());
       record.headers().add(KafkaHeaders.ORIGINAL_TOPIC, record.topic().getBytes());
+      record.headers().add(KafkaHeaders.DLT_EXCEPTION_STACKTRACE, Arrays.toString(ex.getStackTrace()).getBytes());
 
       return new TopicPartition(deadLetterTopic, -1);
     };
