@@ -1,5 +1,7 @@
 package com.f_lab.joyeuse_planete.orders.service;
 
+import com.f_lab.joyeuse_planete.core.annotation.Backoff;
+import com.f_lab.joyeuse_planete.core.annotation.Retry;
 import com.f_lab.joyeuse_planete.core.domain.Order;
 import com.f_lab.joyeuse_planete.core.domain.OrderStatus;
 import com.f_lab.joyeuse_planete.core.events.OrderCancelEvent;
@@ -69,7 +71,7 @@ public class OrderService {
     try {
       order = findOrderById(orderId);
 
-      if (!order.checkCancellation())
+      if (!order.isCancellable())
         throw new JoyeusePlaneteApplicationException(ErrorCode.ORDER_CANCELLATION_NOT_AVAILABLE_EXCEPTION);
 
       updateOrderStatus(orderId, OrderStatus.MEMBER_CANCELED);
@@ -93,6 +95,7 @@ public class OrderService {
     // TODO 가게에서 주문 취소 로직
   }
 
+  @Retry(backoff = @Backoff(multiplier = 2))
   @Transactional
   public void updateOrderStatus(Long orderId, OrderStatus status) {
     Order order = findOrderById(orderId);

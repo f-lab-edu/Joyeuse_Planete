@@ -7,23 +7,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
 @Data
 @NoArgsConstructor
-public class FoodDTO {
+public class FoodDTO implements Serializable {
 
   @JsonProperty("food_id")
   private Long foodId;
 
   @JsonProperty("store_id")
   private Long storeId;
-
-  @JsonProperty("currency_id")
-  private Long currencyId;
 
   @JsonProperty("food_name")
   private String foodName;
@@ -54,7 +51,6 @@ public class FoodDTO {
   public FoodDTO(
       Long foodId,
       Long storeId,
-      Long currencyId,
       String foodName,
       BigDecimal price,
       int totalQuantity,
@@ -66,7 +62,6 @@ public class FoodDTO {
   ) {
     this.foodId = foodId;
     this.storeId = storeId;
-    this.currencyId = currencyId;
     this.foodName = foodName;
     this.price = price;
     this.totalQuantity = totalQuantity;
@@ -81,13 +76,12 @@ public class FoodDTO {
     return FoodDTO.builder()
         .foodId(food.getId())
         .storeId(food.getStore().getId())
-        .currencyId(food.getCurrency().getId())
         .foodName(food.getFoodName())
         .rate(food.getRate())
         .price(food.getPrice())
         .totalQuantity(food.getTotalQuantity())
-        .currencyCode(food.getCurrency().getCurrencyCode())
-        .currencySymbol(food.getCurrency().getCurrencySymbol())
+        .currencyCode(food.getCurrencyCode())
+        .currencySymbol(food.getCurrencySymbol())
         .collectionStartTime(food.getCollectionStartTime())
         .collectionEndTime(food.getCollectionEndTime())
         .build();

@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      transaction-id-prefix: foods-tx
+
+    consumer:
+      group-id: foods
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+orders:
+  events:
+    topics:
+      create: orders.order-created-event
+      cancel: orders.order-cancellation-event
+      create-fail: orders.orders-creation-failed-event
+
+  dead-letter-topic: orders.dead-letter-topic
+
+foods:
+  events:
+    topics:
+      reserve: foods.food-reserved-event
+      reserve-fail: foods.food-reservation-failed-event
+      release: foods.food-release-event
+      release-fail: foods.food-release-fail-event
+
+  dead-letter-topic: foods.dead-letter-topic
+
+
+payment:
+  events:
+    topics:
+      process: payment.payment-processed-event
+      process-fail: payment.payment-processing-fail-event
+
+  dead-letter-topic: payment.dead-letter-topic
+
+kafka:
+  topic:
+    partitions: 3
+
+  container:
+    concurrency: 3

@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 
-import static com.f_lab.joyeuse_planete.core.domain.QCurrency.currency;
 import static com.f_lab.joyeuse_planete.core.domain.QFood.food;
 import static com.f_lab.joyeuse_planete.core.domain.QStore.store;
 
@@ -37,18 +36,16 @@ public class FoodCustomRepositoryImpl implements FoodCustomRepository {
         .select(new QFoodDTO(
             food.id.as("foodId"),
             food.store.id.as("storeId"),
-            food.currency.id.as("currencyId"),
             food.foodName.as("foodName"),
             food.price,
             food.totalQuantity.as("totalQuantity"),
-            food.currency.currencyCode.as("currencyCode"),
-            food.currency.currencySymbol.as("currencySymbol"),
+            food.currencyCode.as("currencyCode"),
+            food.currencySymbol.as("currencySymbol"),
             food.rate,
             food.collectionStartTime,
             food.collectionEndTime
         ))
         .from(food)
-        .innerJoin(food.currency, currency)
         .innerJoin(food.store, store)
         .where(eqFoodNameTagsAndStoreName(condition.getSearch()))
         .orderBy(getOrderSpecifiers(condition.getSortBy()))

@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
@@ -55,14 +56,17 @@ public class Food extends BaseEntity {
   @JoinColumn(name = "store_id")
   private Store store;
 
-  @ManyToOne(fetch = LAZY)
-  @JoinColumn(name = "currency_id")
-  private Currency currency;
+  private String currencyCode;
+
+  private String currencySymbol;
 
   private BigDecimal rate;
 
   @Convert(converter = StringListConverter.class)
   private List<String> tags;
+
+  @Convert(converter = StringListConverter.class)
+  private List<String> searchTags;
 
   private LocalTime collectionStartTime;
 

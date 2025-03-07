@@ -122,7 +122,7 @@ class FoodControllerTest {
     String content = objectMapper.writeValueAsString(request);
 
     // when
-    doNothing().when(foodService).updateFood(any(), any());
+    when(foodService.updateFood(any(), any())).thenReturn(null);
 
     // then
     mockMvc.perform(put(FOODS_URL_PREFIX + "/{foodId}", foodId)

@@ -231,7 +231,7 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1000))
             .rate(BigDecimal.valueOf(4.5))
             .store(store1)
-            .currency(currency)
+
             .totalQuantity(100)
             .tags(List.of("fast-food", "burger", "chicken"))
             .build(),
@@ -241,7 +241,7 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1200))
             .rate(BigDecimal.valueOf(4.2))
             .store(store2)
-            .currency(currency)
+
             .totalQuantity(80)
             .tags(List.of("pasta", "creamy", "Italian"))
             .build(),
@@ -251,7 +251,7 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(900))
             .rate(BigDecimal.valueOf(4.8))
             .store(store3)
-            .currency(currency)
+
             .totalQuantity(90)
             .tags(List.of("healthy", "salad", "fresh"))
             .build(),
@@ -261,7 +261,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1500))
             .rate(BigDecimal.valueOf(4.7))
             .store(store1)
-            .currency(currency)
             .totalQuantity(60)
             .tags(List.of("pizza", "cheesy", "Italian"))
             .build(),
@@ -271,7 +270,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(2500))
             .rate(BigDecimal.valueOf(4.9))
             .store(store2)
-            .currency(currency)
             .totalQuantity(50)
             .tags(List.of("meat", "grill", "protein"))
             .build(),
@@ -281,7 +279,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(800))
             .rate(BigDecimal.valueOf(3.9))
             .store(store3)
-            .currency(currency)
             .totalQuantity(110)
             .tags(List.of("sandwich", "fish", "healthy"))
             .build(),
@@ -291,7 +288,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(950))
             .rate(BigDecimal.valueOf(4.1))
             .store(store1)
-            .currency(currency)
             .totalQuantity(85)
             .tags(List.of("vegetarian", "stir-fry", "Asian"))
             .build(),
@@ -301,7 +297,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1100))
             .rate(BigDecimal.valueOf(4.3))
             .store(store2)
-            .currency(currency)
             .totalQuantity(70)
             .tags(List.of("Mexican", "taco", "spicy"))
             .build(),
@@ -311,7 +306,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1050))
             .rate(BigDecimal.valueOf(4.2))
             .store(store3)
-            .currency(currency)
             .totalQuantity(75)
             .tags(List.of("Asian", "noodles", "chicken"))
             .build(),
@@ -321,7 +315,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1400))
             .rate(BigDecimal.valueOf(4.6))
             .store(store1)
-            .currency(currency)
             .totalQuantity(65)
             .tags(List.of("pizza", "tomato", "cheese"))
             .build(),
@@ -331,7 +324,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1600))
             .rate(BigDecimal.valueOf(4.8))
             .store(store2)
-            .currency(currency)
             .totalQuantity(55)
             .tags(List.of("sushi", "fish", "Japanese"))
             .build(),
@@ -341,7 +333,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(950))
             .rate(BigDecimal.valueOf(4.8))
             .store(store2)
-            .currency(currency)
             .totalQuantity(65)
             .tags(List.of("dessert", "chocolate", "sweet"))
             .build(),
@@ -351,7 +342,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(500))
             .rate(BigDecimal.valueOf(4.6))
             .store(store3)
-            .currency(currency)
             .totalQuantity(130)
             .tags(List.of("dessert", "ice-cream", "cold"))
             .build(),
@@ -361,7 +351,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1100))
             .rate(BigDecimal.valueOf(4.7))
             .store(store1)
-            .currency(currency)
             .totalQuantity(70)
             .tags(List.of("dessert", "cake", "strawberry"))
             .build(),
@@ -371,7 +360,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1350))
             .rate(BigDecimal.valueOf(4.5))
             .store(store2)
-            .currency(currency)
             .totalQuantity(55)
             .tags(List.of("protein", "chicken", "healthy"))
             .build(),
@@ -381,7 +369,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(900))
             .rate(BigDecimal.valueOf(4.3))
             .store(store3)
-            .currency(currency)
             .totalQuantity(95)
             .tags(List.of("soup", "warm", "healthy"))
             .build(),
@@ -391,7 +378,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(1250))
             .rate(BigDecimal.valueOf(4.6))
             .store(store1)
-            .currency(currency)
             .totalQuantity(85)
             .tags(List.of("Indian", "spicy", "curry"))
             .build(),
@@ -401,7 +387,6 @@ class FoodRepositoryTest {
             .price(BigDecimal.valueOf(700))
             .rate(BigDecimal.valueOf(4.2))
             .store(store2)
-            .currency(currency)
             .totalQuantity(120)
             .tags(List.of("bread", "garlic", "side-dish"))
             .build()

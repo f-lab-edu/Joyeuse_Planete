@@ -2,6 +2,9 @@ package com.f_lab.joyeuse_planete.core.domain;
 
 
 import com.f_lab.joyeuse_planete.core.domain.base.BaseEntity;
+import com.f_lab.joyeuse_planete.core.domain.util.CurrencyMap;
+import com.f_lab.joyeuse_planete.core.util.time.TimeConstants;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,6 +20,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -28,6 +33,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @SuperBuilder
+@DynamicInsert
+@DynamicUpdate
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,35 +46,55 @@ public class Order extends BaseEntity {
   @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "food_id")
-  private Food food;
+  @Column(updatable = false)
+  private Long foodId;
+
+  private String foodName;
+
+  @Column(name = "collection_start_time")
+  private LocalTime collectionStartTime;
+
+  @Column(name = "collection_end_time")
+  private LocalTime collectionEndTime;
+
+  @Column(updatable = false)
+  private Long storeId;
+
+  private String storeName;
+
+  private BigDecimal originalCost;
 
   private BigDecimal totalCost;
+
+  private String currencyCode;
+
+  private String currencySymbol;
 
   private int quantity;
 
   private BigDecimal rate;
 
+  @Column(columnDefinition = "BOOLEAN NOT NULL DEFAULT 'FALSE'")
+  private boolean isRated;
+
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
-  @OneToOne(fetch = LAZY)
-  @JoinColumn(name = "payment_id")
+  @OneToOne(mappedBy = "order", fetch = LAZY)
   private Payment payment;
 
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "voucher_id")
   private Voucher voucher;
 
-  public BigDecimal calculateTotalCost() {
-    return (voucher != null)
-        ? voucher.apply(food.calculateCost(quantity), food.getCurrency())
-        : food.calculateCost(quantity);
+  public boolean isCancellable() {
+    return collectionStartTime.isAfter(
+        LocalTime.now().plusMinutes(TimeUnit.MILLISECONDS.toMinutes(TimeConstants.TimeConstantsMillis.THIRTY_MINUTES)));
   }
 
-  public boolean checkCancellation() {
-    return food.getCollectionStartTime().isAfter(
-        LocalTime.now().plusMinutes(TimeUnit.MILLISECONDS.toMinutes(Long.parseLong(THIRTY_MINUTES))));
+  private BigDecimal calculateCost() {
+    return (voucher != null)
+        ? voucher.apply(originalCost, CurrencyMap.scales.get(currencyCode), CurrencyMap.rounding.get(currencyCode))
+        : totalCost;
   }
 }
