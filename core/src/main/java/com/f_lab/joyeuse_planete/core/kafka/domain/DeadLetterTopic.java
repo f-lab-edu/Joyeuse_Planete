@@ -73,7 +73,7 @@ public class DeadLetterTopic extends BaseTimeEntity implements Persistable<Strin
       String exceptionStackTrace,
       String originalTopic
   ) {
-    return (validateParams(event, eventName, topicId, exceptionName, exceptionMessage, exceptionStackTrace, originalTopic))
+    return (!validateParams(event, eventName, topicId, exceptionName, exceptionMessage, exceptionStackTrace, originalTopic))
         ? defaultInvalidTopic(
             event,
         eventName,
@@ -122,7 +122,7 @@ public class DeadLetterTopic extends BaseTimeEntity implements Persistable<Strin
         .exceptionMessage(defaultIfNull(exceptionMessage))
         .exceptionStackTrace(defaultIfNull(exceptionStackTrace))
         .originalTopic(defaultIfNull(originalTopic))
-        .status(DeadLetterStatus.FAILED_INVALID_FOR_REQUEUE)
+        .status(DeadLetterStatus.INVALID_FOR_REQUEUE)
         .build();
   }
 
