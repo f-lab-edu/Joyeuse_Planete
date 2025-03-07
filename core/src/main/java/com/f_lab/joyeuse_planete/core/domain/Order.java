@@ -62,8 +62,6 @@ public class Order extends BaseEntity {
 
   private String storeName;
 
-  private BigDecimal originalCost;
-
   private BigDecimal totalCost;
 
   private String currencyCode;
@@ -90,11 +88,5 @@ public class Order extends BaseEntity {
   public boolean isCancellable() {
     return collectionStartTime.isAfter(
         LocalTime.now().plusMinutes(TimeUnit.MILLISECONDS.toMinutes(TimeConstants.TimeConstantsMillis.THIRTY_MINUTES)));
-  }
-
-  private BigDecimal calculateCost() {
-    return (voucher != null)
-        ? voucher.apply(originalCost, CurrencyMap.scales.get(currencyCode), CurrencyMap.rounding.get(currencyCode))
-        : totalCost;
   }
 }
