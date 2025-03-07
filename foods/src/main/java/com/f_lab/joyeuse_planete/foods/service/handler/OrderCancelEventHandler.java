@@ -26,7 +26,6 @@ public class OrderCancelEventHandler {
   private final FoodService foodService;
   private final ApplicationEventPublisher eventPublisher;
 
-  @Retry
   @Transactional
   @KafkaHandler
   public void handleOrderCancelEvent(@Payload OrderCancelEvent orderCancelEvent) {
