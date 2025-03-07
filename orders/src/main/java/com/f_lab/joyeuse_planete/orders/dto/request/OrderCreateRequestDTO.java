@@ -1,6 +1,8 @@
 package com.f_lab.joyeuse_planete.orders.dto.request;
 
 
+import com.f_lab.joyeuse_planete.core.domain.Order;
+import com.f_lab.joyeuse_planete.core.domain.Voucher;
 import com.f_lab.joyeuse_planete.core.events.OrderCreatedEvent;
 import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -27,17 +30,33 @@ public class OrderCreateRequestDTO {
   @JsonProperty("food_name")
   private String foodName;
 
+  @NotNull(message = BeanValidationErrorMessage.COLLECTION_START_TIME_NULL_ERROR_MESSAGE)
+  @JsonProperty("collection_start_time")
+  private LocalTime collectionStartTime;
+
+  @NotNull(message = BeanValidationErrorMessage.COLLECTION_END_TIME_NULL_ERROR_MESSAGE)
+  @JsonProperty("collection_end_time")
+  private LocalTime collectionEndTime;
+
   @NotNull(message = BeanValidationErrorMessage.STORE_ID_NULL_ERROR_MESSAGE)
   @JsonProperty("store_id")
   private Long storeId;
 
-  @NotNull(message = BeanValidationErrorMessage.CURRENCY_ID_NULL_ERROR_MESSAGE)
-  @JsonProperty("currency_id")
-  private Long currencyId;
+  @NotNull(message = BeanValidationErrorMessage.STORE_NAME_NULL_ERROR_MESSAGE)
+  @JsonProperty("store_name")
+  private String storeName;
 
   @NotNull(message = BeanValidationErrorMessage.TOTAL_COST_NULL_ERROR_MESSAGE)
   @JsonProperty("total_cost")
   private BigDecimal totalCost;
+
+  @NotNull(message = BeanValidationErrorMessage.CURRENCY_NULL_ERROR_MESSAGE)
+  @JsonProperty("currency_code")
+  private String currencyCode;
+
+  @NotNull(message = BeanValidationErrorMessage.CURRENCY_NULL_ERROR_MESSAGE)
+  @JsonProperty("currency_symbol")
+  private String currencySymbol;
 
   @NotNull(message = BeanValidationErrorMessage.QUANTITY_NULL_ERROR_MESSAGE)
   @Min(value = 0, message = BeanValidationErrorMessage.NO_NEGATIVE_ERROR_MESSAGE)
@@ -52,6 +71,22 @@ public class OrderCreateRequestDTO {
         .orderId(orderId)
         .foodId(foodId)
         .quantity(quantity)
+        .build();
+  }
+
+  public Order toEntity(Voucher voucher) {
+    return Order.builder()
+        .foodId(foodId)
+        .foodName(foodName)
+        .collectionStartTime(collectionStartTime)
+        .collectionEndTime(collectionEndTime)
+        .storeId(storeId)
+        .storeName(storeName)
+        .totalCost(totalCost)
+        .currencyCode(currencyCode)
+        .currencySymbol(currencySymbol)
+        .quantity(quantity)
+        .voucher(voucher)
         .build();
   }
 }
