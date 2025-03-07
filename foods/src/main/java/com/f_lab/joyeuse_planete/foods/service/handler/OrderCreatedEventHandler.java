@@ -1,15 +1,14 @@
 package com.f_lab.joyeuse_planete.foods.service.handler;
 
-import com.f_lab.joyeuse_planete.core.events.FoodReservationFailedEvent;
+import com.f_lab.joyeuse_planete.core.events.EventToEventMapper;
+import com.f_lab.joyeuse_planete.core.events.FoodReservationProcessedEvent;
 import com.f_lab.joyeuse_planete.core.events.OrderCreatedEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.exceptions.TransactionRollbackException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.foods.service.FoodService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -27,18 +26,21 @@ public class OrderCreatedEventHandler {
   private final FoodService foodService;
   private final ApplicationEventPublisher eventPublisher;
 
+  @Transactional
   @KafkaHandler
   public void reserveFoodAfterOrderCreatedEvent(@Payload OrderCreatedEvent orderCreatedEvent) {
     try {
       foodService.reserve(orderCreatedEvent.getFoodId(), orderCreatedEvent.getQuantity());
+      eventPublisher.publishEvent(FoodReservationProcessedEvent.toEvent(orderCreatedEvent));
+
     } catch (JoyeusePlaneteApplicationException e) {
       LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent", e);
-      eventPublisher.publishEvent(FoodReservationFailedEvent.toEvent(orderCreatedEvent, e.getErrorCode()));
+      eventPublisher.publishEvent(EventToEventMapper.mapToCompensationEvent(orderCreatedEvent, e.getErrorCode()));
 
       throw e;
     } catch(Exception e) {
       LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent", e);
-      eventPublisher.publishEvent(FoodReservationFailedEvent.toEvent(orderCreatedEvent, ErrorCode.UNKNOWN_EXCEPTION));
+      eventPublisher.publishEvent(EventToEventMapper.mapToCompensationEvent(orderCreatedEvent, ErrorCode.UNKNOWN_EXCEPTION));
 
       throw new TransactionRollbackException(e);
     }
