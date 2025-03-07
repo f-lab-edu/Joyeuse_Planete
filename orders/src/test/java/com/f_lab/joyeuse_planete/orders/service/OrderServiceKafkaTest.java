@@ -29,6 +29,8 @@ public class OrderServiceKafkaTest {
   ApplicationEventPublisher eventPublisher;
   @Mock
   OrderRepository orderRepository;
+  @Mock
+  VoucherService voucherService;
 
   @Test
   @DisplayName("주문 생성 메서드 호출 후 성공")
@@ -38,12 +40,13 @@ public class OrderServiceKafkaTest {
     Order order = createOrder();
 
     // when
-    when(orderRepository.saveOrder(any())).thenReturn(order);
+    when(orderRepository.save(any())).thenReturn(order);
+    when(voucherService.getValidVoucher(any())).thenReturn(null);
     doNothing().when(eventPublisher).publishEvent(any(Object.class));
     orderService.createFoodOrder(request);
 
     // then
-    verify(orderRepository, times(1)).saveOrder(any());
+    verify(orderRepository, times(1)).save(any());
   }
 
   @Test
@@ -53,7 +56,7 @@ public class OrderServiceKafkaTest {
     OrderCreateRequestDTO request = createOrderCreateRequestDTO();
 
     // when
-    when(orderRepository.saveOrder(any())).thenThrow(new RuntimeException());
+    when(orderRepository.save(any())).thenThrow(new RuntimeException());
 
     // then
     assertThatThrownBy(() -> orderService.createFoodOrder(request))
@@ -67,7 +70,7 @@ public class OrderServiceKafkaTest {
     OrderCreateRequestDTO request = createOrderCreateRequestDTO();
 
     // when
-    when(orderRepository.saveOrder(any())).thenThrow(new JoyeusePlaneteApplicationException());
+    when(orderRepository.save(any())).thenThrow(new JoyeusePlaneteApplicationException());
 
     // then
     assertThatThrownBy(() -> orderService.createFoodOrder(request))
