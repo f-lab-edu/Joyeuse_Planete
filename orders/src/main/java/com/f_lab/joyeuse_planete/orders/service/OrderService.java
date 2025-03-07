@@ -4,6 +4,7 @@ import com.f_lab.joyeuse_planete.core.annotation.Backoff;
 import com.f_lab.joyeuse_planete.core.annotation.Retry;
 import com.f_lab.joyeuse_planete.core.domain.Order;
 import com.f_lab.joyeuse_planete.core.domain.OrderStatus;
+import com.f_lab.joyeuse_planete.core.domain.Voucher;
 import com.f_lab.joyeuse_planete.core.events.OrderCancelEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
   private final OrderRepository orderRepository;
+  private final VoucherService voucherService;
   private final ApplicationEventPublisher eventPublisher;
 
   public Page<OrderDTO> getOrderList(OrderSearchCondition condition, Pageable pageable) {
@@ -47,9 +49,14 @@ public class OrderService {
 
   @Transactional
   public OrderCreateResponseDTO createFoodOrder(OrderCreateRequestDTO request) {
-    Order order;
     try {
-      order = orderRepository.saveOrder(request);
+      Voucher voucher = voucherService.getValidVoucher(request.getVoucherId());
+      Order order = request.toEntity(voucher);
+
+      orderRepository.save(order);
+
+      eventPublisher.publishEvent(request.toEvent(order.getId()));
+      return OrderCreateResponseDTO.of(order.getId());
 
     } catch (JoyeusePlaneteApplicationException e) {
       LogUtil.exception("OrderService.createFoodOrder", e);
@@ -59,17 +66,12 @@ public class OrderService {
       LogUtil.exception("OrderService.createFoodOrder", e);
       throw new JoyeusePlaneteApplicationException(ErrorCode.ORDER_CREATION_FAIL_EXCEPTION);
     }
-
-    eventPublisher.publishEvent(request.toEvent(order.getId()));
-
-    return OrderCreateResponseDTO.of(order.getId());
   }
 
   @Transactional
   public void deleteOrderByMember(Long orderId) {
-    Order order;
     try {
-      order = findOrderById(orderId);
+      Order order = findOrderById(orderId);
 
       if (!order.isCancellable())
         throw new JoyeusePlaneteApplicationException(ErrorCode.ORDER_CANCELLATION_NOT_AVAILABLE_EXCEPTION);
@@ -77,6 +79,8 @@ public class OrderService {
       updateOrderStatus(orderId, OrderStatus.MEMBER_CANCELED);
       order.setDeleted(true);
       orderRepository.save(order);
+
+      eventPublisher.publishEvent(OrderCancelEvent.toEvent(order));
 
     } catch (JoyeusePlaneteApplicationException e) {
       LogUtil.exception("OrderService.deleteOrderByMember", e);
@@ -86,8 +90,6 @@ public class OrderService {
       LogUtil.exception("OrderService.deleteOrderByMember", e);
       throw new JoyeusePlaneteApplicationException(ErrorCode.ORDER_CANCELLATION_FAIL_EXCEPTION);
     }
-
-    eventPublisher.publishEvent(OrderCancelEvent.toEvent(order));
   }
 
   @Transactional

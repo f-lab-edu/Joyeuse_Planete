@@ -7,17 +7,16 @@ import com.f_lab.joyeuse_planete.core.util.web.ResultResponse;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonErrorResponses;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 
 @Slf4j
@@ -38,10 +37,10 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ResultResponse> handle(MethodArgumentNotValidException e) {
     LogUtil.exception("GlobalExceptionHandler.handle (MethodArgumentNotValidException)", e);
 
-    String errorMessages = e.getBindingResult().getAllErrors()
+    List<String> errorMessages = e.getBindingResult().getAllErrors()
         .stream()
         .map(err -> err != null ? err.getDefaultMessage() : BeanValidationErrorMessage.DEFAULT_ERROR_MESSAGE)
-        .collect(Collectors.joining("\n"));
+        .collect(toList());
 
     return ResponseEntity
         .status(HttpStatus.BAD_REQUEST)

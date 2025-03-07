@@ -6,18 +6,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResultResponse {
 
-  private String message;
+  private Object message;
 
   @JsonProperty("status_code")
   private int statusCode;
 
   public static ResultResponse of(String message, int statusCode) {
+    return new ResultResponse(message, statusCode);
+  }
+
+  public static ResultResponse of(List<String> message, int statusCode) {
     return new ResultResponse(message, statusCode);
   }
 

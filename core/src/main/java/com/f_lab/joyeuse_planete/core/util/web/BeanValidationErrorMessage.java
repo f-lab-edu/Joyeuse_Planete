@@ -11,9 +11,10 @@ public abstract class BeanValidationErrorMessage {
   public static final String INVALID_COLLECTION_TIME_ERROR_MESSAGE = "픽업 시작 시간은 픽업 마지막 시간 보다 더 앞에 설정되어야 합니다.";
   public static final String INVALID_DATE_RANGE_ERROR_MESSAGE = "시작 날짜는 마지막 날짜 보다 더 앞에 설정되어야 합니다.";
   public static final String INVALID_COST_RANGE_ERROR_MESSAGE = "최소가격은 최대가격보다 같거나 낮게 설정되어야 합니다.";
-  public static final String FOOD_NULL_ERROR_MESSAGE = "음식 이름은 필수 값입니다.";
   public static final String FOOD_ID_NULL_ERROR_MESSAGE = "음식 ID는 필수 값입니다.";
+  public static final String FOOD_NULL_ERROR_MESSAGE = "음식 이름은 필수 값입니다.";
   public static final String STORE_ID_NULL_ERROR_MESSAGE = "가게 ID는 필수 값입니다.";
+  public static final String STORE_NAME_NULL_ERROR_MESSAGE = "가게 이름은 필수 값입니다.";
   public static final String CURRENCY_ID_NULL_ERROR_MESSAGE = "화폐 ID는 필수 값입니다.";
   public static final String PRICE_NULL_ERROR_MESSAGE = "가격은 필수 값입니다.";
   public static final String TOTAL_COST_NULL_ERROR_MESSAGE = "총 결제 금액은 필수 값입니다.";

@@ -28,6 +28,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -100,7 +101,7 @@ class OrderControllerTest {
   void testOrderCreateSuccess() throws Exception {
     // given
     Long orderId = 1L;
-    OrderCreateRequestDTO request = createOrderRequestDTO(1L, "Pizza", 101L, 1L, BigDecimal.valueOf(25.99), 2, 500L);
+    OrderCreateRequestDTO request = createOrderRequestDTO(1L, "Pizza", 101L, "KRW", "₩", BigDecimal.valueOf(25.99), 2, 500L);
     String content = objectMapper.writeValueAsString(request);
     OrderCreateResponseDTO expected = OrderCreateResponseDTO.of(orderId);
     String expectedJson = objectMapper.writeValueAsString(expected);
@@ -307,7 +308,7 @@ class OrderControllerTest {
   @Test
   void testCreateOrderWithMissingCurrencyIdFail() throws Exception {
     // given
-    OrderCreateRequestDTO request = createOrderRequestDTO(1L, "Pizza", 101L, null, BigDecimal.valueOf(25.99), 2, 500L);
+    OrderCreateRequestDTO request = createOrderRequestDTO(1L, "Pizza", 101L, null, "₩", BigDecimal.valueOf(25.99), 2, 500L);
     String content = objectMapper.writeValueAsString(request);
 
     // then
@@ -315,14 +316,14 @@ class OrderControllerTest {
             .content(content)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andExpect(content().string(containsString(BeanValidationErrorMessage.CURRENCY_ID_NULL_ERROR_MESSAGE)));
+        .andExpect(content().string(containsString(BeanValidationErrorMessage.CURRENCY_NULL_ERROR_MESSAGE)));
   }
 
   @DisplayName("유효하지 않은 조건들로 주문 생성시 실패")
   @Test
   void testCreateOrderWithMissingCurrencyIdAndMissingFoodIdFail() throws Exception {
     // given
-    OrderCreateRequestDTO request = createOrderRequestDTO(null, "Pizza", 101L, null, BigDecimal.valueOf(25.99), 2, 500L);
+    OrderCreateRequestDTO request = createOrderRequestDTO(null, "Pizza", 101L, null, "₩", BigDecimal.valueOf(25.99), 2, 500L);
     String content = objectMapper.writeValueAsString(request);
 
     // then
@@ -331,7 +332,7 @@ class OrderControllerTest {
         .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
         .andExpect(content().string(containsString(BeanValidationErrorMessage.FOOD_ID_NULL_ERROR_MESSAGE)))
-        .andExpect(content().string(containsString(BeanValidationErrorMessage.CURRENCY_ID_NULL_ERROR_MESSAGE)));
+        .andExpect(content().string(containsString(BeanValidationErrorMessage.CURRENCY_NULL_ERROR_MESSAGE)));
   }
 
 
@@ -406,7 +407,8 @@ class OrderControllerTest {
       Long foodId,
       String foodName,
       Long storeId,
-      Long currencyId,
+      String currencyCode,
+      String currencySymbol,
       BigDecimal totalCost,
       int quantity,
       Long voucherId
@@ -415,8 +417,12 @@ class OrderControllerTest {
         .foodId(foodId)
         .foodName(foodName)
         .storeId(storeId)
-        .currencyId(currencyId)
+        .storeName("test")
+        .currencyCode(currencyCode)
+        .currencySymbol(currencySymbol)
         .totalCost(totalCost)
+        .collectionStartTime(LocalTime.now())
+        .collectionEndTime(LocalTime.now())
         .quantity(quantity)
         .voucherId(voucherId)
         .build();
