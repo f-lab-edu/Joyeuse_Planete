@@ -1,6 +1,5 @@
 package com.f_lab.joyeuse_planete.foods.service;
 
-import com.f_lab.joyeuse_planete.core.domain.Currency;
 import com.f_lab.joyeuse_planete.core.domain.Food;
 import com.f_lab.joyeuse_planete.core.domain.Store;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
@@ -179,18 +178,6 @@ class FoodServiceTest {
 
     return Store.builder()
         .id(storeId)
-        .build();
-  }
-
-  private Currency createCurrency() {
-    Long currencyId = 100L;
-    String currencyCode = "USD";
-    String currencySymbol = "$";
-
-    return Currency.builder()
-        .id(currencyId)
-        .currencyCode(currencyCode)
-        .currencySymbol(currencySymbol)
         .build();
   }
 

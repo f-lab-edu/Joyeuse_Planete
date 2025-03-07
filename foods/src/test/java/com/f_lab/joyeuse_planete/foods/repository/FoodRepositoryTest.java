@@ -1,6 +1,5 @@
 package com.f_lab.joyeuse_planete.foods.repository;
 
-import com.f_lab.joyeuse_planete.core.domain.Currency;
 import com.f_lab.joyeuse_planete.core.domain.Food;
 import com.f_lab.joyeuse_planete.core.domain.Store;
 import com.f_lab.joyeuse_planete.foods.dto.request.FoodSearchCondition;
@@ -46,7 +45,6 @@ class FoodRepositoryTest {
   void afterEach() {
     em.createQuery("DELETE FROM Food").executeUpdate();
     em.createQuery("DELETE FROM Store").executeUpdate();
-    em.createQuery("DELETE FROM Currency").executeUpdate();
     em.flush();
   }
 
@@ -213,16 +211,6 @@ class FoodRepositoryTest {
     em.persist(store3);
     em.persist(store4);
     em.persist(store5);
-    em.flush();
-
-    Currency currency = Currency.builder()
-        .currencyCode("KRW")
-        .currencySymbol("₩")
-        .roundingScale(2)
-        .roundingMode(RoundingMode.FLOOR)
-        .build();
-
-    em.persist(currency);
     em.flush();
 
     return List.of(
