@@ -1,7 +1,9 @@
 package com.f_lab.joyeuse_planete.foods.aspect;
 
-import com.f_lab.joyeuse_planete.core.aspect.RetryOnLockFailure;
+import com.f_lab.joyeuse_planete.core.annotation.Backoff;
+import com.f_lab.joyeuse_planete.core.annotation.Retry;
 import com.f_lab.joyeuse_planete.core.domain.Food;
+import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PessimisticLockException;
@@ -90,8 +92,8 @@ class LockRetryAspectTest {
 
     // then
     assertThatThrownBy(() -> foodTestService.findFood(foodId))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessage("현재 너무 많은 요청을 처리하고 있습니다. 다시 시도해주세요.");
+        .isInstanceOf(JoyeusePlaneteApplicationException.class)
+        .hasMessage("알 수 없는 오류가 발생하였습니다. 다시 시도해주세요.");
   }
 
   private Food createFood(Long foodId) {
@@ -104,7 +106,7 @@ class LockRetryAspectTest {
   static class FoodTestService {
     private final FoodRepository foodRepository;
 
-    @RetryOnLockFailure
+    @Retry(retryable = { LockTimeoutException.class, PessimisticLockException.class })
     public Optional<Food> findFood(Long foodId) {
       return foodRepository.findFoodByFoodIdWithPessimisticLock(foodId);
     }
