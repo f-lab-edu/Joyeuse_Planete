@@ -18,4 +18,4 @@
 
 ## DB ERD
 
-![Joyeuse_Planete (2)](https://github.com/user-attachments/assets/e13647f3-814a-4470-afe1-447a75ee82ba)
+![Joyeuse_Planete (3)](https://github.com/user-attachments/assets/c17002f5-68b4-434a-a626-698cabb7564d)
