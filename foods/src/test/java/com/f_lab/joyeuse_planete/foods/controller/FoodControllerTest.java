@@ -99,7 +99,7 @@ class FoodControllerTest {
   @Test
   void testCreateFoodSuccess() throws Exception {
     // given
-    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalTime.now(), LocalTime.now().plusHours(1));
+    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, "test", 1, "GBP", "£", LocalTime.of(8, 10), LocalTime.of(10, 10));
     String content = objectMapper.writeValueAsString(request);
 
     // when
@@ -211,7 +211,7 @@ class FoodControllerTest {
   @Test
   void testFoodCreateRequestCollectionStartTimeLaterThanCollectionEndTime() throws Exception {
     // given
-    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalTime.of(11, 10), LocalTime.of(10, 10));
+    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, "test", 1, "GBP", "£", LocalTime.of(11, 10), LocalTime.of(10, 10));
     String content = objectMapper.writeValueAsString(request);
 
     // then
@@ -288,6 +288,28 @@ class FoodControllerTest {
         .price(price)
         .totalQuantity(totalQuantity)
         .currencyCode(currencyCode)
+        .collectionStartTime(collectionStartTime)
+        .collectionEndTime(collectionEndTime)
+        .build();
+  }
+
+  public CreateFoodRequestDTO createFoodRequest(
+      String foodName,
+      BigDecimal price,
+      String storeName,
+      int totalQuantity,
+      String currencyCode,
+      String currencySymbol,
+      LocalTime collectionStartTime,
+      LocalTime collectionEndTime
+  ) {
+    return CreateFoodRequestDTO.builder()
+        .foodName(foodName)
+        .price(price)
+        .storeName(storeName)
+        .totalQuantity(totalQuantity)
+        .currencyCode(currencyCode)
+        .currencySymbol(currencySymbol)
         .collectionStartTime(collectionStartTime)
         .collectionEndTime(collectionEndTime)
         .build();
