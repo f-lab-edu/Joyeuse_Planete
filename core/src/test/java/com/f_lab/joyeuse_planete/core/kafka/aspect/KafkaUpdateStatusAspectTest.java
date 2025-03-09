@@ -1,7 +1,5 @@
 package com.f_lab.joyeuse_planete.core.kafka.aspect;
 
-import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
-import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.kafka.annotation.KafkaDeadLetterTopic;
 import com.f_lab.joyeuse_planete.core.kafka.aspect.KafkaDeadLetterTopicAspect.DeadLetterTopicService;
 import com.f_lab.joyeuse_planete.core.kafka.domain.DeadLetterStatus;
@@ -41,7 +39,6 @@ class KafkaUpdateStatusAspectTest {
   void testKafkaAopWithDB() {
     // given
     DeadLetterTopic deadLetterTopic = createDeadLetterTopic();
-    System.out.println(deadLetterTopic);
 
     // when
     proxy.runKafkaDeadLetterTopic(deadLetterTopic);
