@@ -22,4 +22,10 @@ public abstract class BeanValidationErrorMessage {
   public static final String CURRENCY_NULL_ERROR_MESSAGE = "결제 화폐는 필수 값입니다.";
   public static final String COLLECTION_START_TIME_NULL_ERROR_MESSAGE = "픽업 시작 시간은 필수 값입니다.";
   public static final String COLLECTION_END_TIME_NULL_ERROR_MESSAGE = "픽업 마지막 시간은 필수 값입니다.";
+  public static final String NICKNAME_INVALID_PATTERN = "올바른 닉네임 형식이 아닙니다.";
+  public static final String NICKNAME_NOT_BLANK_PATTERN = "닉네임은 필수 값입니다.";
+  public static final String EMAIL_INVALID_PATTERN = "올바른 이메일 형식이 아닙니다.";
+  public static final String EMAIL_NOT_BLANK_PATTERN = "이메일은 필수 값입니다.";
+  public static final String PASSWORD_INVALID_PATTERN = "올바른 비밀번호 형식이 아닙니다.";
+  public static final String PASSWORD_NOT_BLANK_PATTERN = "비밀번호은 필수 값입니다.";
 }
