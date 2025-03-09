@@ -49,7 +49,7 @@ public class DeadLetterTopic extends BaseTimeEntity implements Persistable<Strin
   @Column(name = "exception_message", columnDefinition = "VARCHAR(1000)")
   private String exceptionMessage;
 
-  @Column(name = "exception_stacktrace", columnDefinition = "VARCHAR(100000)")
+  @Column(name = "exception_stacktrace", columnDefinition = "MEDIUMTEXT")
   private String exceptionStackTrace;
 
   @Column(name = "original_topic", columnDefinition = "VARCHAR(1000)")
