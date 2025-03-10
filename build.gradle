@@ -100,3 +100,10 @@ project(":payment") {
 	}
 }
 
+project(":members") {
+	dependencies {
+		implementation project(":core")
+		testImplementation project(":core")
+	}
+}
+
