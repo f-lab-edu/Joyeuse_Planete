@@ -13,6 +13,11 @@ public enum ErrorCode {
   MEMBER_ALREADY_EXIST_EXCEPTION("이미 존재하는 회원입니다.", 400),
   MEMBER_PASSWORD_INVALID_EXCEPTION("비밀번호가 일치하지 않습니다.", 400),
 
+  // JWT 관련 오류
+  TOKEN_INVALID_EXCEPTION("유효하지 않은 사용자입니다.", 401),
+  TOKEN_ENCRYPTION_FAIL_EXCEPTION("토큰 생성에 실패하였습니다.", 401),
+
+
   FOOD_NOT_EXIST_EXCEPTION("상품이 존재하지 않습니다.", 400),
   FOOD_NOT_ENOUGH_STOCK("상품의 수량이 부족합니다", 409),
   FOOD_QUANTITY_OVERFLOW("상품의 수량이 최대 값을 넘었습니다.", 400),
