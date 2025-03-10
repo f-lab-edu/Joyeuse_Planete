@@ -8,8 +8,8 @@ import com.f_lab.joyeuse_planete.core.kafka.repository.DeadLetterTopicRepository
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ public class KafkaDeadLetterTopicAspect {
   private final DeadLetterTopicService deadLetterTopicService;
   private static final int MULTIPLIER = 3;
 
-  @Before("@annotation(kafkaDeadLetterTopic)")
+  @Around("@annotation(kafkaDeadLetterTopic)")
   public void saveDeadLetterTopic(ProceedingJoinPoint joinPoint, KafkaDeadLetterTopic kafkaDeadLetterTopic) {
     DeadLetterTopic deadLetterTopic = (DeadLetterTopic) joinPoint.getArgs()[0];
 
