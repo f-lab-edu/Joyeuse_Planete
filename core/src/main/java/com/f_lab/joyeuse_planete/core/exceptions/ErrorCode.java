@@ -8,6 +8,11 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @AllArgsConstructor(access = PRIVATE)
 public enum ErrorCode {
+  // 회원 관련 오류
+  MEMBER_NOT_EXIST_EXCEPTION("존재하지 않는 회원입니다.", 400),
+  MEMBER_ALREADY_EXIST_EXCEPTION("이미 존재하는 회원입니다.", 400),
+  MEMBER_PASSWORD_INVALID_EXCEPTION("비밀번호가 일치하지 않습니다.", 400),
+
   FOOD_NOT_EXIST_EXCEPTION("상품이 존재하지 않습니다.", 400),
   FOOD_NOT_ENOUGH_STOCK("상품의 수량이 부족합니다", 409),
   FOOD_QUANTITY_OVERFLOW("상품의 수량이 최대 값을 넘었습니다.", 400),
