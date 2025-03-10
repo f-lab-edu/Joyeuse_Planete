@@ -1,9 +1,5 @@
 package com.f_lab.joyeuse_planete.members.controller;
 
-<<<<<<< HEAD
-import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonResponses;
-import com.f_lab.joyeuse_planete.members.service.MemberService;
-=======
 import com.f_lab.joyeuse_planete.core.domain.Member;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
@@ -17,21 +13,13 @@ import com.f_lab.joyeuse_planete.members.dto.response.GetMemberResponseDTO;
 import com.f_lab.joyeuse_planete.members.dto.response.SigninResponseDTO;
 import com.f_lab.joyeuse_planete.members.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
->>>>>>> 71a7722 (feat: Added member mvc)
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
-<<<<<<< HEAD
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-=======
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,7 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
->>>>>>> 71a7722 (feat: Added member mvc)
+
 
 @WebMvcTest(controllers = { MemberController.class })
 class MemberControllerTest {
@@ -55,29 +43,6 @@ class MemberControllerTest {
   @Autowired
   MockMvc mockMvc;
 
-<<<<<<< HEAD
-  @MockitoBean
-  MemberService memberService;
-
-  static final String MEMBER_URL_PREFIX = "/api/v1/members";
-
-  @DisplayName("회원 생성시 성공")
-  @Test
-  void testCreateMemberSuccess() throws Exception {
-    // given
-    String expectedMessage = CommonResponses.CREATE_SUCCESS;
-    int expectedStatusCode = HttpStatus.CREATED.value();
-
-    // when
-//    when(memberService);
-
-    // then
-    mockMvc.perform(MockMvcRequestBuilders.post(MEMBER_URL_PREFIX))
-        .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.message").value(expectedMessage))
-        .andExpect(jsonPath("$.status_code").value(expectedStatusCode));
-  }
-=======
   @Autowired
   ObjectMapper objectMapper;
 
@@ -611,5 +576,4 @@ class MemberControllerTest {
   private SigninResponseDTO createSigninResponseDTO(String accessToken, String refreshToken) {
     return SigninResponseDTO.from(accessToken, refreshToken);
   }
->>>>>>> 71a7722 (feat: Added member mvc)
 }
