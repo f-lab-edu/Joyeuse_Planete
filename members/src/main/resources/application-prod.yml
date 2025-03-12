@@ -1,0 +1,5 @@
+server:
+  port: 8085
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
