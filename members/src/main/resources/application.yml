@@ -1,0 +1,5 @@
+server:
+  port: 8085
+
+jwt:
+  secret-key: teadsvhoDKLHFOIDHstTesDiohjasoinftst12233499329129843613798649817979
