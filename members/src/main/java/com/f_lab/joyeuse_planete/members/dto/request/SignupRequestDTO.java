@@ -33,4 +33,13 @@ public class SignupRequestDTO {
         .role(MemberRole.MEMBER)
         .build();
   }
+
+  public Member toEntity(String encodedPassword) {
+    return Member.builder()
+        .nickname(nickname)
+        .email(email)
+        .password(encodedPassword)
+        .role(MemberRole.MEMBER)
+        .build();
+  }
 }
