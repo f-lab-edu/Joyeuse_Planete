@@ -3,6 +3,7 @@ package com.f_lab.joyeuse_planete.members.controller;
 import com.f_lab.joyeuse_planete.core.domain.Member;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
+import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil;
 import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonErrorResponses;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonResponses;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 
@@ -38,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(controllers = { MemberController.class })
+@AutoConfigureMockMvc(addFilters = false)
 class MemberControllerTest {
 
   @Autowired
@@ -48,6 +51,9 @@ class MemberControllerTest {
 
   @MockitoBean
   MemberService memberService;
+
+  @MockitoBean
+  JwtUtil jwtUtil;
 
   static final String MEMBERS_URL_PREFIX = "/api/v1/members";
 
