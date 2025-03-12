@@ -1,6 +1,7 @@
 package com.f_lab.joyeuse_planete.core.util.jwt;
 
 
+import com.f_lab.joyeuse_planete.core.domain.MemberRole;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil.Payload;
@@ -50,7 +51,7 @@ class JwtUtilTest {
   void testGenerateAccessTokenSuccess() {
     // given
     Long memberId = 1L;
-    Payload payload = Payload.generate(memberId);
+    Payload payload = Payload.generate(memberId, MemberRole.MEMBER);
 
     // when
     String accessToken = jwtUtil.generateAccessToken(payload);
@@ -68,7 +69,7 @@ class JwtUtilTest {
   void testGenerateRefreshTokenSuccess() {
     // given
     Long memberId = 1L;
-    Payload payload = Payload.generate(memberId);
+    Payload payload = Payload.generate(memberId, MemberRole.MEMBER);
 
     // when
     String refreshToken = jwtUtil.generateRefreshToken(payload);
@@ -86,7 +87,7 @@ class JwtUtilTest {
   void testGenerateTokenFail1() {
     // given
     Long memberId = 1L;
-    Payload payload = Payload.generate(memberId);
+    Payload payload = Payload.generate(memberId, MemberRole.MEMBER);
 
     try (MockedStatic<Jwts> mockedJwts = mockStatic(Jwts.class)) {
       JwtBuilder mockBuilder = mock(JwtBuilder.class);
