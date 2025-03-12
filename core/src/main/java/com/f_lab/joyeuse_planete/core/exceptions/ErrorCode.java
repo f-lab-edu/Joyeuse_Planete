@@ -14,8 +14,9 @@ public enum ErrorCode {
   MEMBER_PASSWORD_INVALID_EXCEPTION("비밀번호가 일치하지 않습니다.", 400),
 
   // JWT 관련 오류
-  TOKEN_INVALID_EXCEPTION("유효하지 않은 사용자입니다.", 401),
+  TOKEN_INVALID_EXCEPTION("유효하지 않은 사용자입니다. 다시 로그인을 시도해 주시기를 바랍니다.", 401),
   TOKEN_ENCRYPTION_FAIL_EXCEPTION("토큰 생성에 실패하였습니다.", 401),
+  TOKEN_INVALID_REQUEST_LOGIN_EXCEPTION("오류가 발생하였습니다. 다시 로그인을 시도해 주시기를 바랍니다.", 401),
 
 
   FOOD_NOT_EXIST_EXCEPTION("상품이 존재하지 않습니다.", 400),

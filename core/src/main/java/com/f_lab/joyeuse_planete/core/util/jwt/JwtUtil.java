@@ -1,11 +1,13 @@
 package com.f_lab.joyeuse_planete.core.util.jwt;
 
+import com.f_lab.joyeuse_planete.core.domain.MemberRole;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsMillis;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -48,8 +50,17 @@ public class JwtUtil {
     return objectMapper.convertValue(decrypt(token).getPayload().get(JWT_PAYLOAD_IDENTITY_FIELD), Payload.class).getMemberId();
   }
 
+  public MemberRole getMemberRole(String token) {
+    return objectMapper.convertValue(decrypt(token).getPayload().get(JWT_PAYLOAD_IDENTITY_FIELD), Payload.class).getRole();
+  }
+
   public boolean hasExpired(String token) {
-    return decrypt(token).getPayload().getExpiration().before(new Date());
+    try {
+      return decrypt(token).getPayload().getExpiration().before(new Date());
+
+    } catch (ExpiredJwtException e) {
+      return true;
+    }
   }
 
   private String encrypt(Payload payload, long expiration) {
@@ -74,6 +85,10 @@ public class JwtUtil {
           .build()
           .parseSignedClaims(token);
 
+    } catch(ExpiredJwtException e) {
+      // 토큰 유효기간 끝났을 때 발생하는 예외
+      throw e;
+
     } catch (JwtException e) {
       throw new JoyeusePlaneteApplicationException(ErrorCode.TOKEN_INVALID_EXCEPTION, e);
     }
@@ -91,8 +106,11 @@ public class JwtUtil {
     @JsonProperty("member_id")
     private Long memberId;
 
-    public static Payload generate(Long memberId) {
-      return new Payload(memberId);
+    @JsonProperty("role")
+    private MemberRole role;
+
+    public static Payload generate(Long memberId, MemberRole role) {
+      return new Payload(memberId, role);
     }
   }
 }
