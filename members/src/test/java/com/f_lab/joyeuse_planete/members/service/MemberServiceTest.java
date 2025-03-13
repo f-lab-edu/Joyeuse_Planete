@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;
 
@@ -33,6 +35,9 @@ class MemberServiceTest {
 
   @Mock
   MemberRepository memberRepository;
+
+  @Mock
+  PasswordEncoder passwordEncoder;
 
   @DisplayName("회원 조회시 성공")
   @Test
@@ -91,6 +96,7 @@ class MemberServiceTest {
 
     // when
     when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+    when(passwordEncoder.encode(password2)).thenReturn(password2);
     memberService.updateMember(request, memberId);
 
     // then

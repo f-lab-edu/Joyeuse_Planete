@@ -7,6 +7,7 @@ import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil;
 import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonErrorResponses;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonResponses;
+import com.f_lab.joyeuse_planete.members.config.security.filter.JwtFilter;
 import com.f_lab.joyeuse_planete.members.dto.request.MemberUpdateRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.request.SigninRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.request.SignupRequestDTO;
@@ -54,6 +55,9 @@ class MemberControllerTest {
 
   @MockitoBean
   JwtUtil jwtUtil;
+
+  @MockitoBean
+  JwtFilter jwtFilter;
 
   static final String MEMBERS_URL_PREFIX = "/api/v1/members";
 
