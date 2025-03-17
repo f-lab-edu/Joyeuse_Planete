@@ -36,7 +36,7 @@ public class FoodService {
     return FoodDTO.from(findFood(foodId));
   }
 
-  @Cacheable(value = "foods", keyGenerator = "foodSearchKeyGenerator")
+//  @Cacheable(value = "foods", keyGenerator = "foodSearchKeyGenerator")
   public Page<FoodDTO> getFoodList(FoodSearchCondition condition, Pageable pageable) {
     return foodRepository.getFoodList(condition, pageable);
   }
