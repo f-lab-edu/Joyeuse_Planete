@@ -3,11 +3,13 @@ package com.f_lab.joyeuse_planete.foods.dto.request;
 
 import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 
@@ -18,13 +20,20 @@ public class FoodSearchCondition {
   Double lat = London.lat;
   Double lon = London.lon;
 
+  @JsonProperty("search")
   String search;
+
+  @JsonProperty("min_cost")
+  BigDecimal minCost = BigDecimal.ZERO;
+
+  @JsonProperty("max_cost")
+  BigDecimal maxCost = new BigDecimal("9999999.9999");
 
   @Min(value = 0, message = BeanValidationErrorMessage.NO_NEGATIVE_ERROR_MESSAGE)
   int page = 0;
 
   @Min(value = 0, message = BeanValidationErrorMessage.NO_NEGATIVE_ERROR_MESSAGE)
-  int size = 50;
+  int size = 200;
 
   List<String> sortBy = List.of("RATE_HIGH");
 

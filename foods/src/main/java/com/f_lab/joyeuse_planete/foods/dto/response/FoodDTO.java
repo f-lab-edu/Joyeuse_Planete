@@ -1,6 +1,7 @@
 package com.f_lab.joyeuse_planete.foods.dto.response;
 
 import com.f_lab.joyeuse_planete.core.domain.Food;
+import com.f_lab.joyeuse_planete.foods.document.FoodDocument;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
@@ -9,7 +10,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 
 @Data
@@ -41,10 +44,10 @@ public class FoodDTO implements Serializable {
   private BigDecimal rate;
 
   @JsonProperty("collection_start")
-  private LocalTime collectionStartTime;
+  private LocalDateTime collectionStartTime;
 
   @JsonProperty("collection_end")
-  private LocalTime collectionEndTime;
+  private LocalDateTime collectionEndTime;
 
   @Builder
   @QueryProjection
@@ -57,8 +60,8 @@ public class FoodDTO implements Serializable {
       String currencyCode,
       String currencySymbol,
       BigDecimal rate,
-      LocalTime collectionStartTime,
-      LocalTime collectionEndTime
+      LocalDateTime collectionStartTime,
+      LocalDateTime collectionEndTime
   ) {
     this.foodId = foodId;
     this.storeId = storeId;
@@ -84,6 +87,21 @@ public class FoodDTO implements Serializable {
         .currencySymbol(food.getCurrencySymbol())
         .collectionStartTime(food.getCollectionStartTime())
         .collectionEndTime(food.getCollectionEndTime())
+        .build();
+  }
+
+  public static FoodDTO from(FoodDocument food) {
+    return FoodDTO.builder()
+        .foodId(food.getId())
+        .storeId(food.getStoreId())
+        .foodName(food.getFoodName())
+        .rate(food.getRate())
+        .price(food.getPrice())
+        .totalQuantity(food.getTotalQuantity())
+        .currencyCode(food.getCurrencyCode())
+        .currencySymbol(food.getCurrencySymbol())
+        .collectionStartTime(food.getCollectionStartTime().atZone(ZoneId.systemDefault()).toLocalDateTime())
+        .collectionEndTime(food.getCollectionEndTime().atZone(ZoneId.systemDefault()).toLocalDateTime())
         .build();
   }
 }

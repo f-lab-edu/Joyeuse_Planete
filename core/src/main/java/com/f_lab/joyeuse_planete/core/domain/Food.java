@@ -16,14 +16,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -65,12 +64,9 @@ public class Food extends BaseEntity {
   @Convert(converter = StringListConverter.class)
   private List<String> tags;
 
-  @Convert(converter = StringListConverter.class)
-  private List<String> searchTags;
+  private LocalDateTime collectionStartTime;
 
-  private LocalTime collectionStartTime;
-
-  private LocalTime collectionEndTime;
+  private LocalDateTime collectionEndTime;
 
   public BigDecimal calculateCost(int quantity) {
     return price.multiply(BigDecimal.valueOf(quantity));
@@ -94,8 +90,8 @@ public class Food extends BaseEntity {
       String foodName,
       BigDecimal price,
       int totalQuantity,
-      LocalTime collectionStartTime,
-      LocalTime collectionEndTime
+      LocalDateTime collectionStartTime,
+      LocalDateTime collectionEndTime
   ) {
 
     this.foodName = foodName;
