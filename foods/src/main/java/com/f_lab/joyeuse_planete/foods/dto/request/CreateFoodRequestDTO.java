@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -40,11 +41,11 @@ public class CreateFoodRequestDTO {
 
   @NotNull(message = BeanValidationErrorMessage.COLLECTION_START_TIME_NULL_ERROR_MESSAGE)
   @JsonProperty("collection_start")
-  private LocalTime collectionStartTime;
+  private LocalDateTime collectionStartTime;
 
   @NotNull(message = BeanValidationErrorMessage.COLLECTION_END_TIME_NULL_ERROR_MESSAGE)
   @JsonProperty("collection_end")
-  private LocalTime collectionEndTime;
+  private LocalDateTime collectionEndTime;
 
   @AssertTrue(message = BeanValidationErrorMessage.INVALID_COLLECTION_TIME_ERROR_MESSAGE)
   public boolean isCollectionEndTimeAfterCollectionStartTime() {
