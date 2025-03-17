@@ -26,6 +26,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -99,7 +100,7 @@ class FoodControllerTest {
   @Test
   void testCreateFoodSuccess() throws Exception {
     // given
-    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalTime.now(), LocalTime.now().plusHours(1));
+    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalDateTime.now(), LocalDateTime.now().plusHours(1));
     String content = objectMapper.writeValueAsString(request);
 
     // when
@@ -118,7 +119,7 @@ class FoodControllerTest {
   void testUpdateFoodSuccess() throws Exception {
     // given
     Long foodId = 1L;
-    UpdateFoodRequestDTO request = createUpdateFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalTime.now(), LocalTime.now().plusHours(1));
+    UpdateFoodRequestDTO request = createUpdateFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalDateTime.now(), LocalDateTime.now().plusHours(1));
     String content = objectMapper.writeValueAsString(request);
 
     // when
@@ -211,7 +212,7 @@ class FoodControllerTest {
   @Test
   void testFoodCreateRequestCollectionStartTimeLaterThanCollectionEndTime() throws Exception {
     // given
-    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalTime.of(11, 10), LocalTime.of(10, 10));
+    CreateFoodRequestDTO request = createFoodRequest("food", BigDecimal.ONE, 1, "GBP", LocalDateTime.now().plusHours(2), LocalDateTime.now());
     String content = objectMapper.writeValueAsString(request);
 
     // then
@@ -280,8 +281,8 @@ class FoodControllerTest {
       BigDecimal price,
       int totalQuantity,
       String currencyCode,
-      LocalTime collectionStartTime,
-      LocalTime collectionEndTime
+      LocalDateTime collectionStartTime,
+      LocalDateTime collectionEndTime
   ) {
     return CreateFoodRequestDTO.builder()
         .foodName(foodName)
@@ -298,8 +299,8 @@ class FoodControllerTest {
       BigDecimal price,
       int totalQuantity,
       String currencyCode,
-      LocalTime collectionStartTime,
-      LocalTime collectionEndTime
+      LocalDateTime collectionStartTime,
+      LocalDateTime collectionEndTime
   ) {
     return UpdateFoodRequestDTO.builder()
         .foodName(foodName)
