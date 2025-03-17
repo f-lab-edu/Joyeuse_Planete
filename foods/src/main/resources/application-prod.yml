@@ -42,6 +42,11 @@ spring:
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
 
+    elasticsearch:
+      host: ${ELASTICSEARCH_HOST}
+      user: ${ELASTICSEARCH_USER}
+      password: ${ELASTICSEARCH_PASSWORD}
+
 logging:
   level:
     org.hibernate.sql: ERROR
