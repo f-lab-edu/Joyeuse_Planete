@@ -14,6 +14,7 @@ import com.f_lab.joyeuse_planete.members.dto.request.SignupRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.response.GetMemberResponseDTO;
 import com.f_lab.joyeuse_planete.members.dto.response.SigninResponseDTO;
 import com.f_lab.joyeuse_planete.members.service.MemberService;
+import com.f_lab.joyeuse_planete.members.util.CookieUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.DisplayName;
@@ -58,6 +59,9 @@ class MemberControllerTest {
 
   @MockitoBean
   JwtFilter jwtFilter;
+
+  @MockitoBean
+  CookieUtil cookieUtil;
 
   static final String MEMBERS_URL_PREFIX = "/api/v1/members";
 
@@ -130,8 +134,7 @@ class MemberControllerTest {
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.message").value(expectedMsg))
         .andExpect(jsonPath("$.status_code").value(expectedStatusCode))
-        .andExpect(jsonPath("$.token.access_token").value(accessToken))
-        .andExpect(jsonPath("$.token.refresh_token").value(refreshToken));
+        .andExpect(jsonPath("$.token.access_token").value(accessToken));
   }
 
   @DisplayName("회원 업데이트 성공")
