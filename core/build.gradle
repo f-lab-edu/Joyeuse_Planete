@@ -9,6 +9,9 @@ dependencies {
 
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    // HttpServletRequest, Response 접근
+    implementation 'jakarta.servlet:jakarta.servlet-api'
 }
 
 bootJar {

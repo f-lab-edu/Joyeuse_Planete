@@ -1,4 +1,4 @@
-package com.f_lab.joyeuse_planete.members.repository;
+package com.f_lab.joyeuse_planete.core.domain.repository;
 
 import com.f_lab.joyeuse_planete.core.domain.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
