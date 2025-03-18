@@ -3,6 +3,7 @@ package com.f_lab.joyeuse_planete.members.controller;
 import com.f_lab.joyeuse_planete.core.domain.Member;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
+import com.f_lab.joyeuse_planete.core.security.cookie.CookieUtil;
 import com.f_lab.joyeuse_planete.core.security.filter.JwtFilter;
 import com.f_lab.joyeuse_planete.core.security.jwt.JwtUtil;
 import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
@@ -58,6 +59,9 @@ class MemberControllerTest {
 
   @MockitoBean
   JwtFilter jwtFilter;
+
+  @MockitoBean
+  CookieUtil cookieUtil;
 
   static final String MEMBERS_URL_PREFIX = "/api/v1/members";
 
@@ -130,8 +134,7 @@ class MemberControllerTest {
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.message").value(expectedMsg))
         .andExpect(jsonPath("$.status_code").value(expectedStatusCode))
-        .andExpect(jsonPath("$.token.access_token").value(accessToken))
-        .andExpect(jsonPath("$.token.refresh_token").value(refreshToken));
+        .andExpect(jsonPath("$.token.access_token").value(accessToken));
   }
 
   @DisplayName("회원 업데이트 성공")
