@@ -1,5 +1,6 @@
 package com.f_lab.joyeuse_planete.members.controller;
 
+import com.f_lab.joyeuse_planete.core.security.cookie.CookieUtil;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonResponses;
 
@@ -8,7 +9,6 @@ import com.f_lab.joyeuse_planete.members.dto.request.SigninRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.request.SignupRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.response.SigninResponseDTO;
 import com.f_lab.joyeuse_planete.members.service.MemberService;
-import com.f_lab.joyeuse_planete.members.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -102,5 +102,11 @@ public class MemberController {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(ResultResponse.of(CommonResponses.DELETE_SUCCESS, HttpStatus.OK.value()));
+  }
+
+  @GetMapping("/ping")
+  public ResponseEntity<ResultResponse> ping() {
+    return ResponseEntity
+        .ok(ResultResponse.of(CommonResponses.PONG, HttpStatus.OK.value()));
   }
 }

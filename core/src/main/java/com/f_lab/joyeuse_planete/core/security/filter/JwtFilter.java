@@ -1,20 +1,23 @@
-package com.f_lab.joyeuse_planete.members.config.security.filter;
+package com.f_lab.joyeuse_planete.core.security.filter;
 
 import com.f_lab.joyeuse_planete.core.domain.MemberRole;
 import com.f_lab.joyeuse_planete.core.domain.RefreshToken;
+import com.f_lab.joyeuse_planete.core.domain.repository.RefreshTokenRepository;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
-import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil;
-import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil.Payload;
+import com.f_lab.joyeuse_planete.core.security.cookie.CookieUtil;
+import com.f_lab.joyeuse_planete.core.security.jwt.JwtUtil;
+import com.f_lab.joyeuse_planete.core.security.jwt.JwtUtil.Payload;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
-import com.f_lab.joyeuse_planete.members.repository.RefreshTokenRepository;
-import com.f_lab.joyeuse_planete.members.util.CookieUtil;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpHeaders;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +36,9 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
+
   private final CookieUtil cookieUtil;
+
   private final RefreshTokenRepository refreshTokenRepository;
   private static final String GENERAL_TOKEN_PREFIX = "Bearer ";
 

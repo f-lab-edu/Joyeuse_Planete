@@ -1,9 +1,8 @@
-package com.f_lab.joyeuse_planete.members.config.security;
+package com.f_lab.joyeuse_planete.core.security.config;
 
-import com.f_lab.joyeuse_planete.members.config.security.filter.JwtExceptionFilter;
-import com.f_lab.joyeuse_planete.members.config.security.filter.JwtFilter;
 
-import lombok.RequiredArgsConstructor;
+import com.f_lab.joyeuse_planete.core.security.filter.JwtFilter;
+import jakarta.servlet.Filter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,8 +14,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -24,10 +24,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
-public class SecurityConfig {
+public abstract class SecurityConfig {
 
-  private final JwtFilter jwtFilter;
+  abstract protected Filter jwtFilter();
+  abstract protected Filter jwtExceptionFilter();
+
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -44,15 +45,10 @@ public class SecurityConfig {
         .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtExceptionFilter(), JwtFilter.class)
 
         .build();
-  }
-
-  @Bean
-  public JwtExceptionFilter jwtExceptionFilter() {
-    return new JwtExceptionFilter();
   }
 
   @Bean
