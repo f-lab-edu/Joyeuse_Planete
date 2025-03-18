@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
@@ -34,8 +33,8 @@ public class JwtUtil {
   private String JWT_PRIVATE_SECRET_KEY;
   private static final String JWT_TOKEN_ISSUER = "JOYEUSE_PLANETE";
   private static final String JWT_PAYLOAD_IDENTITY_FIELD = "member";
-  private static final long JWT_EXPIRATION_DATE_ACCESS = TimeConstantsMillis.THIRTY_MINUTES;
-  private static final long JWT_EXPIRATION_DATE_REFRESH = TimeConstantsMillis.ONE_DAY;;
+  public static final int JWT_EXPIRATION_DATE_ACCESS = TimeConstantsMillis.THIRTY_MINUTES;
+  public static final int JWT_EXPIRATION_DATE_REFRESH = TimeConstantsMillis.ONE_DAY;;
 
 
   public String generateAccessToken(Payload payload) {
