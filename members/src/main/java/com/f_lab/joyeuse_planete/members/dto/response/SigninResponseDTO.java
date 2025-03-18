@@ -1,6 +1,7 @@
 package com.f_lab.joyeuse_planete.members.dto.response;
 
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class SigninResponseDTO extends ResultResponse {
     @JsonProperty("access_token")
     private String accessToken;
 
-    @JsonProperty("refresh_token")
+    @JsonIgnore
     private String refreshToken;
 
     public static Token of(String accessToken, String refreshToken) {
@@ -36,5 +37,10 @@ public class SigninResponseDTO extends ResultResponse {
 
   public static SigninResponseDTO from(String accessToken, String refreshToken) {
     return new SigninResponseDTO(accessToken, refreshToken);
+  }
+
+  @JsonIgnore
+  public String getRefreshToken() {
+    return getToken().getRefreshToken();
   }
 }

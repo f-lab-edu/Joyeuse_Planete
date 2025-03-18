@@ -6,7 +6,10 @@ import com.f_lab.joyeuse_planete.core.util.web.ResultResponse.CommonResponses;
 import com.f_lab.joyeuse_planete.members.dto.request.MemberUpdateRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.request.SigninRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.request.SignupRequestDTO;
+import com.f_lab.joyeuse_planete.members.dto.response.SigninResponseDTO;
 import com.f_lab.joyeuse_planete.members.service.MemberService;
+import com.f_lab.joyeuse_planete.members.util.CookieUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
   private final MemberService memberService;
+  private final CookieUtil cookieUtil;
 
   @PreAuthorize("#memberId == authentication.principal")
   @GetMapping("/{memberId}")
@@ -54,11 +58,15 @@ public class MemberController {
 
   @PostMapping("/signin")
   public ResponseEntity<ResultResponse> signin(
-      @RequestBody @Valid SigninRequestDTO request) {
+      @RequestBody @Valid SigninRequestDTO request, HttpServletResponse res) {
+
+    SigninResponseDTO signinResponseDTO = memberService.signin(request);
+    cookieUtil.setRefreshTokenAsCookie(res, signinResponseDTO.getRefreshToken());
+
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(memberService.signin(request));
+        .body(signinResponseDTO);
   }
 
 

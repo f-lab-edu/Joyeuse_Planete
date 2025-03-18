@@ -8,6 +8,7 @@ import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil;
 import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil.Payload;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.members.repository.RefreshTokenRepository;
+import com.f_lab.joyeuse_planete.members.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,9 +33,8 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
+  private final CookieUtil cookieUtil;
   private final RefreshTokenRepository refreshTokenRepository;
-
-  private static final String REFRESH_TOKEN_HEADER = "RefreshToken";
   private static final String GENERAL_TOKEN_PREFIX = "Bearer ";
 
 /**
@@ -47,7 +47,7 @@ public class JwtFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
     try {
       String accessToken = extractAccessToken(req);
-      String refreshToken = extractRefreshToken(req);
+      String refreshToken = cookieUtil.getRefreshTokenFromCookie(req);
 
       if (StringUtils.hasText(accessToken) && StringUtils.hasText(refreshToken)) {
 
@@ -136,23 +136,12 @@ public class JwtFilter extends OncePerRequestFilter {
     return null;
   }
 
-  private String extractRefreshToken(HttpServletRequest request) {
-    String token = request.getHeader(REFRESH_TOKEN_HEADER);
-
-    if (StringUtils.hasText(token) && token.startsWith(GENERAL_TOKEN_PREFIX)) {
-      return token.substring(GENERAL_TOKEN_PREFIX.length());
-    }
-
-    return null;
-  }
-
   private void setAccessTokenToResponse(HttpServletResponse res, String accessToken) {
     res.setHeader(HttpHeaders.AUTHORIZATION, GENERAL_TOKEN_PREFIX + accessToken);
-
   }
 
   private void setRefreshTokenToResponse(HttpServletResponse res, String refreshToken) {
-    res.setHeader(HttpHeaders.AUTHORIZATION, GENERAL_TOKEN_PREFIX + refreshToken);
+    cookieUtil.setRefreshTokenAsCookie(res, refreshToken);
   }
 
   private void saveAuthentication(Authentication authentication) {
