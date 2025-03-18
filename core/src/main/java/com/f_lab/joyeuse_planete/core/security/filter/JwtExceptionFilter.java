@@ -1,7 +1,6 @@
-package com.f_lab.joyeuse_planete.members.config.security.filter;
+package com.f_lab.joyeuse_planete.core.security.filter;
 
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
-import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
 import com.f_lab.joyeuse_planete.core.util.web.ResultResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;

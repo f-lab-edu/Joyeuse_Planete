@@ -1,16 +1,14 @@
-package com.f_lab.joyeuse_planete.members.util;
+package com.f_lab.joyeuse_planete.core.security.cookie;
 
-import com.f_lab.joyeuse_planete.core.util.jwt.JwtUtil;
+import com.f_lab.joyeuse_planete.core.security.jwt.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
 
-@Component
 public class CookieUtil {
 
   @Value("${cookie.domain:localhost}")

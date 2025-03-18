@@ -1,4 +1,4 @@
-package com.f_lab.joyeuse_planete.core.util.jwt;
+package com.f_lab.joyeuse_planete.core.security.jwt;
 
 import com.f_lab.joyeuse_planete.core.domain.MemberRole;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
@@ -16,15 +16,12 @@ import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-@Component
-@RequiredArgsConstructor
+
 public class JwtUtil {
 
   private final ObjectMapper objectMapper;
@@ -36,6 +33,10 @@ public class JwtUtil {
   public static final int JWT_EXPIRATION_DATE_ACCESS = TimeConstantsMillis.THIRTY_MINUTES;
   public static final int JWT_EXPIRATION_DATE_REFRESH = TimeConstantsMillis.ONE_DAY;;
 
+
+  public JwtUtil(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
   public String generateAccessToken(Payload payload) {
     return encrypt(payload, JWT_EXPIRATION_DATE_ACCESS);
