@@ -3,6 +3,7 @@ package com.f_lab.joyeuse_planete.members.controller;
 import com.f_lab.joyeuse_planete.core.domain.Member;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
+import com.f_lab.joyeuse_planete.core.security.cookie.CookieUtil;
 import com.f_lab.joyeuse_planete.core.security.filter.JwtFilter;
 import com.f_lab.joyeuse_planete.core.security.jwt.JwtUtil;
 import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
@@ -14,7 +15,6 @@ import com.f_lab.joyeuse_planete.members.dto.request.SignupRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.response.GetMemberResponseDTO;
 import com.f_lab.joyeuse_planete.members.dto.response.SigninResponseDTO;
 import com.f_lab.joyeuse_planete.members.service.MemberService;
-import com.f_lab.joyeuse_planete.members.util.CookieUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.DisplayName;

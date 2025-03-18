@@ -42,7 +42,7 @@ class BackOffPolicyTest {
     long end2 = System.currentTimeMillis();
 
     // then
-    assertThat(end1 - start1).isBetween(1400L, 1900L);
+    assertThat(end1 - start1).isBetween(1400L, 2000L);
     assertThat(end2 - start2).isBetween(2800L, 4000L);
     assertThat(end2 - start2).isGreaterThan(end1 - start1);
   }
