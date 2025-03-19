@@ -16,20 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import static com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantLong.ONE_HOUR;
 
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public abstract class DefaultSecurityConfig {
-
-  @Value("${cookie.domain:.localhost}")
-  private String DOMAIN;
 
   abstract protected Filter jwtFilter();
   abstract protected Filter jwtExceptionFilter();
@@ -41,8 +33,7 @@ public abstract class DefaultSecurityConfig {
 
         .csrf(AbstractHttpConfigurer::disable)
 
-        .cors(cors -> cors.
-            configurationSource(corsConfigurationSource()))
+        .cors(AbstractHttpConfigurer::disable)
 
         .formLogin(AbstractHttpConfigurer::disable)
 
@@ -55,22 +46,6 @@ public abstract class DefaultSecurityConfig {
         .addFilterBefore(jwtExceptionFilter(), JwtFilter.class)
 
         .build();
-  }
-
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-
-    configuration.addAllowedOrigin(DOMAIN);
-    configuration.addAllowedMethod("*");
-    configuration.addAllowedHeader("*");
-    configuration.setAllowCredentials(true);
-    configuration.setMaxAge(ONE_HOUR);
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-
-    return source;
   }
 
   @Bean
