@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class CookieUtil {
 
-  @Value("${cookie.domain:localhost}")
+  @Value("${cookie.domain:.localhost}")
   private String DOMAIN;
 
   @Value("${cookie.path:/}")
@@ -36,13 +36,27 @@ public class CookieUtil {
     if (cookies == null)
       return null;
 
-    Cookie cookie = Arrays.stream(cookies)
+    return Arrays.stream(cookies)
         .filter(c -> c.getName().equals(REFRESH_TOKEN_KEY))
+        .map(Cookie::getValue)
         .findAny()
-        .orElseGet(() -> null);
+        .orElse(null);
+  }
 
-    return (cookie != null)
-        ? cookie.getValue()
-        : null;
+  public void deleteCookie(HttpServletRequest request, HttpServletResponse response) {
+    Cookie[] cookies = request.getCookies();
+
+    if (cookies != null) {
+      Arrays.stream(cookies)
+          .filter(c -> c.getName().equals(REFRESH_TOKEN_KEY))
+          .findFirst()
+          .ifPresent(c -> {
+            c.setDomain(DOMAIN);
+            c.setPath(PATH);
+            c.setMaxAge(0);
+
+            response.addCookie(c);
+          });
+    }
   }
 }
