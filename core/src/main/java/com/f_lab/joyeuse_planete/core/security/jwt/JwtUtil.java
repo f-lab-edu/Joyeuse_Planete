@@ -46,8 +46,8 @@ public class JwtUtil {
     return encrypt(payload, JWT_EXPIRATION_DATE_REFRESH);
   }
 
-  public Long getMemberId(String token) {
-    return objectMapper.convertValue(decrypt(token).getPayload().get(JWT_PAYLOAD_IDENTITY_FIELD), Payload.class).getMemberId();
+  public Long getId(String token) {
+    return objectMapper.convertValue(decrypt(token).getPayload().get(JWT_PAYLOAD_IDENTITY_FIELD), Payload.class).getId();
   }
 
   public MemberRole getMemberRole(String token) {
@@ -103,14 +103,14 @@ public class JwtUtil {
   @AllArgsConstructor
   public static class Payload {
 
-    @JsonProperty("member_id")
-    private Long memberId;
+    @JsonProperty("id")
+    private Long id;
 
     @JsonProperty("role")
     private MemberRole role;
 
-    public static Payload generate(Long memberId, MemberRole role) {
-      return new Payload(memberId, role);
+    public static Payload generate(Long id, MemberRole role) {
+      return new Payload(id, role);
     }
   }
 }
