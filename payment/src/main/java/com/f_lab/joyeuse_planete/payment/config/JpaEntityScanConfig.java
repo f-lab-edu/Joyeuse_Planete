@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(
     basePackages = {
         "com.f_lab.joyeuse_planete.payment.repository",
-        "com.f_lab.joyeuse_planete.core.kafka.repository"
+        "com.f_lab.joyeuse_planete.core.kafka.repository",
+        "com.f_lab.joyeuse_planete.core.domain.repository"
     }
 )
 @EntityScan(basePackages = { "com.f_lab.joyeuse_planete.core" })
