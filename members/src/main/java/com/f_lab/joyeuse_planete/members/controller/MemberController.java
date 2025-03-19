@@ -9,6 +9,7 @@ import com.f_lab.joyeuse_planete.members.dto.request.SigninRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.request.SignupRequestDTO;
 import com.f_lab.joyeuse_planete.members.dto.response.SigninResponseDTO;
 import com.f_lab.joyeuse_planete.members.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,6 @@ public class MemberController {
     SigninResponseDTO signinResponseDTO = memberService.signin(request);
     cookieUtil.setRefreshTokenAsCookie(res, signinResponseDTO.getRefreshToken());
 
-
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(signinResponseDTO);
@@ -72,9 +72,14 @@ public class MemberController {
 
   @PreAuthorize("hasRole('MEMBER') || hasRole('ADMIN')")
   @PostMapping("/signout/{memberId}")
-  public ResponseEntity<ResultResponse> signout(Authentication authentication) {
+  public ResponseEntity<ResultResponse> signout(
+      Authentication authentication,
+      HttpServletRequest req,
+      HttpServletResponse res
+  ) {
 
     memberService.signout((Long) authentication.getPrincipal());
+    cookieUtil.deleteCookie(req, res);
 
     return ResponseEntity
         .ok(ResultResponse.of(CommonResponses.DELETE_SUCCESS, HttpStatus.OK.value()));
