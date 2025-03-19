@@ -65,6 +65,7 @@ public abstract class DefaultSecurityConfig {
     corsConfiguration.addAllowedOrigin(DOMAIN);
     corsConfiguration.addAllowedHeader("*");
     corsConfiguration.addAllowedMethod("*");
+    corsConfiguration.setAllowCredentials(true);
     corsConfiguration.setMaxAge(ONE_HOUR);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
