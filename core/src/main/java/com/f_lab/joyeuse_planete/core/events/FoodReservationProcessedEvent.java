@@ -12,10 +12,14 @@ import lombok.NoArgsConstructor;
 public class FoodReservationProcessedEvent {
 
   private Long orderId;
+  private transient Long foodId;
+  private transient int quantity;
 
   public static FoodReservationProcessedEvent toEvent(OrderCreatedEvent event) {
     return FoodReservationProcessedEvent.builder()
         .orderId(event.getOrderId())
+        .foodId(event.getFoodId())
+        .quantity(event.getQuantity())
         .build();
   }
 }
