@@ -232,7 +232,7 @@ class OrderRepositoryTest {
 
         Order.builder()
             .totalCost(BigDecimal.valueOf(3000.0))
-            .status(OrderStatus.FAIL)
+            .status(OrderStatus.FAIL_ORDER)
             .createdAt(LocalDateTime.of(2022, Month.JANUARY, 21, 10, 10, 10))
             .build(),
 
@@ -262,7 +262,7 @@ class OrderRepositoryTest {
 
         Order.builder()
             .totalCost(BigDecimal.valueOf(3000.0))
-            .status(OrderStatus.FAIL)
+            .status(OrderStatus.FAIL_ORDER)
             .createdAt(LocalDateTime.of(2018, Month.JANUARY, 21, 10, 10, 10))
             .build(),
 
