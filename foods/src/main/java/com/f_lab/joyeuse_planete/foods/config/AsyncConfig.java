@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class AsyncConfig {
 
   @Bean
-  public DefaultAsyncConfig asyncConfig() {
+  public DefaultAsyncConfig defaultAsyncConfig() {
     return new DefaultAsyncConfig();
   }
 }
