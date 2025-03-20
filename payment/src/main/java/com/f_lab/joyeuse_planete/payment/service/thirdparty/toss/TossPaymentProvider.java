@@ -3,6 +3,7 @@ package com.f_lab.joyeuse_planete.payment.service.thirdparty.toss;
 import com.f_lab.joyeuse_planete.core.domain.Payment;
 
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.PaymentProvider;
+import com.f_lab.joyeuse_planete.payment.service.thirdparty.exceptions.PaymentAPIRetryableException;
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.response.PaymentResponse;
 import com.f_lab.joyeuse_planete.payment.service.thirdparty.token.PaymentToken;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -14,11 +15,16 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
+
+import static com.f_lab.joyeuse_planete.payment.service.thirdparty.PaymentProviderConstants.*;
+import static com.f_lab.joyeuse_planete.payment.service.thirdparty.toss.TossExceptionTranslator.RETRYABLE;
 
 public class TossPaymentProvider implements PaymentProvider {
 
@@ -51,10 +57,15 @@ public class TossPaymentProvider implements PaymentProvider {
         )
 
         .onStatus(HttpStatusCode::is5xxServerError, res -> res.bodyToMono(TossPaymentResponseError.class)
-            .flatMap(err -> Mono.error(TossExceptionTranslator.RETRYABLE))
+            .flatMap(err -> Mono.error(RETRYABLE))
         )
 
-        .bodyToMono(TossPaymentResponse.class);
+        .bodyToMono(TossPaymentResponse.class)
+
+        .retryWhen(Retry.backoff(PAYMENT_API_ATTEMPTS, Duration.ofSeconds(PAYMENT_API_DELAYED_SECONDS))
+            .jitter(PAYMENT_API_DELAYED_MULTIPLIER)
+            .filter(ex -> ex instanceof PaymentAPIRetryableException)
+            .onRetryExhaustedThrow(((retryBackoffSpec, retrySignal) -> RETRYABLE)));
 
     return result.flatMap(TossPaymentResponse::from);
   }
@@ -76,11 +87,14 @@ public class TossPaymentProvider implements PaymentProvider {
             .flatMap(err -> Mono.error(TossExceptionTranslator.translate(err)))
         )
 
-        .onStatus(HttpStatusCode::is5xxServerError, res -> res.bodyToMono(TossPaymentResponseError.class)
-            .flatMap(err -> Mono.error(TossExceptionTranslator.RETRYABLE))
-        )
+        .onStatus(HttpStatusCode::is5xxServerError, res -> Mono.error(new PaymentAPIRetryableException()))
 
-        .bodyToMono(TossPaymentResponse.class);
+        .bodyToMono(TossPaymentResponse.class)
+
+        .retryWhen(Retry.backoff(PAYMENT_API_ATTEMPTS, Duration.ofSeconds(PAYMENT_API_DELAYED_SECONDS))
+            .jitter(PAYMENT_API_DELAYED_MULTIPLIER)
+            .filter(ex -> ex instanceof PaymentAPIRetryableException)
+            .onRetryExhaustedThrow(((retryBackoffSpec, retrySignal) -> RETRYABLE)));
 
     return result.flatMap(TossPaymentResponse::from);
   }
