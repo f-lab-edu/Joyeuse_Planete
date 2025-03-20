@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -48,6 +49,7 @@ public class FoodController {
     return foodService.getFoodList(condition, pageable);
   }
 
+  @PreAuthorize("hasRole('STORE')")
   @PostMapping
   public ResponseEntity<ResultResponse> createFood(@RequestBody @Valid CreateFoodRequestDTO request) {
     foodService.createFood(request);
@@ -57,6 +59,7 @@ public class FoodController {
         .body(ResultResponse.of(CommonResponses.CREATE_SUCCESS, HttpStatus.CREATED.value()));
   }
 
+  @PreAuthorize("hasRole('STORE')")
   @PutMapping("/{foodId}")
   public ResponseEntity<ResultResponse> updateFood(@PathVariable Long foodId,
                                                    @RequestBody @Valid UpdateFoodRequestDTO request
@@ -69,6 +72,7 @@ public class FoodController {
         .body(ResultResponse.of(CommonResponses.UPDATE_SUCCESS, HttpStatus.OK.value()));
   }
 
+  @PreAuthorize("hasRole('STORE')")
   @DeleteMapping("/{foodId}")
   public ResponseEntity<ResultResponse> deleteFood(@PathVariable Long foodId) {
     foodService.deleteFood(foodId);

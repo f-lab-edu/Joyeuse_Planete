@@ -56,7 +56,7 @@ class JwtUtilTest {
 
     // when
     String accessToken = jwtUtil.generateAccessToken(payload);
-    Long extractedMemberId = jwtUtil.getMemberId(accessToken);
+    Long extractedMemberId = jwtUtil.getId(accessToken);
     boolean hasExpired = jwtUtil.hasExpired(accessToken);
 
     // then
@@ -74,7 +74,7 @@ class JwtUtilTest {
 
     // when
     String refreshToken = jwtUtil.generateRefreshToken(payload);
-    Long extractedMemberId = jwtUtil.getMemberId(refreshToken);
+    Long extractedMemberId = jwtUtil.getId(refreshToken);
     boolean hasExpired = jwtUtil.hasExpired(refreshToken);
 
     // then

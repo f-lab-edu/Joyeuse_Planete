@@ -11,6 +11,10 @@ public class TimeConstants {
 
   }
 
+  public static class TimeConstantLong {
+    public static final long ONE_HOUR = 3600L;
+  }
+
   public static class TimeConstantsMillis {
     public static final int FIVE_SECONDS = 5000;
     public static final int ONE_SECOND = 1000;
