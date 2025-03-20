@@ -9,7 +9,7 @@ import java.util.concurrent.Executor;
 
 @EnableAsync
 @Configuration
-public class DefaultAsyncConfig {
+public abstract class DefaultAsyncConfig {
 
   private static final int CORE_POOL_SIZE = 20;
   private static final int MAX_POOL_SIZE = Integer.MAX_VALUE;
@@ -17,7 +17,7 @@ public class DefaultAsyncConfig {
   private static final String NAME_PREFIX = "ASYNC_THREAD_";
 
   @Bean(name = { "executor", "asyncExecutor" })
-  public Executor taskExecutor() {
+  protected Executor taskExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
     executor.setCorePoolSize(CORE_POOL_SIZE);

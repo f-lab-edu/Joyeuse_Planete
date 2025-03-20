@@ -2,14 +2,9 @@ package com.f_lab.joyeuse_planete.orders.config;
 
 
 import com.f_lab.joyeuse_planete.core.config.DefaultAsyncConfig;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AsyncConfig {
+public class AsyncConfig extends DefaultAsyncConfig {
 
-  @Bean
-  public DefaultAsyncConfig defaultAsyncConfig() {
-    return new DefaultAsyncConfig();
-  }
 }

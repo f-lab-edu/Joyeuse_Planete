@@ -1,4 +1,4 @@
-package com.f_lab.joyeuse_planete.foods.config;
+package com.f_lab.joyeuse_planete.payment.config;
 
 import com.f_lab.joyeuse_planete.core.config.DefaultAsyncConfig;
 import org.springframework.context.annotation.Configuration;
