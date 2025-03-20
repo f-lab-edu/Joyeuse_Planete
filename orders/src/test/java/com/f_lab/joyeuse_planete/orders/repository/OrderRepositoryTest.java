@@ -116,7 +116,7 @@ class OrderRepositoryTest {
   @DisplayName("주문 상태 조건을 변경하였을 때 작동하는 것을 확인")
   void testOrderStatusConditionSuccess() {
     // given
-    String status = "FAIL";
+    String status = "FAIL_ORDER";
     List<String> sortBy = List.of("DATE_NEW");
 
     OrderSearchCondition condition = createSearchCondition(null, null, status, null, null, sortBy, 0, 10);
