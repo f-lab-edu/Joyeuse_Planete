@@ -9,7 +9,8 @@ public class ErrorCodeOrderStatusTranslator {
   private static final Map<ErrorCode, OrderStatus> ERROR_CODE_MAP = Map.of(
       ErrorCode.FOOD_NOT_ENOUGH_STOCK, OrderStatus.FAIL_FOOD_QUANTITY,
       ErrorCode.FOOD_NOT_EXIST_EXCEPTION, OrderStatus.FAIL_ORDER,
-      ErrorCode.ORDER_NOT_EXIST_EXCEPTION, OrderStatus.FAIL_ORDER
+      ErrorCode.ORDER_NOT_EXIST_EXCEPTION, OrderStatus.FAIL_ORDER,
+      ErrorCode.FOOD_RELEASE_KAFKA_FAIL_EVENT, OrderStatus.FAIL_CANCEL
   );
 
   public static OrderStatus translate(ErrorCode errorCode) {
