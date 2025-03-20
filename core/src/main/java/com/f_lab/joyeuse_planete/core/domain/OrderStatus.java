@@ -19,7 +19,8 @@ public enum OrderStatus {
   EXPIRED("주문의 유효 시간 5분이 지나 거래가 취소된 상태입니다."),
   FAIL_FOOD_QUANTITY("요청한 상품의 수량이 부족하여 주문이 실패하였습니다."),
   FAIL_FOOD_INVALID_ID("요청한 상품이 존재하지 않아 주문이 실패하였습니다."),
-  FAIL("주문이 실패하였습니다.")
+  FAIL_ORDER("주문이 실패하였습니다."),
+  FAIL_CANCEL("주문이 실패하였습니다.")
   ;
 
   private final String description;
