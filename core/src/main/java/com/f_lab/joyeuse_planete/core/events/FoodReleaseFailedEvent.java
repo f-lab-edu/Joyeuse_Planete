@@ -21,4 +21,11 @@ public class FoodReleaseFailedEvent {
         .errorCode(errorCode)
         .build();
   }
+
+  public static FoodReleaseFailedEvent toEvent(FoodReleaseEvent event, ErrorCode errorCode) {
+    return FoodReleaseFailedEvent.builder()
+        .orderId(event.getOrderId())
+        .errorCode(errorCode)
+        .build();
+  }
 }
