@@ -45,6 +45,9 @@ public enum ErrorCode {
   INVALID_PASSWORD("결제 비밀번호가 일치하지 않습니다.", 403),
   PAYMENT_UNKNOWN_EXCEPTION("알 수 없는 오류가 결제 중 발생하였습니다. 다시 시도해주세요.", 400),
 
+  // 환불 관련 오류
+  FOOD_RELEASE_KAFKA_FAIL_EVENT("환불이 실패하였습니다. 고객센터에 연락주시기를 바랍니다.", 500),
+
   // 기타 오류
   UNKNOWN_EXCEPTION("알 수 없는 오류가 발생하였습니다. 다시 시도해주세요.", 500),
 

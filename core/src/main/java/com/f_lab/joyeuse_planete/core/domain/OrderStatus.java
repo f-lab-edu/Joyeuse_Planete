@@ -20,7 +20,7 @@ public enum OrderStatus {
   FAIL_FOOD_QUANTITY("요청한 상품의 수량이 부족하여 주문이 실패하였습니다."),
   FAIL_FOOD_INVALID_ID("요청한 상품이 존재하지 않아 주문이 실패하였습니다."),
   FAIL_ORDER("주문이 실패하였습니다."),
-  FAIL_CANCEL("주문이 실패하였습니다.")
+  FAIL_CANCEL("주문취소가 원할히 진행되지 못했습니다.")
   ;
 
   private final String description;
