@@ -20,7 +20,7 @@ public class LogUtil {
     log.warn("DEAD LETTER TOPIC 에서 오류가 발생하였습니다. topic = {}, name = {}, message = {}", originalTopic, exceptionName, exceptionMessage);
   }
 
-  public static void info(String method, Object object) {
+  public static void errorInfo(String method, Object object) {
     log.error("오류가 발생하였습니다.  method = {} object = {}", method, object);
   }
 }
