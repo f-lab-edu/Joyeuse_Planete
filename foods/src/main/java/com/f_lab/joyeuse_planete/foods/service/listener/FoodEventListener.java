@@ -62,7 +62,6 @@ public class FoodEventListener {
 
     } catch (Exception e) {
       LogUtil.exception("FoodEventListener.on (FoodReservationFailedEvent)", e);
-      LogUtil.info("FoodEventListener.on (FoodReservationFailedEvent)", event);
     }
   }
 
@@ -88,7 +87,6 @@ public class FoodEventListener {
 
     } catch (Exception e) {
       LogUtil.exception("FoodEventListener.on (FoodReleaseFailedEvent)", e);
-      LogUtil.info("FoodEventListener.on (FoodReleaseFailedEvent)", event);
     }
   }
 }
