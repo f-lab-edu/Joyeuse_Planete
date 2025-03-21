@@ -17,26 +17,22 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public abstract class SecurityConfig {
+public abstract class DefaultSecurityConfig {
 
   abstract protected Filter jwtFilter();
   abstract protected Filter jwtExceptionFilter();
 
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+  protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
     return http
 
         .csrf(AbstractHttpConfigurer::disable)
 
-        .cors(withDefaults())
+        .cors(AbstractHttpConfigurer::disable)
 
         .formLogin(AbstractHttpConfigurer::disable)
 
@@ -52,12 +48,12 @@ public abstract class SecurityConfig {
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
+  protected PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
   @Bean
-  public UserDetailsService userDetailsService() {
+  protected UserDetailsService userDetailsService() {
     return username -> null;
   }
 }

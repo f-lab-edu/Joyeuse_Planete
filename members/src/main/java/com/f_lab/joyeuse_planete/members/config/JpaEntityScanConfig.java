@@ -12,7 +12,8 @@ import org.springframework.transaction.TransactionManager;
 @EnableJpaRepositories(
     basePackages = {
         "com.f_lab.joyeuse_planete.members.repository",
-        "com.f_lab.joyeuse_planete.core"
+        "com.f_lab.joyeuse_planete.core.kafka.repository",
+        "com.f_lab.joyeuse_planete.core.domain.repository"
     })
 @EntityScan(basePackages = { "com.f_lab.joyeuse_planete.core" })
 public class JpaEntityScanConfig {
