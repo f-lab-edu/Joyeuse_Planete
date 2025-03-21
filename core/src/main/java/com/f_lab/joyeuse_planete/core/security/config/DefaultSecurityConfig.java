@@ -3,7 +3,6 @@ package com.f_lab.joyeuse_planete.core.security.config;
 
 import com.f_lab.joyeuse_planete.core.security.filter.JwtFilter;
 import jakarta.servlet.Filter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -28,7 +27,7 @@ public abstract class DefaultSecurityConfig {
 
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+  protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
     return http
 
         .csrf(AbstractHttpConfigurer::disable)
@@ -49,12 +48,12 @@ public abstract class DefaultSecurityConfig {
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
+  protected PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
   @Bean
-  public UserDetailsService userDetailsService() {
+  protected UserDetailsService userDetailsService() {
     return username -> null;
   }
 }
