@@ -1,4 +1,4 @@
 rootProject.name = 'joyeuse_planete'
-include 'core', 'notifications','foods', 'orders', 'payment', 'members'
+include 'core', 'notifications','foods', 'orders', 'payment', 'members', 'batch'
 
 
