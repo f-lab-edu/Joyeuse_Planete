@@ -2,6 +2,7 @@ package com.f_lab.joyeuse_planete.members.service;
 
 import com.f_lab.joyeuse_planete.core.domain.Member;
 import com.f_lab.joyeuse_planete.core.domain.RefreshToken;
+import com.f_lab.joyeuse_planete.core.domain.Role;
 import com.f_lab.joyeuse_planete.core.domain.repository.RefreshTokenRepository;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
@@ -42,7 +43,7 @@ public class MemberService {
     String accessToken = jwtUtil.generateAccessToken(Payload.generate(member.getId(), member.getRole()));
     String refreshToken = jwtUtil.generateRefreshToken(Payload.generate(member.getId(), member.getRole()));
 
-    refreshTokenRepository.save(RefreshToken.from(refreshToken, member.getId()));
+    refreshTokenRepository.save(RefreshToken.from(refreshToken, member.getId(), Role.MEMBER));
 
     return SigninResponseDTO.from(accessToken, refreshToken);
   }

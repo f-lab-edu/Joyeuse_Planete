@@ -1,6 +1,6 @@
 package com.f_lab.joyeuse_planete.core.security.jwt;
 
-import com.f_lab.joyeuse_planete.core.domain.MemberRole;
+import com.f_lab.joyeuse_planete.core.domain.Role;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.util.time.TimeConstants.TimeConstantsMillis;
@@ -50,7 +50,7 @@ public class JwtUtil {
     return objectMapper.convertValue(decrypt(token).getPayload().get(JWT_PAYLOAD_IDENTITY_FIELD), Payload.class).getId();
   }
 
-  public MemberRole getMemberRole(String token) {
+  public Role getRole(String token) {
     return objectMapper.convertValue(decrypt(token).getPayload().get(JWT_PAYLOAD_IDENTITY_FIELD), Payload.class).getRole();
   }
 
@@ -107,9 +107,9 @@ public class JwtUtil {
     private Long id;
 
     @JsonProperty("role")
-    private MemberRole role;
+    private Role role;
 
-    public static Payload generate(Long id, MemberRole role) {
+    public static Payload generate(Long id, Role role) {
       return new Payload(id, role);
     }
   }

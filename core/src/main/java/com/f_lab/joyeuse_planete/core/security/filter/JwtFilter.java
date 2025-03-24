@@ -1,6 +1,6 @@
 package com.f_lab.joyeuse_planete.core.security.filter;
 
-import com.f_lab.joyeuse_planete.core.domain.MemberRole;
+import com.f_lab.joyeuse_planete.core.domain.Role;
 import com.f_lab.joyeuse_planete.core.domain.RefreshToken;
 import com.f_lab.joyeuse_planete.core.domain.repository.RefreshTokenRepository;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
@@ -90,7 +90,7 @@ public class JwtFilter extends OncePerRequestFilter {
   // Access Token 과 Refresh Token 모두가 유효한 경우 → 정상 처리
   private void processForValidToken(String accessToken, String refreshToken) {
     Long id = jwtUtil.getId(accessToken);
-    MemberRole role = jwtUtil.getMemberRole(accessToken);
+    Role role = jwtUtil.getRole(accessToken);
 
     Authentication authentication = new UsernamePasswordAuthenticationToken(id, null, List.of(new SimpleGrantedAuthority(role.toString())));
     saveAuthentication(authentication);
@@ -100,7 +100,7 @@ public class JwtFilter extends OncePerRequestFilter {
     // RefreshToken DB와 비교후 존재할 경우 AccessToken 발행
     if (refreshTokenRepository.existsByToken(refreshToken)) {
       Long id = jwtUtil.getId(refreshToken);
-      MemberRole role = jwtUtil.getMemberRole(refreshToken);
+      Role role = jwtUtil.getRole(refreshToken);
 
       String newAccessToken = jwtUtil.generateAccessToken(Payload.generate(id, role));
       setAccessTokenToResponse(res, newAccessToken);
@@ -118,13 +118,13 @@ public class JwtFilter extends OncePerRequestFilter {
   // Access Token 이 유효하지만 Refresh Token 은 만료한 경우 → Refresh Token 재발급
   private void processForInDateAccessTokenAndExpiredRefreshToken(HttpServletResponse res, String accessToken, String refreshToken) {
     Long id = jwtUtil.getId(accessToken);
-    MemberRole role = jwtUtil.getMemberRole(accessToken);
+    Role role = jwtUtil.getRole(accessToken);
 
     String newRefreshToken = jwtUtil.generateRefreshToken(Payload.generate(id, role));
     setRefreshTokenToResponse(res, newRefreshToken);
 
-    refreshTokenRepository.delete(RefreshToken.from(refreshToken, id));
-    refreshTokenRepository.save(RefreshToken.from(newRefreshToken, id));
+    refreshTokenRepository.delete(RefreshToken.from(refreshToken, id, role));
+    refreshTokenRepository.save(RefreshToken.from(newRefreshToken, id, role));
 
     Authentication authentication = new UsernamePasswordAuthenticationToken(id, null, List.of(new SimpleGrantedAuthority(role.toString())));
     saveAuthentication(authentication);

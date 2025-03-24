@@ -2,7 +2,7 @@ package com.f_lab.joyeuse_planete.members.dto.request;
 
 
 import com.f_lab.joyeuse_planete.core.domain.Member;
-import com.f_lab.joyeuse_planete.core.domain.MemberRole;
+import com.f_lab.joyeuse_planete.core.domain.Role;
 import com.f_lab.joyeuse_planete.core.util.web.BeanValidationErrorMessage;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -31,7 +31,7 @@ public class MemberUpdateRequestDTO {
         .nickname(nickname)
         .email(email)
         .password(password)
-        .role(MemberRole.MEMBER)
+        .role(Role.MEMBER)
         .build();
   }
 }
