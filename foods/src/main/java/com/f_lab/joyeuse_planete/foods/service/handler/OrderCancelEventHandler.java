@@ -1,7 +1,6 @@
 package com.f_lab.joyeuse_planete.foods.service.handler;
 
 
-import com.f_lab.joyeuse_planete.core.annotation.Retry;
 import com.f_lab.joyeuse_planete.core.events.EventToEventMapper;
 import com.f_lab.joyeuse_planete.core.events.FoodReleaseEvent;
 import com.f_lab.joyeuse_planete.core.events.OrderCancelEvent;
@@ -9,6 +8,8 @@ import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
 import com.f_lab.joyeuse_planete.core.exceptions.TransactionRollbackException;
 import com.f_lab.joyeuse_planete.core.util.log.LogUtil;
+import com.f_lab.joyeuse_planete.foods.exceptions.AlreadyProcessedEventException;
+import com.f_lab.joyeuse_planete.foods.service.EventDuplicateCheckService;
 import com.f_lab.joyeuse_planete.foods.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,19 +26,27 @@ public class OrderCancelEventHandler {
 
   private final FoodService foodService;
   private final ApplicationEventPublisher eventPublisher;
+  private final EventDuplicateCheckService eventDuplicateCheckService;
 
   @Transactional
   @KafkaHandler
   public void handleOrderCancelEvent(@Payload OrderCancelEvent orderCancelEvent) {
     try {
+      eventDuplicateCheckService.writeReleaseEventLog(orderCancelEvent);
       foodService.release(orderCancelEvent.getFoodId(), orderCancelEvent.getQuantity());
       eventPublisher.publishEvent(FoodReleaseEvent.toEvent(orderCancelEvent));
+
+    } catch(AlreadyProcessedEventException e) {
+      LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent (DuplicateKeyException)", e);
+
+      throw new TransactionRollbackException(e);
 
     } catch(JoyeusePlaneteApplicationException e) {
       LogUtil.exception("OrderCancelEventHandler.handleOrderCancelEvent", e);
       eventPublisher.publishEvent(EventToEventMapper.mapToCompensationEvent(orderCancelEvent, e.getErrorCode()));
 
       throw e;
+
     } catch (Exception e) {
       LogUtil.exception("OrderCancelEventHandler.handleOrderCancelEvent", e);
       eventPublisher.publishEvent(EventToEventMapper.mapToCompensationEvent(orderCancelEvent, ErrorCode.UNKNOWN_EXCEPTION));

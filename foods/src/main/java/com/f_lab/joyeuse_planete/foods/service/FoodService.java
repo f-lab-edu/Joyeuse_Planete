@@ -1,7 +1,6 @@
 package com.f_lab.joyeuse_planete.foods.service;
 
-import com.f_lab.joyeuse_planete.core.annotation.Backoff;
-import com.f_lab.joyeuse_planete.core.annotation.Retry;
+
 import com.f_lab.joyeuse_planete.core.domain.Food;
 import com.f_lab.joyeuse_planete.core.exceptions.ErrorCode;
 import com.f_lab.joyeuse_planete.core.exceptions.JoyeusePlaneteApplicationException;
@@ -12,8 +11,7 @@ import com.f_lab.joyeuse_planete.foods.dto.response.FoodDTO;
 import com.f_lab.joyeuse_planete.foods.repository.FoodRepository;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.PessimisticLockException;
-import org.hibernate.exception.LockTimeoutException;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,7 +34,8 @@ public class FoodService {
     return FoodDTO.from(findFood(foodId));
   }
 
-//  @Cacheable(value = "foods", keyGenerator = "foodSearchKeyGenerator")
+  // TODO 추후에 조금 더 정교하게 (동네 기반) 으로 cache 저장
+  @Cacheable(value = "foods", keyGenerator = "foodSearchKeyGenerator")
   public Page<FoodDTO> getFoodList(FoodSearchCondition condition, Pageable pageable) {
     return foodRepository.getFoodList(condition, pageable);
   }
