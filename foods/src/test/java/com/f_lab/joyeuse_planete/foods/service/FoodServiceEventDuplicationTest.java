@@ -103,7 +103,7 @@ public class FoodServiceEventDuplicationTest {
       executorService.submit(() -> {
         try {
           orderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent(orderCreatedEvent);
-          Thread.sleep(100);
+          Thread.sleep(500);
         } catch (TransactionRollbackException e) {
           log.error("예외 발생");
 
