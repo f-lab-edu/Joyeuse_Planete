@@ -57,8 +57,8 @@ public class MemberService {
   }
 
   @Transactional
-  public void signout(Long memberId) {
-    refreshTokenRepository.deleteByMemberId(memberId);
+  public void signout(Long memberId, String role) {
+    refreshTokenRepository.deleteByIdAndRole(memberId, role);
   }
 
   @Transactional

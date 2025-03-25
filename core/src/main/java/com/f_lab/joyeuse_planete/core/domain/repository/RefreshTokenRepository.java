@@ -7,5 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, String> {
   boolean existsByToken(@Param("token") String token);
-  void deleteByMemberId(Long memberId);
+
+  void deleteByIdAndRole(@Param("id") Long id, @Param("role") String role);
 }
