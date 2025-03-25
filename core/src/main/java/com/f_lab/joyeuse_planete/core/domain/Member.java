@@ -38,7 +38,7 @@ public class Member extends BaseEntity {
   private String password;
 
   @Enumerated(STRING)
-  private MemberRole role;
+  private Role role;
 
   public void updateMember(
       String nickname,

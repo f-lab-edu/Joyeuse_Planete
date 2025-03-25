@@ -27,14 +27,16 @@ public class RefreshToken extends BaseEntity implements Persistable<String> {
     return token;
   }
 
-  private Long memberId;
+  private Long id;
+
+  private String role;
 
   @Override
   public boolean isNew() {
     return super.getCreatedAt() == null;
   }
 
-  public static RefreshToken from(String token, Long memberId) {
-    return new RefreshToken(token, memberId);
+  public static RefreshToken from(String token, Long id, Role role) {
+    return new RefreshToken(token, id, role.name());
   }
 }
