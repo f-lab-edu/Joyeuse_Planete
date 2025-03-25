@@ -26,9 +26,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +69,9 @@ public class FoodServiceEventDuplicationTest {
 
   @MockitoSpyBean
   FoodEventListener foodEventListener;
+
+  @MockitoBean
+  RedisTemplate redisTemplate;
 
   @TestConfiguration
   static class TestConfig {
