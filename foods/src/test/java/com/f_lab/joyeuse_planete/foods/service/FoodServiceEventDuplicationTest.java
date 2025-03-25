@@ -85,9 +85,9 @@ public class FoodServiceEventDuplicationTest {
     foodTestRepository.save(food);
   }
 
-  @DisplayName("AAAA")
+  @DisplayName("여러개의 이벤트가 중복으로 발행되었을 때 하나의 이벤트만 process 한 후 나머진 반영하지 않는다.")
   @Test
-  void test1() throws Throwable {
+  void testDuplicateEventProcessingReflectSingleEventSuccess() throws Throwable {
     // given
     Long foodId = 1L;
     Long orderId = 1L;
