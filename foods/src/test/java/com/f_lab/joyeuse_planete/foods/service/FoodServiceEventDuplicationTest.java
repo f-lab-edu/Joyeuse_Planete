@@ -20,6 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -70,7 +71,7 @@ public class FoodServiceEventDuplicationTest {
   @MockitoSpyBean
   FoodEventListener foodEventListener;
 
-  @MockitoBean
+  @Mock
   RedisTemplate redisTemplate;
 
   @TestConfiguration
