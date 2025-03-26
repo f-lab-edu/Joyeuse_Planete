@@ -21,16 +21,17 @@ import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -42,6 +43,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
+@Testcontainers
 @DirtiesContext
 @EmbeddedKafka
 @SpringBootTest
@@ -64,6 +66,10 @@ public class FoodServiceEventDuplicationTest {
 
   @MockitoSpyBean
   FoodEventListener foodEventListener;
+
+  @Container
+  private GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:6-alpine"))
+      .withExposedPorts(6379);
 
 
   @TestConfiguration

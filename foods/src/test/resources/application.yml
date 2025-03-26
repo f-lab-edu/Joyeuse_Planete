@@ -24,9 +24,6 @@ spring:
       user: elastic
       password: changeme
 
-  cache:
-    type: none
-
 orders:
   events:
     topics:
