@@ -2,10 +2,8 @@ package com.f_lab.joyeuse_planete.foods.service;
 
 
 import com.f_lab.joyeuse_planete.core.domain.Food;
-import com.f_lab.joyeuse_planete.core.domain.FoodOrderReserve;
 
 import com.f_lab.joyeuse_planete.core.events.FoodReservationFailedEvent;
-import com.f_lab.joyeuse_planete.core.events.FoodReservationProcessedEvent;
 import com.f_lab.joyeuse_planete.core.events.OrderCreatedEvent;
 import com.f_lab.joyeuse_planete.core.exceptions.TransactionRollbackException;
 import com.f_lab.joyeuse_planete.foods.repository.FoodOrderReserveRepository;
@@ -19,15 +17,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.annotation.DirtiesContext;
@@ -35,12 +32,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,9 +42,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
-@SpringBootTest
 @DirtiesContext
 @EmbeddedKafka
+@SpringBootTest
 public class FoodServiceEventDuplicationTest {
 
   @Autowired
@@ -71,8 +65,6 @@ public class FoodServiceEventDuplicationTest {
   @MockitoSpyBean
   FoodEventListener foodEventListener;
 
-  @Mock
-  RedisTemplate redisTemplate;
 
   @TestConfiguration
   static class TestConfig {

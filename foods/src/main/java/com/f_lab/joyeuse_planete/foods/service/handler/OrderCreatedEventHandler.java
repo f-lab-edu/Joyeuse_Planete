@@ -47,7 +47,6 @@ public class OrderCreatedEventHandler {
 
       throw e;
     } catch(Exception e) {
-      System.out.println("여기2");
       LogUtil.exception("OrderCreatedEventHandler.reserveFoodAfterOrderCreatedEvent (Exception)", e);
       eventPublisher.publishEvent(EventToEventMapper.mapToCompensationEvent(orderCreatedEvent, ErrorCode.UNKNOWN_EXCEPTION));
 
