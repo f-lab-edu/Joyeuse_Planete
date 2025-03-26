@@ -28,10 +28,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -43,7 +39,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
-@Testcontainers
 @DirtiesContext
 @EmbeddedKafka
 @SpringBootTest
@@ -66,10 +61,6 @@ public class FoodServiceEventDuplicationTest {
 
   @MockitoSpyBean
   FoodEventListener foodEventListener;
-
-  @Container
-  private GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:6-alpine"))
-      .withExposedPorts(6379);
 
 
   @TestConfiguration
