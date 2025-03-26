@@ -78,7 +78,7 @@ public class FoodDTO implements Serializable {
   public static FoodDTO from(Food food) {
     return FoodDTO.builder()
         .foodId(food.getId())
-        .storeId(food.getStore().getId())
+        .storeId((food.getStore() != null) ? food.getStore().getId() : -1)
         .foodName(food.getFoodName())
         .rate(food.getRate())
         .price(food.getPrice())
