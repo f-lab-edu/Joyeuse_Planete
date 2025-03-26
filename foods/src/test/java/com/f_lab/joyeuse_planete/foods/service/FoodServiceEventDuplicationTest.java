@@ -13,6 +13,7 @@ import com.f_lab.joyeuse_planete.foods.service.listener.FoodEventListener;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +27,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +46,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
+@Testcontainers
 @DirtiesContext
 @EmbeddedKafka
 @SpringBootTest
@@ -61,6 +69,17 @@ public class FoodServiceEventDuplicationTest {
 
   @MockitoSpyBean
   FoodEventListener foodEventListener;
+
+  @ClassRule
+  @Container
+  public static GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:6-alpine"))
+      .withExposedPorts(6379);
+
+  @DynamicPropertySource
+  public static void overrideRedisProps(DynamicPropertyRegistry registry) {
+    registry.add("spring.data.redis.host", redis::getHost);
+    registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
+  }
 
 
   @TestConfiguration
