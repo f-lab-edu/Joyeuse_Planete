@@ -116,3 +116,10 @@ project(":members") {
 	}
 }
 
+project(":batch") {
+	dependencies {
+		implementation project(":core")
+		testImplementation project(":core")
+	}
+}
+
